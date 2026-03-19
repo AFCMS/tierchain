@@ -17,7 +17,7 @@ interface ImportMetaEnv {
   readonly VITE_HARDHAT_RPC_URL?: string;
   readonly VITE_MAINNET_RPC_URL?: string;
   readonly VITE_SEPOLIA_RPC_URL?: string;
-  readonly VITE_CONTRACT_TIERLIST_ADDRESS?: string;
+  readonly VITE_CONTRACT_TIERLIST_ADDRESS?: `0x${string}`;
 }
 
 interface ImportMeta {
