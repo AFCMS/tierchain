@@ -29,3 +29,6 @@ cache
 artifacts
 coverage
 ignition
+
+tierlists/*.json
+!tierlists/*.schema.json

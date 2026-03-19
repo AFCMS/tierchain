@@ -10,7 +10,9 @@
     "build:contract": "hardhat compile",
     "lint": "eslint . --flag unstable_native_nodejs_ts_config",
     "preview": "vite preview",
-    "test:contract": "hardhat test solidity --coverage"
+    "test:contract": "hardhat test solidity --coverage",
+    "tierlist:cli": "node --experimental-strip-types scripts/tierlist-manager.ts",
+    "insert:tierlist": "pnpm tierlist:cli create"
   },
   "dependencies": {
     "@metamask/sdk": "^0.34.0",
@@ -32,6 +34,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "commander": "^14.0.3",
     "daisyui": "^5.5.19",
     "dotenv": "^17.3.1",
     "eslint": "^9.39.4",
