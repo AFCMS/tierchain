@@ -1,10 +1,15 @@
+import { BrowserRouter } from "react-router";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 
 import { Header } from "./components/Header";
 import { config } from "./config/wagmi.config";
+
 import { TierList } from "./components/TierList";
 import { ItemRankings } from "./components/ItemRankings";
+
+import { Home } from "./screens/Home";
 
 const client = new QueryClient();
 
@@ -23,6 +28,9 @@ function App() {
             D: 14,
           }}
         />
+        <BrowserRouter>
+          <Home />
+        </BrowserRouter>
       </QueryClientProvider>
     </WagmiProvider>
   );
