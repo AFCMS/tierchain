@@ -27,6 +27,7 @@
   "include": [
     "vite.config.ts",
     "hardhat.config.ts",
-    "globals.d.ts"
+    "globals.d.ts",
+    "ignition/**/*.ts"
   ]
 }

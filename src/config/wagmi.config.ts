@@ -1,8 +1,9 @@
 import { createConfig, http } from "wagmi";
-import { mainnet, sepolia } from "wagmi/chains";
+import { hardhat, mainnet, sepolia } from "wagmi/chains";
 import { metaMask } from "wagmi/connectors";
 
 const CHAIN_BY_KEY = {
+  hardhat,
   mainnet,
   sepolia,
 } as const;
@@ -13,7 +14,22 @@ const chainKey = (
   import.meta.env.VITE_CHAIN ?? "sepolia"
 ).toLowerCase() as ChainKey;
 
-function createSingleChainConfig(chain: typeof mainnet | typeof sepolia) {
+function createSingleChainConfig(
+  chain: typeof hardhat | typeof mainnet | typeof sepolia,
+) {
+  if (chain.id === hardhat.id) {
+    return createConfig({
+      ssr: false,
+      chains: [hardhat],
+      connectors: [metaMask()],
+      transports: {
+        [hardhat.id]: http(
+          import.meta.env.VITE_HARDHAT_RPC_URL ?? "http://127.0.0.1:8545",
+        ),
+      },
+    });
+  }
+
   if (chain.id === mainnet.id) {
     return createConfig({
       ssr: false,
