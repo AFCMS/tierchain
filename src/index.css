@@ -6,3 +6,40 @@
   root: ":root";
   logs: false;
 }
+
+/* Ranking colors */
+
+[data-rank="S"] {
+  color: var(--color-red-500) !important;
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-red-300) !important;
+  }
+}
+
+[data-rank="A"] {
+  color: var(--color-orange-500) !important;
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-orange-300) !important;
+  }
+}
+
+[data-rank="B"] {
+  color: var(--color-amber-500) !important;
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-amber-300) !important;
+  }
+}
+
+[data-rank="C"] {
+  color: var(--color-yellow-500) !important;
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-yellow-300) !important;
+  }
+}
+
+[data-rank="D"] {
+  color: var(--color-lime-500) !important;
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-lime-300) !important;
+  }
+}

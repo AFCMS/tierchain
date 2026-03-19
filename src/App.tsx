@@ -19,15 +19,18 @@ function App() {
       <QueryClientProvider client={client}>
         <Header />
         <TierList />
-        <ItemRankings
-          data={{
-            S: 21,
-            A: 10,
-            B: 2,
-            C: 5,
-            D: 14,
-          }}
-        />
+        <div className="card">
+          <h1 className="card-title">Scores</h1>
+          <ItemRankings
+            data={{
+              S: 21,
+              A: 10,
+              B: 2,
+              C: 5,
+              D: 14,
+            }}
+          />
+        </div>
         <BrowserRouter>
           <Home />
         </BrowserRouter>

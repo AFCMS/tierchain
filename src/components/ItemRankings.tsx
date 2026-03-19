@@ -14,30 +14,22 @@ export function ItemRankings(props: ItemRankingsProps) {
     0,
   );
   return (
-    <div className="flex flex-col gap-2 max-w-32 bg-zinc-200 p-4">
-      {Object.keys(props.data).map((ranking) => (
+    <div className="card-body flex max-w-96 flex-col gap-2 p-4">
+      {(Object.keys(props.data) as Ranking[]).map((ranking) => (
         <div key={ranking} className={`flex flex-col p-2`}>
-          <div className="flex flex-row">
-            <span
-              className={
-                "font-bold" + ranking === "S"
-                  ? "text-red-500"
-                  : ranking === "A"
-                    ? "text-orange-500"
-                    : ranking === "B"
-                      ? "text-amber-500"
-                      : ranking === "C"
-                        ? "text-yellow-500"
-                        : "text-green-500"
-              }
-            >
+          <div className="flex flex-row items-center justify-between">
+            <span data-rank={ranking} className={"flex-1 font-bold"}>
               {ranking}
+            </span>
+            <span className="text-sm">
+              {((props.data[ranking] / total) * 100).toFixed(1)}%
             </span>
           </div>
           <progress
             className={"progress"}
-            value={props.data[ranking as Ranking]}
+            value={props.data[ranking]}
             max={total}
+            data-rank={ranking}
           ></progress>
         </div>
       ))}
