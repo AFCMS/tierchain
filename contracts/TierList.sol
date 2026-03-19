@@ -23,8 +23,9 @@ contract TierList {
         uint256 indexed itemId,
         string name
     );
-    
+
     event RankingSubmitted(address indexed voter, uint256 indexed tierListId);
+    event RankingDeleted(address indexed voter, uint256 indexed tierListId);
 
     // ──────────────────────────────────────────────────────────────────────────────
     // DATA STRUCTURES
@@ -238,6 +239,14 @@ contract TierList {
                 voteCounts[tlId][itemId][prev - 1]--;
             }
 
+            // If this is the first time this user interacts with this item, index it so we can enumerate later.
+            if (userVotedItemIndexPlus1[tlId][msg.sender][itemId] == 0) {
+                userVotedItemIds[tlId][msg.sender].push(itemId);
+                userVotedItemIndexPlus1[tlId][msg.sender][
+                    itemId
+                ] = userVotedItemIds[tlId][msg.sender].length; // index+1
+            }
+
             voteCounts[tlId][itemId][tier]++;
             userVotes[tlId][msg.sender][itemId] = tier + 1;
         }
@@ -246,8 +255,32 @@ contract TierList {
     }
 
     function deleteRanking(
-        
-    )
+        uint256 tlId
+    ) external tierListMustExist(tlId) tierListActive(tlId) {
+        uint256[] storage votedIds = userVotedItemIds[tlId][msg.sender];
+
+        // Iterate and clear votes
+        for (uint256 i = 0; i < votedIds.length; i++) {
+            uint256 itemId = votedIds[i];
+
+            uint256 prev = userVotes[tlId][msg.sender][itemId]; // tier+1
+            if (prev > 0) {
+                // If the item is still active, it still contributes to voteCounts.
+                // If it was removed, removeItem() already zeroed voteCounts for it.
+                if (items[tlId][itemId].active) {
+                    voteCounts[tlId][itemId][prev - 1]--;
+                }
+                delete userVotes[tlId][msg.sender][itemId];
+            }
+
+            delete userVotedItemIndexPlus1[tlId][msg.sender][itemId];
+        }
+
+        // Clear the list itself
+        delete userVotedItemIds[tlId][msg.sender];
+
+        emit RankingDeleted(msg.sender, tlId);
+    }
 
     // ──────────────────────────────────────────────────────────────────────────────
     // VIEW FUNCTIONS
