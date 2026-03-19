@@ -43,3 +43,38 @@
     color: var(--color-lime-300) !important;
   }
 }
+
+[data-rank-bg="S"] {
+  background-color: var(--color-red-300) !important;
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-red-300) !important;
+  }
+}
+
+[data-rank-bg="A"] {
+  background-color: var(--color-orange-300) !important;
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-orange-300) !important;
+  }
+}
+
+[data-rank-bg="B"] {
+  background-color: var(--color-amber-300) !important;
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-amber-300) !important;
+  }
+}
+
+[data-rank-bg="C"] {
+  background-color: var(--color-yellow-300) !important;
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-yellow-300) !important;
+  }
+}
+
+[data-rank-bg="D"] {
+  background-color: var(--color-lime-300) !important;
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-lime-300) !important;
+  }
+}

@@ -4,6 +4,12 @@
     "editor.formatOnPaste": true,
     "editor.formatOnType": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[typescript]": {
+        "editor.tabSize": 2
+    },
+    "[typescriptreact]": {
+        "editor.tabSize": 2
+    },
     "[solidity]": {
         "editor.defaultFormatter": "NomicFoundation.hardhat-solidity"
     }
