@@ -7,5 +7,11 @@ export default defineConfig({
   plugins: [hardhatVerify],
   solidity: {
     version: "0.8.28",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 50,
+      },
+    },
   },
 });

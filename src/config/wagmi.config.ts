@@ -13,9 +13,7 @@ const chainKey = (
   import.meta.env.VITE_CHAIN ?? "sepolia"
 ).toLowerCase() as ChainKey;
 
-function createSingleChainConfig(
-  chain: typeof mainnet | typeof sepolia,
-) {
+function createSingleChainConfig(chain: typeof mainnet | typeof sepolia) {
   if (chain.id === mainnet.id) {
     return createConfig({
       ssr: false,
