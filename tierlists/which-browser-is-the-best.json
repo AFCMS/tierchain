@@ -1,0 +1,10 @@
+{
+    "$schema": "./tierlist.schema.json",
+    "name": "Browsers",
+    "description": "Which browser is the best?",
+    "items": [
+        "chrome",
+        "brave",
+        "firefox"
+    ]
+}
