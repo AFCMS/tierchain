@@ -48,6 +48,14 @@ contract TierList {
         uint256 numActiveItems; // number of items with items[tlId][id].active == true
     }
 
+    struct TierListView {
+        uint256 id;
+        string name;
+        string description;
+        bool active;
+        uint256 numActiveItems;
+    }
+
     mapping(uint256 => TierListInfo) public tierListInfos;
 
     // For each tier list, item IDs are assigned incrementally starting at 1.
@@ -291,20 +299,29 @@ contract TierList {
      */
     function getTierLists(
         bool includeInactive
-    ) external view returns (TierListInfo[] memory) {
+    ) external view returns (TierListView[] memory) {
         uint256 count = 0;
         for (uint256 id = 1; id < nextTierListId; id++) {
             if (includeInactive || tierListInfos[id].active) count++;
         }
 
-        TierListInfo[] memory lists = new TierListInfo[](count);
+        TierListView[] memory lists = new TierListView[](count);
         uint256 idx = 0;
+
         for (uint256 id = 1; id < nextTierListId && idx < count; id++) {
-            if (includeInactive || tierListInfos[id].active) {
-                lists[idx] = tierListInfos[id];
+            TierListInfo storage info = tierListInfos[id];
+            if (includeInactive || info.active) {
+                lists[idx] = TierListView({
+                    id: id,
+                    name: info.name,
+                    description: info.description,
+                    active: info.active,
+                    numActiveItems: info.numActiveItems
+                });
                 idx++;
             }
         }
+
         return lists;
     }
 
