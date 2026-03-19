@@ -13,7 +13,9 @@ interface ViteTypeOptions {
 }
 
 interface ImportMetaEnv {
-  readonly VITE_SEPOLIA_RPC_URL: string;
+  readonly VITE_CHAIN?: "mainnet" | "sepolia";
+  readonly VITE_MAINNET_RPC_URL?: string;
+  readonly VITE_SEPOLIA_RPC_URL?: string;
 }
 
 interface ImportMeta {
