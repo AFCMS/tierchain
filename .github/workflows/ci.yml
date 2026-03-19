@@ -1,0 +1,47 @@
+---
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js LTS/Krypton
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ".node-version"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build contract
+        run: pnpm run build:contract
+
+      - name: Test contract
+        run: pnpm run test:contract
+
+      - name: Build frontend
+        run: pnpm run build
+
+      - name: Lint frontend
+        run: pnpm run lint
+
+      - name: Run frontend tests
+        run: pnpm run test

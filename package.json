@@ -7,8 +7,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:contract": "hardhat compile",
     "lint": "eslint . --flag unstable_native_nodejs_ts_config",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:contract": "hardhat test solidity --coverage"
   },
   "dependencies": {
     "@metamask/sdk": "^0.34.0",
