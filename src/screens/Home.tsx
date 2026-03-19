@@ -1,3 +1,9 @@
+import { AllLists } from "../components/AllLists";
+
 export function Home() {
-  return <>Home sweet home</>;
+  return (
+    <div className="p-4">
+      <AllLists />
+    </div>
+  );
 }
