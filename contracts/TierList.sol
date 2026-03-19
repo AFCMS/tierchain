@@ -23,33 +23,84 @@ contract TierList {
         uint256 indexed itemId,
         string name
     );
+    
     event RankingSubmitted(address indexed voter, uint256 indexed tierListId);
 
     // ──────────────────────────────────────────────────────────────────────────────
     // DATA STRUCTURES
     // ──────────────────────────────────────────────────────────────────────────────
+    //
+    // This contract uses mappings as "sparse arrays".
+    // Key point: mappings are NOT enumerable on-chain.
+    // That means:
+    //  - you can read/write userVotes[tlId][user][itemId] in O(1)
+    //  - but you cannot iterate "all itemIds a user voted on" unless you store an index/list separately.
+    //
+    // As a result, view functions like getTierListItems() and getUserVotes() rebuild arrays by scanning
+    // from 1..tierListNextItemId[tlId]. That scan is OK in view calls (off-chain), but can be too expensive
+    // for state-changing functions if the tier list grows large.
 
     struct TierListInfo {
         string name;
         string description;
         bool active;
-        uint256 numActiveItems;
+        uint256 numActiveItems; // number of items with items[tlId][id].active == true
     }
 
     mapping(uint256 => TierListInfo) public tierListInfos;
+
+    // For each tier list, item IDs are assigned incrementally starting at 1.
+    // This is a monotonically increasing counter; it does NOT decrease when items are removed.
+    // So the "max item id ever assigned" for a tier list is tierListNextItemId[tlId].
     mapping(uint256 => uint256) public tierListNextItemId;
 
     struct ItemInfo {
         string name;
-        bool active; // false = removed
+        bool active; // true = item is votable, false = removed/disabled
     }
 
+    // items[tlId][itemId] holds item metadata.
+    // Note: this mapping is also sparse; an item "exists" if bytes(items[tlId][itemId].name).length > 0.
     mapping(uint256 => mapping(uint256 => ItemInfo)) public items;
+
+    // Redundant storage of item name by id; used when emitting ItemRemoved with the name.
     mapping(uint256 => mapping(uint256 => string)) private itemIdToName;
+
+    // Used to enforce uniqueness of item names within a tier list.
+    // When an item is removed, this is set back to false so the name can be reused.
     mapping(uint256 => mapping(string => bool)) private itemNameUsed;
 
+    // voteCounts[tlId][itemId][tier] = total number of votes from ALL users
+    // that currently place itemId into 'tier' (tier is 0..NUM_TIERS-1).
+    //
+    // This is the "global aggregate" used for displaying results without iterating over all users.
     mapping(uint256 => mapping(uint256 => mapping(uint256 => uint256)))
         public voteCounts;
+
+    // Enumerability helpers:
+    // userVotedItemIds[tlId][user] = list of itemIds this user has EVER voted on (and not yet deleted).
+    // userVotedItemIndexPlus1[tlId][user][itemId] = index in userVotedItemIds + 1, so 0 means "not present".
+    mapping(uint256 => mapping(address => uint256[])) private userVotedItemIds;
+    mapping(uint256 => mapping(address => mapping(uint256 => uint256)))
+        private userVotedItemIndexPlus1;
+
+    // userVotes[tlId][user][itemId] = the tier that THIS user assigned to this item.
+    //
+    // Stored as tier+1 so that 0 can mean "no vote exists":
+    //   0 => user has not voted on this item
+    //   1 => user voted tier 0
+    //   2 => user voted tier 1
+    //   ...
+    //   NUM_TIERS => user voted tier NUM_TIERS-1
+    //
+    // This enables "replace vote": on submitRanking we can look up the previous value and decrement
+    // the old voteCounts bucket, then increment the new one.
+    //
+    // Limitation: because this is a mapping, we do NOT store a list of itemIds a user voted on.
+    // So deleting "all votes by a user" requires either:
+    //   - scanning 1..tierListNextItemId[tlId] (can be expensive), OR
+    //   - having the caller provide the itemIds to clear, OR
+    //   - adding extra indexing storage (user -> array/set of voted itemIds).
     mapping(uint256 => mapping(address => mapping(uint256 => uint256)))
         private userVotes;
 
@@ -193,6 +244,10 @@ contract TierList {
 
         emit RankingSubmitted(msg.sender, tlId);
     }
+
+    function deleteRanking(
+        
+    )
 
     // ──────────────────────────────────────────────────────────────────────────────
     // VIEW FUNCTIONS
