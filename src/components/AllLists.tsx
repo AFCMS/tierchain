@@ -29,7 +29,7 @@ export function AllLists({ includeInactive = false }: { includeInactive?: boolea
   const lists = (data ?? []) as TierListView[];
 
   if (!tierListAddress) {
-    return <div className="text-sm text-zinc-600">Missing VITE_TIERLIST_ADDRESS</div>;
+    return <div className="text-sm text-zinc-600">Missing VITE_CONTRACT_TIERLIST_ADDRESS</div>;
   }
 
   if (isLoading) return <div className="text-sm text-zinc-600">Loading tier lists…</div>;
