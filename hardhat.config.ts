@@ -15,19 +15,23 @@ export default defineConfig({
       },
     },
   },
-  networks: {
-    sepolia: {
-      type: "http",
-      url: process.env.ALCHEMY_URL,
-      chainId: 11155111,
-      accounts: [process.env.PRIVATE_KEY],
-    },
-  },
+  networks: process.env.ALCHEMY_URL
+    ? {
+        sepolia: {
+          type: "http",
+          url: process.env.ALCHEMY_URL,
+          chainId: 11155111,
+          accounts: [process.env.PRIVATE_KEY],
+        },
+      }
+    : {},
   verify: {
-    etherscan: {
-      enabled: true,
-      apiKey: process.env.ETHERSCAN_API_KEY,
-    },
+    etherscan: process.env.ETHERSCAN_API_KEY
+      ? {
+          enabled: true,
+          apiKey: process.env.ETHERSCAN_API_KEY,
+        }
+      : undefined,
     blockscout: {
       enabled: true,
     },
