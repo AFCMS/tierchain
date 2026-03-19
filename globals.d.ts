@@ -1,7 +1,7 @@
 declare namespace NodeJS {
   interface ProcessEnv {
-    ETHERSCAN_API_KEY: string;
-    ALCHEMY_URL: string;
-    PRIVATE_KEY: string;
+    readonly ETHERSCAN_API_KEY: string;
+    readonly ALCHEMY_URL: string;
+    readonly PRIVATE_KEY: string;
   }
 }
