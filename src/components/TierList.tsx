@@ -203,6 +203,10 @@ export function TierList(props: TierListProps) {
     });
   }
 
+  function handleResetUserData() {
+    setUpdatedItems(cloneBuckets(originalItems));
+  }
+
   function handleUpdateUserData() {
     if (!tierListAddress) {
       console.error("Missing VITE_CONTRACT_TIERLIST_ADDRESS");
@@ -341,7 +345,15 @@ export function TierList(props: TierListProps) {
           setGlobalVotesItemId={props.setGlobalVotesItemId}
         />
 
-        <div className="my-4 flex w-full justify-end">
+        <div className="my-4 flex w-full justify-end gap-2">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleResetUserData}
+            disabled={!editable || !hasPendingChanges || write.isPending}
+          >
+            Reset
+          </button>
           <button
             type="button"
             className="btn btn-primary"
