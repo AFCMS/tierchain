@@ -28,3 +28,30 @@ Build the contract :
 ```bash
 pnpm run build:contract
 ```
+
+Start hardat :
+
+```bash
+pnpm hardhat node
+```
+
+Deploy the contract :
+
+```bash
+pnpm hardhat ignition deploy ignition/modules/TierList.ts --network localhost
+```
+
+Populate the tier lists :
+```bash
+node ./scripts/tierlist-manager.ts create --file ./tierlists/which-browser-is-the-best.json --mode hardhat
+```
+
+Run in dev mode :
+```bash
+pnpm run dev
+```
+
+Build and run :
+```bash
+pnpm run build
+```
