@@ -6,9 +6,8 @@ import { WagmiProvider } from "wagmi";
 import { Header } from "./components/Header";
 import { config } from "./config/wagmi.config";
 
-import { TierList } from "./components/TierList";
-
 import { Home } from "./screens/Home";
+import { ListDetail } from "./screens/ListDetail";
 
 const client = new QueryClient();
 
@@ -20,7 +19,7 @@ function App() {
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/list/:id" element={<TierList />} />
+            <Route path="/list/:id" element={<ListDetail />} />
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>
