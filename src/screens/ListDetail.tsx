@@ -12,17 +12,24 @@ import {
 
 import TierListArtifact from "../../artifacts/contracts/TierList.sol/TierList.json";
 
-const abi = TierListArtifact.abi as const;
-
 const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS as
   | Address
   | undefined;
+
+const abi = TierListArtifact.abi;
 
 const RANKS: Ranking[] = ["S", "A", "B", "C", "D"];
 
 function tierIndexToRank(tier: number): Ranking {
   return RANKS[tier] ?? "D";
 }
+
+type GetTierListReturn = readonly [string, boolean, bigint];
+type GetTierListItemsReturn = readonly [
+  readonly bigint[],
+  readonly { name: string; active: boolean }[],
+];
+type GetGlobalVotesReturn = readonly [readonly bigint[], readonly bigint[][]];
 
 export function ListDetail() {
   const { id } = useParams<{ id: string }>();
@@ -56,6 +63,11 @@ export function ListDetail() {
     query: { enabled },
   });
 
+  // Single-point typing: cast the .data values once.
+  const tierListData = tierListQuery.data as GetTierListReturn | undefined;
+  const itemsData = itemsQuery.data as GetTierListItemsReturn | undefined;
+  const votesData = votesQuery.data as GetGlobalVotesReturn | undefined;
+
   const derived = useMemo(() => {
     const emptyBuckets: TierListBuckets = {
       S: [],
@@ -68,10 +80,6 @@ export function ListDetail() {
 
     const emptyTotals: ItemRankingData = { S: 0, A: 0, B: 0, C: 0, D: 0 };
 
-    const tierListData = tierListQuery.data;
-    const itemsData = itemsQuery.data;
-    const votesData = votesQuery.data;
-
     if (!tierListData || !itemsData || !votesData) {
       return {
         name: "",
@@ -82,9 +90,7 @@ export function ListDetail() {
       };
     }
 
-    // wagmi infers these as tuples because abi is `as const`
     const [name, active, numActiveItems] = tierListData;
-
     const [itemIds, itemInfos] = itemsData;
     const [voteItemIds, counts] = votesData;
 
@@ -142,8 +148,9 @@ export function ListDetail() {
     }
 
     return { name, active, numActiveItems, buckets, totals };
-  }, [tierListQuery.data, itemsQuery.data, votesQuery.data]);
+  }, [tierListData, itemsData, votesData]);
 
+  // early returns AFTER hooks
   if (!tierListAddress) {
     return (
       <div className="text-sm text-zinc-600">
