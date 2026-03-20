@@ -22,7 +22,11 @@ contract TierList {
         uint256[] itemIds,
         string[] names
     );
-    event ItemsRemoved(uint256 indexed tierListId, uint256[] indexed itemId);
+    event ItemRemoved(
+        uint256 indexed tierListId,
+        uint256 indexed itemId,
+        string name
+    );
 
     event RankingSubmitted(address indexed voter, uint256 indexed tierListId);
     event RankingDeleted(address indexed voter, uint256 indexed tierListId);
@@ -71,6 +75,9 @@ contract TierList {
     // items[tlId][itemId] holds item metadata.
     // Note: this mapping is also sparse; an item "exists" if bytes(items[tlId][itemId].name).length > 0.
     mapping(uint256 => mapping(uint256 => ItemInfo)) public items;
+
+    // Redundant storage of item name by id; used when emitting ItemRemoved with the name.
+    mapping(uint256 => mapping(uint256 => string)) private itemIdToName;
 
     // Used to enforce uniqueness of item names within a tier list.
     // When an item is removed, this is set back to false so the name can be reused.
@@ -194,7 +201,7 @@ contract TierList {
             voteCounts[tlId][itemId][t] = 0;
         }
 
-        emit ItemRemoved(tlId, itemId);
+        emit ItemRemoved(tlId, itemId, name);
     }
 
     // ──────────────────────────────────────────────────────────────────────────────
@@ -344,10 +351,15 @@ contract TierList {
         external
         view
         tierListMustExist(tlId)
-        returns (string memory name, bool active, uint256 numActiveItems)
+        returns (
+            string memory name,
+            string memory description,
+            bool active,
+            uint256 numActiveItems
+        )
     {
         TierListInfo memory info = tierListInfos[tlId];
-        return (info.name, info.active, info.numActiveItems);
+        return (info.name, info.description, info.active, info.numActiveItems);
     }
 
     /**
