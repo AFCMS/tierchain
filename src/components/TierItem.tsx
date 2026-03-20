@@ -1,9 +1,16 @@
+import type {
+  DraggableProvided,
+  DraggableStateSnapshot,
+} from "@hello-pangea/dnd";
+
 import { getTierListItemAsset } from "../data/tierlists";
 
 export interface TierItemProps {
   readonly tlId: number;
   readonly id: number;
   readonly name: string;
+  readonly provided: DraggableProvided;
+  readonly snapshot: DraggableStateSnapshot;
 }
 
 export function TierItem(props: TierItemProps) {
@@ -17,9 +24,18 @@ export function TierItem(props: TierItemProps) {
       title={props.name}
       loading="lazy"
       fetchPriority="auto"
+      ref={(ref) => props.provided.innerRef(ref)}
+      {...props.provided.draggableProps}
+      {...props.provided.dragHandleProps}
     />
   ) : (
-    <div className="flex size-20 items-center justify-center rounded bg-zinc-300">
+    <div
+      className="flex size-20 items-center justify-center rounded bg-zinc-300 text-wrap text-ellipsis"
+      title={props.name}
+      ref={(ref) => props.provided.innerRef(ref)}
+      {...props.provided.draggableProps}
+      {...props.provided.dragHandleProps}
+    >
       {props.name}
     </div>
   );
