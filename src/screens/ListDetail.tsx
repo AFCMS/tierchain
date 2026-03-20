@@ -5,7 +5,7 @@ import type { Address } from "viem";
 import { AlertTriangle } from "lucide-react";
 
 import { TierList, type TierListBuckets } from "../components/TierList";
-import { ItemRankings, type ItemRankingData, type Ranking } from "../components/ItemRankings";
+import { type ItemRankingData, type Ranking } from "../components/ItemRankings";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 
@@ -234,12 +234,7 @@ export function ListDetail() {
           editable={true}
           globalVotesItemId={1}
           globalVotesItem={derived.totals}
-        />
-
-        <div className="card bg-base-300 card-md w-auto shadow-lg">
-          <ItemRankings data={derived.totals} />
-        </div>
-        
+        />        
 
         <div className="mt-8">
           <h2 className="mb-2 text-lg font-semibold">Latest submissions</h2>
