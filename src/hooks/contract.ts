@@ -1,4 +1,4 @@
-import { useReadContract } from "wagmi";
+import { useReadContract, useWatchContractEvent } from "wagmi";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 import type { Address } from "viem";
@@ -80,4 +80,55 @@ export function useGetItemVoteCounts(
     ...voteCountsQuery,
     data: voteCountsQuery.data as readonly bigint[] | undefined,
   };
+}
+
+export function useGetSubmissionsNextIndex(
+  id: bigint | undefined,
+  enabled: boolean,
+) {
+  const q = useReadContract({
+    address: tierListAddress,
+    abi,
+    functionName: "getSubmissionsNextIndex",
+    args: id !== undefined ? [id] : undefined,
+    query: { enabled },
+  });
+
+  return {
+    ...q,
+    data: q.data as bigint | undefined,
+  };
+}
+
+
+export type RankingSubmittedLogArgs = {
+  voter: Address;
+  tierListId: bigint;
+  submissionIndex: bigint;
+};
+
+type OnRankingSubmitted = (args: RankingSubmittedLogArgs) => void;
+
+export function useWatchRankingSubmitted(
+  enabled: boolean,
+  onRankingSubmitted: OnRankingSubmitted,
+) {
+  return useWatchContractEvent({
+    address: tierListAddress,
+    abi: abi,
+    eventName: "RankingSubmitted",
+    enabled,
+    strict: true,
+    onLogs: (logs) => {
+      for (const l of logs) {
+        // wagmi/viem types here can be annoying; keep it tight but not magical
+        const args = (l as any).args as RankingSubmittedLogArgs | undefined;
+        if (!args) continue;
+        if (!args.voter) continue;
+        if (args.tierListId === undefined) continue;
+        if (args.submissionIndex === undefined) continue;
+        onRankingSubmitted(args);
+      }
+    },
+  });
 }

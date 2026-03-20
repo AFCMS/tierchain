@@ -1,13 +1,19 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { useGetLatestSubmissions } from "../hooks/contract";
+import { useGetLatestSubmissions, useWatchRankingSubmitted } from "../hooks/contract";
 import { AddressLink } from "./AddressLink";
+import type { Address } from "viem";
 
 interface LatestSubmissionsProps {
   readonly id: bigint;
 }
+
+type LiveRow = {
+  readonly voter: Address;
+  readonly submissionIndex: bigint;
+};
 
 export function LatestSubmissions(props: LatestSubmissionsProps) {
   const PAGE_SIZE = 20n;
@@ -22,6 +28,44 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
 
   const latestSubmitters = latestSubmissions.data ?? [];
 
+  const [liveRows, setLiveRows] = useState<readonly LiveRow[]>([]);
+
+  useEffect(() => {
+    if (submissionsOffset !== 0n) setLiveRows([]);
+  }, [submissionsOffset]);
+
+  useWatchRankingSubmitted(true, ({ voter, tierListId, submissionIndex }) => {
+    if (tierListId !== props.id) return;
+    if (submissionsOffset !== 0n) return;
+
+    setLiveRows((cur) => {
+      if (cur.some((r) => r.submissionIndex === submissionIndex)) return cur;
+
+      const next = [{ voter, submissionIndex }, ...cur];
+
+      // keep it bounded so UI doesn't grow forever if user sits here
+      return next.slice(0, Number(PAGE_SIZE));
+    });
+  });
+
+  const rows = useMemo(() => {
+    console.log("here")
+    if (submissionsOffset !== 0n) return latestSubmitters;
+
+    // build a list: live prepends first, then fetched list, de-duped by address
+    const out: { acct: Address; live?: LiveRow }[] = [];
+
+    for (const r of liveRows) {
+      out.push({ acct: r.voter, live: r });
+    }
+
+    for (const acct of latestSubmitters) {
+      out.push({ acct });
+    }
+
+    return out;
+  }, [latestSubmitters, liveRows, submissionsOffset]);
+
   return (
     <section className="">
       <h2 className="mb-2 text-lg font-semibold">Latest submissions</h2>
@@ -35,32 +79,42 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
         </thead>
 
         <tbody>
-          {latestSubmitters.length === 0 ? (
+          {rows.length === 0 ? (
             <tr>
               <td colSpan={3} className="text-sm text-zinc-500">
                 No submissions yet.
               </td>
             </tr>
           ) : (
-            latestSubmitters.map((acct, i) => (
-              <tr key={`${acct}-${i}`}>
-                <td>{Number(submissionsOffset) + i + 1}</td>
-                <td>
-                  <AddressLink address={acct} />
-                </td>
-                <td>
-                  <Link
-                    className="btn btn-ghost"
-                    to={`/list/${props.id}/address/${acct}`}
-                  >
-                    View
-                  </Link>
-                </td>
-              </tr>
-            ))
+            rows.map((row, i) => {
+              const acct = typeof row === "string" ? (row as Address) : row.acct;
+              const live = typeof row === "string" ? undefined : row.live;
+
+              const num = live
+                ? Number(live.submissionIndex) + 1
+                : Number(submissionsOffset) + i + 1;
+
+              return (
+                <tr key={`${acct}-${i}`}>
+                  <td>{num}</td>
+                  <td>
+                    <AddressLink address={acct} />
+                  </td>
+                  <td>
+                    <Link
+                      className="btn btn-ghost"
+                      to={`/list/${props.id}/address/${acct}`}
+                    >
+                      View
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })
           )}
         </tbody>
       </table>
+
       <div className="mt-4 flex flex-row justify-center">
         <div className="join">
           <button

@@ -28,7 +28,12 @@ contract TierList {
         string name
     );
 
-    event RankingSubmitted(address indexed voter, uint256 indexed tierListId);
+    event RankingSubmitted(
+        address indexed voter,
+        uint256 indexed tierListId,
+        uint256 submissionIndex
+    );
+
     event RankingDeleted(address indexed voter, uint256 indexed tierListId);
 
     // ──────────────────────────────────────────────────────────────────────────────
@@ -90,8 +95,6 @@ contract TierList {
     mapping(uint256 => mapping(uint256 => mapping(uint256 => uint256)))
         public voteCounts;
 
-    // Ordered per-rank votes (no reverse index; optimized for full replacement writes)
-    //
     // userVotes[tlId][user][rank] = ordered array of itemIds in that rank (rank: 0..NUM_TIERS-1)
     mapping(uint256 => mapping(address => mapping(uint256 => uint256[])))
         private userVotes;
@@ -260,7 +263,8 @@ contract TierList {
 
         submissions[tlId].push(msg.sender);
         submissionsNextIndex[tlId] = submissions[tlId].length;
-        emit RankingSubmitted(msg.sender, tlId);
+
+        emit RankingSubmitted(msg.sender, tlId, submissions[tlId].length - 1);
     }
 
     function _revertIfDuplicateIds(
