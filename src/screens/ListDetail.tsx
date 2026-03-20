@@ -5,19 +5,13 @@ import type { Address } from "viem";
 import { AlertTriangle } from "lucide-react";
 
 import { TierList, type TierListBuckets } from "../components/TierList";
-import { type ItemRankingData, type Ranking } from "../components/ItemRankings";
+import { type ItemRankingData } from "../components/ItemRankings";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 
 const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS as
   | Address
   | undefined;
-
-const RANKS: Ranking[] = ["S", "A", "B", "C", "D"];
-
-function tierIndexToRank(tier: number): Ranking {
-  return RANKS[tier] ?? "D";
-}
 
 type GetTierListReturn = readonly [string, boolean, bigint];
 type GetTierListItemsReturn = readonly [
