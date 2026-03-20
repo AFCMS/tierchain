@@ -196,12 +196,11 @@ contract TierListTest {
         TierList tl = new TierList();
         _createListWithTwoItems(tl);
 
-        uint256[] memory itemIds = new uint256[](1);
-        uint256[] memory tiers = new uint256[](1);
-        itemIds[0] = 1;
-        tiers[0] = 5;
-
-        uint256[][] memory ranked = _packRanking(itemIds, tiers);
+        // submitRanking expects 5 tiers, so give it the wrong number of tiers
+        // (this replaces the old "tier = 5" invalid index test)
+        uint256[][] memory ranked = new uint256[][](6);
+        ranked[0] = new uint256[](1);
+        ranked[0][0] = 1;
 
         (bool ok, ) = address(tl).call(
             abi.encodeWithSelector(tl.submitRanking.selector, 1, ranked)
