@@ -19,10 +19,13 @@ export function TierListTier(props: TierListTierProps) {
       isCombineEnabled={false}
     >
       {(dropProvided) => (
-        <div {...dropProvided.droppableProps} className="h-full w-full">
+        <div
+          {...dropProvided.droppableProps}
+          className="bg-base-300 h-full w-full select-text"
+        >
           <div
             ref={dropProvided.innerRef}
-            className="flex h-full min-h-20 w-full flex-wrap gap-0.5"
+            className="flex h-full min-h-20 w-full flex-wrap"
           >
             {props.items.map((item, index) => (
               <Draggable

@@ -15,6 +15,7 @@ export function ItemRankings(props: ItemRankingsProps) {
   );
   return (
     <div className="card-body flex max-w-96 flex-col gap-2 p-4">
+      <h1 className="card-title">Scores</h1>
       {(Object.keys(props.data) as Ranking[]).map((ranking) => (
         <div key={ranking} className={`flex flex-col p-2`}>
           <div className="flex flex-row items-center justify-between">

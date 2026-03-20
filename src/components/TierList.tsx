@@ -122,61 +122,49 @@ export function TierList(props: TierListProps) {
         reorderTierList(result.source, result.destination);
       }}
     >
-      <div className="grid max-w-3xl grid-cols-[5rem_1fr] gap-0.5 bg-zinc-200">
+      <div className="bg-base-100 mb-0.5 grid max-w-3xl grid-cols-[5rem_1fr] gap-0.5 select-none">
         <div
-          className="flex size-20 items-center justify-center"
+          className="flex size-20 items-center justify-center text-black"
           data-rank-bg="S"
         >
           S
         </div>
-        <div className="flex flex-wrap gap-0.5">
-          <TierListTier tlId={tlId} tierName="S" items={updatedItems.S} />
-        </div>
+        <TierListTier tlId={tlId} tierName="S" items={updatedItems.S} />
 
         <div
-          className="flex size-20 items-center justify-center"
+          className="flex size-20 items-center justify-center text-black"
           data-rank-bg="A"
         >
           A
         </div>
-        <div className="flex flex-wrap gap-0.5">
-          <TierListTier tlId={tlId} tierName="A" items={updatedItems.A} />
-        </div>
+        <TierListTier tlId={tlId} tierName="A" items={updatedItems.A} />
 
         <div
-          className="flex size-20 items-center justify-center"
+          className="flex size-20 items-center justify-center text-black"
           data-rank-bg="B"
         >
           B
         </div>
-        <div className="flex flex-wrap gap-0.5">
-          <TierListTier tlId={tlId} tierName="B" items={updatedItems.B} />
-        </div>
+        <TierListTier tlId={tlId} tierName="B" items={updatedItems.B} />
 
         <div
-          className="flex size-20 items-center justify-center"
+          className="flex size-20 items-center justify-center text-black"
           data-rank-bg="C"
         >
           C
         </div>
-        <div className="flex flex-wrap gap-0.5">
-          <TierListTier tlId={tlId} tierName="C" items={updatedItems.C} />
-        </div>
+        <TierListTier tlId={tlId} tierName="C" items={updatedItems.C} />
 
         <div
-          className="flex size-20 items-center justify-center"
+          className="flex size-20 items-center justify-center text-black"
           data-rank-bg="D"
         >
           D
         </div>
-        <div className="flex flex-wrap gap-0.5">
-          <TierListTier tlId={tlId} tierName="D" items={updatedItems.D} />
-        </div>
+        <TierListTier tlId={tlId} tierName="D" items={updatedItems.D} />
       </div>
 
-      <div className="mt-4 flex w-full flex-wrap gap-0.5">
-        <TierListTier tlId={tlId} tierName="POOL" items={updatedItems.POOL} />
-      </div>
+      <TierListTier tlId={tlId} tierName="POOL" items={updatedItems.POOL} />
 
       {hasPendingChanges ? (
         <div className="mt-4 flex w-full justify-end">

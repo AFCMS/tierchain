@@ -7,74 +7,76 @@
   logs: false;
 }
 
-/* Ranking colors */
+/* Custom light theme with ranking colors */
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-rank-s-text: var(--color-red-500);
+  --color-rank-a-text: var(--color-orange-500);
+  --color-rank-b-text: var(--color-amber-500);
+  --color-rank-c-text: var(--color-yellow-500);
+  --color-rank-d-text: var(--color-lime-500);
+  --color-rank-s-bg: var(--color-red-400);
+  --color-rank-a-bg: var(--color-orange-400);
+  --color-rank-b-bg: var(--color-amber-400);
+  --color-rank-c-bg: var(--color-yellow-400);
+  --color-rank-d-bg: var(--color-lime-400);
+}
 
+/* Custom dark theme with ranking colors */
+@plugin "daisyui/theme" {
+  name: "dark";
+  prefersdark: true;
+  --color-rank-s-text: var(--color-red-500);
+  --color-rank-a-text: var(--color-orange-500);
+  --color-rank-b-text: var(--color-amber-500);
+  --color-rank-c-text: var(--color-yellow-500);
+  --color-rank-d-text: var(--color-lime-500);
+  --color-rank-s-bg: var(--color-red-400);
+  --color-rank-a-bg: var(--color-orange-400);
+  --color-rank-b-bg: var(--color-amber-400);
+  --color-rank-c-bg: var(--color-yellow-400);
+  --color-rank-d-bg: var(--color-lime-400);
+}
+
+/* Ranking text colors */
 [data-rank="S"] {
-  color: var(--color-red-500) !important;
-  @media (prefers-color-scheme: dark) {
-    color: var(--color-red-300) !important;
-  }
+  color: var(--color-rank-s-text);
 }
 
 [data-rank="A"] {
-  color: var(--color-orange-500) !important;
-  @media (prefers-color-scheme: dark) {
-    color: var(--color-orange-300) !important;
-  }
+  color: var(--color-rank-a-text);
 }
 
 [data-rank="B"] {
-  color: var(--color-amber-500) !important;
-  @media (prefers-color-scheme: dark) {
-    color: var(--color-amber-300) !important;
-  }
+  color: var(--color-rank-b-text);
 }
 
 [data-rank="C"] {
-  color: var(--color-yellow-500) !important;
-  @media (prefers-color-scheme: dark) {
-    color: var(--color-yellow-300) !important;
-  }
+  color: var(--color-rank-c-text);
 }
 
 [data-rank="D"] {
-  color: var(--color-lime-500) !important;
-  @media (prefers-color-scheme: dark) {
-    color: var(--color-lime-300) !important;
-  }
+  color: var(--color-rank-d-text);
 }
 
+/* Ranking background colors */
 [data-rank-bg="S"] {
-  background-color: var(--color-red-300) !important;
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--color-red-300) !important;
-  }
+  background-color: var(--color-rank-s-bg);
 }
 
 [data-rank-bg="A"] {
-  background-color: var(--color-orange-300) !important;
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--color-orange-300) !important;
-  }
+  background-color: var(--color-rank-a-bg);
 }
 
 [data-rank-bg="B"] {
-  background-color: var(--color-amber-300) !important;
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--color-amber-300) !important;
-  }
+  background-color: var(--color-rank-b-bg);
 }
 
 [data-rank-bg="C"] {
-  background-color: var(--color-yellow-300) !important;
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--color-yellow-300) !important;
-  }
+  background-color: var(--color-rank-c-bg);
 }
 
 [data-rank-bg="D"] {
-  background-color: var(--color-lime-300) !important;
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--color-lime-300) !important;
-  }
+  background-color: var(--color-rank-d-bg);
 }

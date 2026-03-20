@@ -209,8 +209,7 @@ export function ListDetail() {
 
       <TierList tlId={Number(_id)} items={derived.buckets} />
 
-      <div className="card">
-        <h1 className="card-title">Scores</h1>
+      <div className="card bg-base-300 card-md w-auto shadow-lg">
         <ItemRankings data={derived.totals} />
       </div>
     </>
