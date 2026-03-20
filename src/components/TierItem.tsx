@@ -20,7 +20,7 @@ export function TierItem(props: TierItemProps) {
     <img
       src={image}
       alt="Tier item"
-      className="size-20 rounded object-contain"
+      className="size-20 rounded object-contain select-none"
       title={props.name}
       loading="lazy"
       fetchPriority="auto"
@@ -30,7 +30,7 @@ export function TierItem(props: TierItemProps) {
     />
   ) : (
     <div
-      className="flex size-20 items-center justify-center rounded bg-zinc-300 text-wrap text-ellipsis"
+      className="flex size-20 items-center justify-center rounded bg-zinc-300 text-wrap text-ellipsis select-none"
       title={props.name}
       ref={(ref) => props.provided.innerRef(ref)}
       {...props.provided.draggableProps}

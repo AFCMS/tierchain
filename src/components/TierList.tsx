@@ -112,71 +112,73 @@ export function TierList(props: TierListProps) {
   }
 
   return (
-    <DragDropContext
-      onDragEnd={(result) => {
-        // dropped outside the list
-        if (!result.destination) {
-          return;
-        }
+    <div className="w-full select-none" draggable={false}>
+      <DragDropContext
+        onDragEnd={(result) => {
+          // dropped outside the list
+          if (!result.destination) {
+            return;
+          }
 
-        reorderTierList(result.source, result.destination);
-      }}
-    >
-      <div className="bg-base-100 mb-0.5 grid max-w-3xl grid-cols-[5rem_1fr] gap-0.5 select-none">
-        <div
-          className="flex size-20 items-center justify-center text-black"
-          data-rank-bg="S"
-        >
-          S
-        </div>
-        <TierListTier tlId={tlId} tierName="S" items={updatedItems.S} />
-
-        <div
-          className="flex size-20 items-center justify-center text-black"
-          data-rank-bg="A"
-        >
-          A
-        </div>
-        <TierListTier tlId={tlId} tierName="A" items={updatedItems.A} />
-
-        <div
-          className="flex size-20 items-center justify-center text-black"
-          data-rank-bg="B"
-        >
-          B
-        </div>
-        <TierListTier tlId={tlId} tierName="B" items={updatedItems.B} />
-
-        <div
-          className="flex size-20 items-center justify-center text-black"
-          data-rank-bg="C"
-        >
-          C
-        </div>
-        <TierListTier tlId={tlId} tierName="C" items={updatedItems.C} />
-
-        <div
-          className="flex size-20 items-center justify-center text-black"
-          data-rank-bg="D"
-        >
-          D
-        </div>
-        <TierListTier tlId={tlId} tierName="D" items={updatedItems.D} />
-      </div>
-
-      <TierListTier tlId={tlId} tierName="POOL" items={updatedItems.POOL} />
-
-      {hasPendingChanges ? (
-        <div className="mt-4 flex w-full justify-end">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleUpdateUserData}
+          reorderTierList(result.source, result.destination);
+        }}
+      >
+        <div className="bg-base-100 mb-0.5 grid max-w-3xl grid-cols-[5rem_1fr] gap-0.5 select-none">
+          <div
+            className="flex size-20 items-center justify-center text-black"
+            data-rank-bg="S"
           >
-            Update user data
-          </button>
+            S
+          </div>
+          <TierListTier tlId={tlId} tierName="S" items={updatedItems.S} />
+
+          <div
+            className="flex size-20 items-center justify-center text-black"
+            data-rank-bg="A"
+          >
+            A
+          </div>
+          <TierListTier tlId={tlId} tierName="A" items={updatedItems.A} />
+
+          <div
+            className="flex size-20 items-center justify-center text-black"
+            data-rank-bg="B"
+          >
+            B
+          </div>
+          <TierListTier tlId={tlId} tierName="B" items={updatedItems.B} />
+
+          <div
+            className="flex size-20 items-center justify-center text-black"
+            data-rank-bg="C"
+          >
+            C
+          </div>
+          <TierListTier tlId={tlId} tierName="C" items={updatedItems.C} />
+
+          <div
+            className="flex size-20 items-center justify-center text-black"
+            data-rank-bg="D"
+          >
+            D
+          </div>
+          <TierListTier tlId={tlId} tierName="D" items={updatedItems.D} />
         </div>
-      ) : undefined}
-    </DragDropContext>
+
+        <TierListTier tlId={tlId} tierName="POOL" items={updatedItems.POOL} />
+
+        {hasPendingChanges ? (
+          <div className="my-4 flex w-full justify-end">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleUpdateUserData}
+            >
+              Update user data
+            </button>
+          </div>
+        ) : undefined}
+      </DragDropContext>
+    </div>
   );
 }

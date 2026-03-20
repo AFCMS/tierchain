@@ -21,7 +21,7 @@ export function TierListTier(props: TierListTierProps) {
       {(dropProvided) => (
         <div
           {...dropProvided.droppableProps}
-          className="bg-base-300 h-full w-full select-text"
+          className="bg-base-300 h-full w-full select-none"
         >
           <div
             ref={dropProvided.innerRef}

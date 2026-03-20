@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useParams } from "react-router";
 import { useReadContract } from "wagmi";
 import type { Address } from "viem";
+import { AlertTriangle } from "lucide-react";
 
 import { TierList, type TierListBuckets } from "../components/TierList";
 import {
@@ -153,16 +154,18 @@ export function ListDetail() {
   // early returns AFTER hooks
   if (!tierListAddress) {
     return (
-      <div className="text-sm text-zinc-600">
-        Missing VITE_CONTRACT_TIERLIST_ADDRESS
+      <div role="alert" className="alert alert-error">
+        <AlertTriangle className="h-4 w-4" />
+        <span>Missing VITE_CONTRACT_TIERLIST_ADDRESS</span>
       </div>
     );
   }
 
   if (_id === undefined) {
     return (
-      <div className="text-sm text-red-600">
-        Invalid list id: {id ?? "(missing)"}
+      <div role="alert" className="alert alert-error">
+        <AlertTriangle className="h-4 w-4" />
+        <span>Invalid list id: {id ?? "(missing)"}</span>
       </div>
     );
   }
@@ -173,45 +176,57 @@ export function ListDetail() {
 
   if (tierListQuery.isError) {
     return (
-      <div className="text-sm text-red-600">
-        {tierListQuery.error?.message ?? "Error"}
+      <div role="alert" className="alert alert-error">
+        <AlertTriangle className="h-4 w-4" />
+        <span>{tierListQuery.error?.message ?? "Error"}</span>
       </div>
     );
   }
 
   if (itemsQuery.isError) {
     return (
-      <div className="text-sm text-red-600">
-        {itemsQuery.error?.message ?? "Error"}
+      <div role="alert" className="alert alert-error">
+        <AlertTriangle className="h-4 w-4" />
+        <span>{itemsQuery.error?.message ?? "Error"}</span>
       </div>
     );
   }
 
   if (votesQuery.isError) {
     return (
-      <div className="text-sm text-red-600">
-        {votesQuery.error?.message ?? "Error"}
+      <div role="alert" className="alert alert-error">
+        <AlertTriangle className="h-4 w-4" />
+        <span>{votesQuery.error?.message ?? "Error"}</span>
       </div>
     );
   }
 
   return (
-    <>
-      <div className="card mb-4">
-        <div className="card-body">
-          <h1 className="card-title">{derived.name}</h1>
-          <div className="text-sm text-zinc-600">
-            {derived.active ? "Active" : "Disabled"} •{" "}
-            {derived.numActiveItems.toString()} active items
-          </div>
+    <div className="mt-4 flex w-full justify-center">
+      <div className="w-full max-w-6xl">
+        <div className="mb-8 flex w-full flex-col gap-2">
+          <h1 className="flex w-full justify-between text-2xl font-bold">
+            {derived.name}
+            <div
+              className={
+                "badge" + (derived.active ? " badge-success" : " badge-error")
+              }
+            >
+              {derived.active ? "Active" : "Inactive"}
+            </div>
+          </h1>
+          <p className="text-base-content flex justify-between gap-8">
+            {"Which browser is the best?"}
+            <span>{derived.numActiveItems.toString()} items</span>
+          </p>
+        </div>
+
+        <TierList tlId={Number(_id)} items={derived.buckets} />
+
+        <div className="card bg-base-300 card-md w-auto shadow-lg">
+          <ItemRankings data={derived.totals} />
         </div>
       </div>
-
-      <TierList tlId={Number(_id)} items={derived.buckets} />
-
-      <div className="card bg-base-300 card-md w-auto shadow-lg">
-        <ItemRankings data={derived.totals} />
-      </div>
-    </>
+    </div>
   );
 }
