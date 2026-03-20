@@ -1,6 +1,13 @@
 import chrome from "./assets/google_chrome_2022.svg";
 import brave from "./assets/brave_2022.svg";
 import edge from "./assets/microsoft_edge_2019.svg";
+import firefox from "./assets/firefox_2019.svg";
+import opera from "./assets/opera_2015.svg";
+import opera_gx from "./assets/opera_gx_2019.svg";
+import vivaldi from "./assets/vivaldi_2015.svg";
+import safari from "./assets/safari_2018.svg";
+import arc from "./assets/arc_2024.svg";
+import internet_explorer from "./assets/internet_explorer_2011.svg";
 
 export type Ranking = "S" | "A" | "B" | "C" | "D";
 
@@ -19,6 +26,13 @@ export const tierlistsAssets = {
     chrome: chrome,
     brave: brave,
     edge: edge,
+    firefox: firefox,
+    opera: opera,
+    opera_gx: opera_gx,
+    vivaldi: vivaldi,
+    safari: safari,
+    arc: arc,
+    internet_explorer: internet_explorer,
   },
 } as const satisfies TierListAssets;
 

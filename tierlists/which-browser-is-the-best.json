@@ -5,6 +5,14 @@
     "items": [
         "chrome",
         "brave",
-        "firefox"
+        "firefox",
+        "chromium",
+        "edge",
+        "opera",
+        "opera_gx",
+        "safari",
+        "vivaldi",
+        "arc",
+        "internet_explorer"
     ]
 }
