@@ -1,3 +1,49 @@
 {
-    "buildCommand": "pnpm run build:contract && pnpm run build"
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "fluid": true,
+    "framework": "vite",
+    "buildCommand": "pnpm run build:contract && pnpm run build",
+    "headers": [
+        {
+            "source": "/(.*)",
+            "headers": [
+                {
+                    "key": "X-Frame-Options",
+                    "value": "DENY"
+                },
+                {
+                    "key": "X-Content-Type-Options",
+                    "value": "nosniff"
+                },
+                {
+                    "key": "Referrer-Policy",
+                    "value": "no-referrer"
+                },
+                {
+                    "key": "Permissions-Policy",
+                    "value": "autoplay=(), fullscreen=(), picture-in-picture=(), geolocation=(), microphone=(), camera=(), display-capture=(), screen-wake-lock=(), usb=(), serial=(), hid=(), midi=(), payment=(), accelerometer=(), gyroscope=(), magnetometer=(), clipboard-read=(), clipboard-write=(), idle-detection=(), encrypted-media=(), storage-access=(), attribution-reporting=(), browsing-topics=(), run-ad-auction=(), join-ad-interest-group=(), publickey-credentials-get=(), xr-spatial-tracking=(), gamepad=(), sync-xhr=(), local-fonts=(), otp-credentials=(), window-management=()"
+                },
+                {
+                    "key": "Cross-Origin-Resource-Policy",
+                    "value": "same-origin"
+                },
+                {
+                    "key": "Cross-Origin-Opener-Policy",
+                    "value": "same-origin"
+                },
+                {
+                    "key": "Cross-Origin-Embedder-Policy",
+                    "value": "require-corp"
+                },
+                {
+                    "key": "Strict-Transport-Security",
+                    "value": "max-age=63072000; includeSubDomains; preload"
+                },
+                {
+                    "key": "Content-Security-Policy",
+                    "value": "default-src 'none'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; form-action 'self'; manifest-src 'self'; worker-src 'self'; connect-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self'; script-src 'self' 'wasm-unsafe-eval'; media-src 'self' blob:; upgrade-insecure-requests"
+                }
+            ]
+        }
+    ]
 }
