@@ -20,7 +20,7 @@ function App() {
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="tier-list/:id" element={<TierList />} />
+            <Route path="/list/:id" element={<TierList />} />
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>

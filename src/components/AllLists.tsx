@@ -48,7 +48,7 @@ export function AllLists({ includeInactive = false }: { includeInactive?: boolea
           <button
             key={tl.id.toString()}
             type="button"
-            onClick={() => navigate(`/tier-lists/${id}`)}
+            onClick={() => navigate(`/list/${id}`)}
             className="rounded-xl border border-zinc-200 bg-white p-4 text-left shadow-sm hover:border-zinc-300"
           >
             <div className="flex items-start justify-between gap-3">
