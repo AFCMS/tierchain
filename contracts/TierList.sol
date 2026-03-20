@@ -351,10 +351,15 @@ contract TierList {
         external
         view
         tierListMustExist(tlId)
-        returns (string memory name, bool active, uint256 numActiveItems)
+        returns (
+            string memory name,
+            string memory description,
+            bool active,
+            uint256 numActiveItems
+        )
     {
         TierListInfo memory info = tierListInfos[tlId];
-        return (info.name, info.active, info.numActiveItems);
+        return (info.name, info.description, info.active, info.numActiveItems);
     }
 
     /**

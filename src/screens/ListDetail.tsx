@@ -13,7 +13,7 @@ const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS as
   | Address
   | undefined;
 
-type GetTierListReturn = readonly [string, boolean, bigint];
+type GetTierListReturn = readonly [string, string, boolean, bigint];
 type GetTierListItemsReturn = readonly [
   readonly bigint[],
   readonly { name: string; active: boolean }[],
@@ -26,7 +26,7 @@ export function ListDetail() {
   const _id = Number.isInteger(idNum) && idNum >= 0 ? BigInt(idNum) : undefined;
 
   const enabled = Boolean(tierListAddress) && _id !== undefined;
- 
+
   const PAGE_SIZE = 20n;
   const [submissionsOffset, setSubmissionsOffset] = useState(0n);
 
@@ -59,7 +59,16 @@ export function ListDetail() {
   const tierListData = tierListQuery.data as GetTierListReturn | undefined;
   const itemsData = itemsQuery.data as GetTierListItemsReturn | undefined;
 
-  const derived = useMemo(() => {
+  interface Derived {
+    name: string;
+    description: string;
+    active: boolean;
+    numActiveItems: bigint;
+    buckets: TierListBuckets;
+    totals: ItemRankingData;
+  }
+
+  const derived = useMemo<Derived>(() => {
     const emptyBuckets: TierListBuckets = {
       S: [],
       A: [],
@@ -74,6 +83,7 @@ export function ListDetail() {
     if (!tierListData || !itemsData) {
       return {
         name: "",
+        description: "",
         active: false,
         numActiveItems: 0n,
         buckets: emptyBuckets,
@@ -81,7 +91,7 @@ export function ListDetail() {
       };
     }
 
-    const [name, active, numActiveItems] = tierListData;
+    const [name, description, active, numActiveItems] = tierListData;
     const [itemIds, itemInfos] = itemsData;
 
     const buckets: TierListBuckets = {
@@ -109,7 +119,7 @@ export function ListDetail() {
       buckets.POOL.push(item);
     }
 
-    return { name, active, numActiveItems, buckets, totals };
+    return { name, description, active, numActiveItems, buckets, totals };
   }, [tierListData, itemsData]);
 
   // early returns AFTER hooks
@@ -169,7 +179,7 @@ export function ListDetail() {
             </div>
           </h1>
           <p className="text-base-content flex justify-between gap-8">
-            {"Which browser is the best?"}
+            {derived.description}
             <span>{derived.numActiveItems.toString()} items</span>
           </p>
         </div>
@@ -180,13 +190,13 @@ export function ListDetail() {
           editable={true}
           globalVotesItemId={1}
           globalVotesItem={derived.totals}
-        />        
+        />
 
         <div className="mt-8">
           <h2 className="mb-2 text-lg font-semibold">Latest submissions</h2>
 
           <div className="overflow-x-auto">
-            <table className="table table-zebra">
+            <table className="table-zebra table">
               <thead>
                 <tr>
                   <th>#</th>
@@ -228,7 +238,9 @@ export function ListDetail() {
               className="btn"
               disabled={submissionsOffset === 0n}
               onClick={() =>
-                setSubmissionsOffset((x) => (x > PAGE_SIZE ? x - PAGE_SIZE : 0n))
+                setSubmissionsOffset((x) =>
+                  x > PAGE_SIZE ? x - PAGE_SIZE : 0n,
+                )
               }
             >
               Prev

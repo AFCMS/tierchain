@@ -11,7 +11,7 @@ export default defineConfig({
     settings: {
       optimizer: {
         enabled: true,
-        runs: 50,
+        runs: 1,
       },
     },
   },
