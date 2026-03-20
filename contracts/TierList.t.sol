@@ -34,6 +34,40 @@ contract TierListTest {
         tl.createTierList("My List", "desc", items);
     }
 
+    // Packs the legacy (itemIds, tiers) representation into the new
+    // rankedItemIdsByTier shape expected by submitRanking().
+    function _packRanking(
+        uint256[] memory itemIds,
+        uint256[] memory tiers
+    ) internal pure returns (uint256[][] memory ranked) {
+        ranked = new uint256[][](5);
+
+        for (uint256 i = 0; i < itemIds.length; i++) {
+            uint256 t = tiers[i];
+            require(t < 5, "tier oob");
+
+            uint256[] memory oldArr = ranked[t];
+            uint256[] memory newArr = new uint256[](oldArr.length + 1);
+
+            for (uint256 j = 0; j < oldArr.length; j++) {
+                newArr[j] = oldArr[j];
+            }
+            newArr[oldArr.length] = itemIds[i];
+
+            ranked[t] = newArr;
+        }
+    }
+
+    function _contains(
+        uint256[] memory arr,
+        uint256 v
+    ) internal pure returns (bool) {
+        for (uint256 i = 0; i < arr.length; i++) {
+            if (arr[i] == v) return true;
+        }
+        return false;
+    }
+
     function testOwnerIsDeployer() external {
         TierList tl = new TierList();
         assert(tl.owner() == address(this));
@@ -101,16 +135,15 @@ contract TierListTest {
         tiers[0] = 4;
         tiers[1] = 1;
 
-        tl.submitRanking(1, itemIds, tiers);
+        uint256[][] memory ranked = _packRanking(itemIds, tiers);
+        tl.submitRanking(1, ranked);
 
-        (uint256[] memory userItemIds, uint256[] memory userTiers) = tl
-            .getUserVotes(1, address(this));
-        assert(userItemIds.length == 2);
-        assert(userTiers.length == 2);
-        assert(userItemIds[0] == 1);
-        assert(userTiers[0] == 4);
-        assert(userItemIds[1] == 2);
-        assert(userTiers[1] == 1);
+        uint256[][] memory userRanked = tl.getUserVotes(1, address(this));
+        assert(userRanked.length == 5);
+        assert(userRanked[4].length == 1);
+        assert(userRanked[1].length == 1);
+        assert(userRanked[4][0] == 1);
+        assert(userRanked[1][0] == 2);
 
         uint256[] memory countsItem1 = tl.getItemVoteCounts(1, 1);
         assert(countsItem1[4] == 1);
@@ -120,11 +153,16 @@ contract TierListTest {
         updateItemIds[0] = 1;
         updateTiers[0] = 2;
 
-        tl.submitRanking(1, updateItemIds, updateTiers);
+        ranked = _packRanking(updateItemIds, updateTiers);
+        tl.submitRanking(1, ranked);
 
         countsItem1 = tl.getItemVoteCounts(1, 1);
         assert(countsItem1[4] == 0);
         assert(countsItem1[2] == 1);
+
+        // and item 2 vote should have been cleared by full replacement
+        uint256[] memory countsItem2 = tl.getItemVoteCounts(1, 2);
+        assert(countsItem2[1] == 0);
     }
 
     function testRemoveItemMarksInactiveAndClearsVotes() external {
@@ -135,7 +173,9 @@ contract TierListTest {
         uint256[] memory tiers = new uint256[](1);
         itemIds[0] = 1;
         tiers[0] = 3;
-        tl.submitRanking(1, itemIds, tiers);
+
+        uint256[][] memory ranked = _packRanking(itemIds, tiers);
+        tl.submitRanking(1, ranked);
 
         tl.removeItem(1, 1);
 
@@ -161,8 +201,10 @@ contract TierListTest {
         itemIds[0] = 1;
         tiers[0] = 5;
 
+        uint256[][] memory ranked = _packRanking(itemIds, tiers);
+
         (bool ok, ) = address(tl).call(
-            abi.encodeWithSelector(tl.submitRanking.selector, 1, itemIds, tiers)
+            abi.encodeWithSelector(tl.submitRanking.selector, 1, ranked)
         );
         assert(!ok);
     }
