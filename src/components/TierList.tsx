@@ -1,5 +1,9 @@
 import { useMemo, useState } from "react";
 import { DragDropContext, type DraggableLocation } from "@hello-pangea/dnd";
+import { useWriteContract, useConnection } from "wagmi";
+import type { Address } from "viem";
+
+import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 
 import type { Ranking } from "./ItemRankings";
 import { TierListTier } from "./TierListTier";
@@ -54,12 +58,19 @@ function isTierName(value: string): value is Ranking | "POOL" {
   return TIER_NAMES.includes(value as Ranking | "POOL");
 }
 
+const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS as
+  | Address
+  | undefined;
+
 export function TierList(props: TierListProps) {
   const { tlId, items, editable = true } = props;
   const [originalItems] = useState<TierListBuckets>(() => cloneBuckets(items));
   const [updatedItems, setUpdatedItems] = useState<TierListBuckets>(() =>
     cloneBuckets(items),
   );
+
+  const { address } = useConnection();
+  const write = useWriteContract();
 
   const hasPendingChanges = useMemo(
     () => !areBucketsEqual(originalItems, updatedItems),
@@ -109,7 +120,37 @@ export function TierList(props: TierListProps) {
   }
 
   function handleUpdateUserData() {
-    console.log("Update user tier list data", updatedItems);
+    if (!tierListAddress) {
+      console.error("Missing VITE_CONTRACT_TIERLIST_ADDRESS");
+      return;
+    }
+    if (!address) {
+      console.error("Wallet not connected");
+      return;
+    }
+
+    // Solidity expects uint256[NUM_TIERS][] where NUM_TIERS=5, in tier-index order:
+    // 0=S, 1=A, 2=B, 3=C, 4=D
+    const ranked: bigint[][] = [
+      updatedItems.S.map((x) => BigInt(x.id)),
+      updatedItems.A.map((x) => BigInt(x.id)),
+      updatedItems.B.map((x) => BigInt(x.id)),
+      updatedItems.C.map((x) => BigInt(x.id)),
+      updatedItems.D.map((x) => BigInt(x.id)),
+    ];
+
+    const hasAny = ranked.some((arr) => arr.length > 0);
+    if (!hasAny) {
+      console.error("Empty ranking (contract will revert)");
+      return;
+    }
+
+    write.writeContract({
+      address: tierListAddress,
+      abi,
+      functionName: "submitRanking",
+      args: [BigInt(tlId), ranked],
+    });
   }
 
   return (
