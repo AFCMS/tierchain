@@ -85,13 +85,7 @@ export function ListDetail() {
           </p>
         </div>
 
-        <TierList
-          tlId={Number(_id)}
-          items={derived.buckets}
-          editable={true}
-          globalVotesItemId={1}
-          globalVotesItem={derived.totals}
-        />
+        <TierList tlId={Number(_id)} items={derived.buckets} editable={true} />
 
         <div className="mt-8">
           <LatestSubmissions id={_id} />

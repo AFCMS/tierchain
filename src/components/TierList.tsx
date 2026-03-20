@@ -5,13 +5,9 @@ import type { Address } from "viem";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 
-import {
-  ItemRankings,
-  type ItemRankingData,
-  type Ranking,
-} from "./ItemRankings";
+import { type Ranking } from "./ItemRankings";
 import { TierListTier } from "./TierListTier";
-import { TierItemSimple } from "./TierItemSimple";
+import { TierListScores } from "./TierListScores";
 
 export interface TierItemDef {
   readonly id: number;
@@ -24,9 +20,6 @@ export interface TierListProps {
   readonly tlId: number;
   readonly items: TierListBuckets;
   readonly editable?: boolean;
-  readonly globalVotesItem?: ItemRankingData;
-  readonly globalVotesItemId?: number | null;
-  readonly setGlobalVotesItemId?: (itemId: number | null) => void;
 }
 
 const TIER_NAMES: Array<Ranking | "POOL"> = ["S", "A", "B", "C", "D", "POOL"];
@@ -134,6 +127,19 @@ export function TierList(props: TierListProps) {
   const [updatedItems, setUpdatedItems] = useState<TierListBuckets>(() =>
     cloneBuckets(items),
   );
+
+  const [globalVotesItemId, setGlobalVotesItemId] = useState<number | null>(
+    null,
+  );
+
+  const [globalVotesItemName, setGlobalVotesItemName] = useState<string | null>(
+    null,
+  );
+
+  function setGlobalVotesItem(id: number | null, name: string | null) {
+    setGlobalVotesItemId(id);
+    setGlobalVotesItemName(name);
+  }
 
   // If the user has an existing ranking, use it as the initial state.
   // Also re-run when tlId/address changes.
@@ -263,6 +269,7 @@ export function TierList(props: TierListProps) {
               tierName="S"
               items={updatedItems.S}
               editable={editable}
+              setGlobalVotesItem={setGlobalVotesItem}
             />
 
             <div
@@ -276,6 +283,7 @@ export function TierList(props: TierListProps) {
               tierName="A"
               items={updatedItems.A}
               editable={editable}
+              setGlobalVotesItem={setGlobalVotesItem}
             />
 
             <div
@@ -289,6 +297,7 @@ export function TierList(props: TierListProps) {
               tierName="B"
               items={updatedItems.B}
               editable={editable}
+              setGlobalVotesItem={setGlobalVotesItem}
             />
 
             <div
@@ -302,6 +311,7 @@ export function TierList(props: TierListProps) {
               tierName="C"
               items={updatedItems.C}
               editable={editable}
+              setGlobalVotesItem={setGlobalVotesItem}
             />
 
             <div
@@ -315,26 +325,14 @@ export function TierList(props: TierListProps) {
               tierName="D"
               items={updatedItems.D}
               editable={editable}
+              setGlobalVotesItem={setGlobalVotesItem}
             />
           </div>
-          <div className="bg-base-300 relative mb-0.5 flex min-h-full flex-1 flex-col gap-2 p-4">
-            <h2 className="text-lg font-semibold">Scores</h2>
-            {props.globalVotesItem && props.globalVotesItemId ? (
-              <>
-                <div className="flex-1"></div>
-                <div className="absolute top-4 right-4">
-                  <TierItemSimple
-                    tlId={props.tlId}
-                    id={props.globalVotesItemId!}
-                    name={"chrome"}
-                  />
-                </div>
-                <ItemRankings data={props.globalVotesItem} />
-              </>
-            ) : (
-              <p className="text-sm italic">No item selected</p>
-            )}
-          </div>
+          <TierListScores
+            tlId={props.tlId}
+            globalVotesItemId={globalVotesItemId}
+            globalVotesItemName={globalVotesItemName}
+          />
         </div>
 
         <TierListTier
@@ -342,7 +340,7 @@ export function TierList(props: TierListProps) {
           tierName="POOL"
           items={updatedItems.POOL}
           editable={editable}
-          setGlobalVotesItemId={props.setGlobalVotesItemId}
+          setGlobalVotesItem={setGlobalVotesItem}
         />
 
         <div className="my-4 flex w-full justify-end gap-2">

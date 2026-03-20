@@ -61,3 +61,23 @@ export function useGetLatestSubmissions(
     data: submissionsQuery.data as Address[] | undefined,
   };
 }
+
+export function useGetItemVoteCounts(
+  tlId: bigint | undefined,
+  itemId: bigint | undefined,
+  enabled: boolean,
+) {
+  const voteCountsQuery = useReadContract({
+    address: tierListAddress,
+    abi,
+    functionName: "getItemVoteCounts",
+    args:
+      tlId !== undefined && itemId !== undefined ? [tlId, itemId] : undefined,
+    query: { enabled: enabled && tlId !== undefined && itemId !== undefined },
+  });
+
+  return {
+    ...voteCountsQuery,
+    data: voteCountsQuery.data as readonly bigint[] | undefined,
+  };
+}
