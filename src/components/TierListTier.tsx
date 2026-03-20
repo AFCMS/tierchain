@@ -22,7 +22,7 @@ export function TierListTier(props: TierListTierProps) {
         <div {...dropProvided.droppableProps} className="h-full w-full">
           <div
             ref={dropProvided.innerRef}
-            className="flex h-full w-full flex-wrap gap-0.5"
+            className="flex h-full min-h-20 w-full flex-wrap gap-0.5"
           >
             {props.items.map((item, index) => (
               <Draggable

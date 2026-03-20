@@ -1,4 +1,5 @@
 import chrome from "./assets/google_chrome_2022.svg";
+import chromium from "./assets/chromium_2022.svg";
 import brave from "./assets/brave_2022.svg";
 import edge from "./assets/microsoft_edge_2019.svg";
 import firefox from "./assets/firefox_2019.svg";
@@ -33,6 +34,7 @@ export const tierlistsAssets = {
     safari: safari,
     arc: arc,
     internet_explorer: internet_explorer,
+    chromium: chromium,
   },
 } as const satisfies TierListAssets;
 

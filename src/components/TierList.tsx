@@ -1,5 +1,7 @@
-import type { Ranking } from "./ItemRankings";
+import { useMemo, useState } from "react";
 import { DragDropContext, type DraggableLocation } from "@hello-pangea/dnd";
+
+import type { Ranking } from "./ItemRankings";
 import { TierListTier } from "./TierListTier";
 
 export interface TierItemDef {
@@ -14,14 +16,99 @@ export interface TierListProps {
   readonly items: TierListBuckets;
 }
 
+const TIER_NAMES: Array<Ranking | "POOL"> = ["S", "A", "B", "C", "D", "POOL"];
+
+function cloneBuckets(items: TierListBuckets): TierListBuckets {
+  return {
+    S: [...items.S],
+    A: [...items.A],
+    B: [...items.B],
+    C: [...items.C],
+    D: [...items.D],
+    POOL: [...items.POOL],
+  };
+}
+
+function areBucketsEqual(
+  left: TierListBuckets,
+  right: TierListBuckets,
+): boolean {
+  return TIER_NAMES.every((tierName) => {
+    const leftTier = left[tierName];
+    const rightTier = right[tierName];
+
+    if (leftTier.length !== rightTier.length) {
+      return false;
+    }
+
+    return leftTier.every(
+      (item, index) =>
+        item.id === rightTier[index]?.id &&
+        item.name === rightTier[index]?.name,
+    );
+  });
+}
+
+function isTierName(value: string): value is Ranking | "POOL" {
+  return TIER_NAMES.includes(value as Ranking | "POOL");
+}
+
 export function TierList(props: TierListProps) {
   const { tlId, items } = props;
+  const [originalItems] = useState<TierListBuckets>(() => cloneBuckets(items));
+  const [updatedItems, setUpdatedItems] = useState<TierListBuckets>(() =>
+    cloneBuckets(items),
+  );
+
+  const hasPendingChanges = useMemo(
+    () => !areBucketsEqual(originalItems, updatedItems),
+    [originalItems, updatedItems],
+  );
 
   function reorderTierList(
     source: DraggableLocation<string>,
     destination: DraggableLocation<string>,
   ) {
-    console.log("Reorder item from", source, "to", destination);
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
+
+    const sourceTierName = source.droppableId;
+    const destinationTierName = destination.droppableId;
+
+    if (!isTierName(sourceTierName) || !isTierName(destinationTierName)) {
+      return;
+    }
+
+    setUpdatedItems((currentItems) => {
+      const nextItems = cloneBuckets(currentItems);
+      const sourceTier = [...nextItems[sourceTierName]];
+      const [movedItem] = sourceTier.splice(source.index, 1);
+
+      if (!movedItem) {
+        return currentItems;
+      }
+
+      if (sourceTierName === destinationTierName) {
+        sourceTier.splice(destination.index, 0, movedItem);
+        nextItems[sourceTierName] = sourceTier;
+        return nextItems;
+      }
+
+      const destinationTier = [...nextItems[destinationTierName]];
+      destinationTier.splice(destination.index, 0, movedItem);
+      nextItems[sourceTierName] = sourceTier;
+      nextItems[destinationTierName] = destinationTier;
+
+      return nextItems;
+    });
+  }
+
+  function handleUpdateUserData() {
+    console.log("Update user tier list data", updatedItems);
   }
 
   return (
@@ -43,7 +130,7 @@ export function TierList(props: TierListProps) {
           S
         </div>
         <div className="flex flex-wrap gap-0.5">
-          <TierListTier tlId={tlId} tierName="S" items={items.S} />
+          <TierListTier tlId={tlId} tierName="S" items={updatedItems.S} />
         </div>
 
         <div
@@ -53,7 +140,7 @@ export function TierList(props: TierListProps) {
           A
         </div>
         <div className="flex flex-wrap gap-0.5">
-          <TierListTier tlId={tlId} tierName="A" items={items.A} />
+          <TierListTier tlId={tlId} tierName="A" items={updatedItems.A} />
         </div>
 
         <div
@@ -63,7 +150,7 @@ export function TierList(props: TierListProps) {
           B
         </div>
         <div className="flex flex-wrap gap-0.5">
-          <TierListTier tlId={tlId} tierName="B" items={items.B} />
+          <TierListTier tlId={tlId} tierName="B" items={updatedItems.B} />
         </div>
 
         <div
@@ -73,7 +160,7 @@ export function TierList(props: TierListProps) {
           C
         </div>
         <div className="flex flex-wrap gap-0.5">
-          <TierListTier tlId={tlId} tierName="C" items={items.C} />
+          <TierListTier tlId={tlId} tierName="C" items={updatedItems.C} />
         </div>
 
         <div
@@ -83,13 +170,25 @@ export function TierList(props: TierListProps) {
           D
         </div>
         <div className="flex flex-wrap gap-0.5">
-          <TierListTier tlId={tlId} tierName="D" items={items.D} />
+          <TierListTier tlId={tlId} tierName="D" items={updatedItems.D} />
         </div>
       </div>
 
       <div className="mt-4 flex w-full flex-wrap gap-0.5">
-        <TierListTier tlId={tlId} tierName="POOL" items={items.POOL} />
+        <TierListTier tlId={tlId} tierName="POOL" items={updatedItems.POOL} />
       </div>
+
+      {hasPendingChanges ? (
+        <div className="mt-4 flex w-full justify-end">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleUpdateUserData}
+          >
+            Update user data
+          </button>
+        </div>
+      ) : undefined}
     </DragDropContext>
   );
 }
