@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DragDropContext, type DraggableLocation } from "@hello-pangea/dnd";
-import { useWriteContract, useConnection } from "wagmi";
+import { useReadContract, useWriteContract, useConnection } from "wagmi";
 import type { Address } from "viem";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
@@ -62,15 +62,92 @@ const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS as
   | Address
   | undefined;
 
+function emptyBuckets(): TierListBuckets {
+  return { S: [], A: [], B: [], C: [], D: [], POOL: [] };
+}
+
+function bucketsFromUserVotes(
+  allItems: TierListBuckets,
+  userVotes: readonly (readonly bigint[])[],
+): TierListBuckets {
+  const out = emptyBuckets();
+
+  const byId = new Map<number, TierItemDef>();
+  for (const tierName of TIER_NAMES) {
+    for (const item of allItems[tierName]) {
+      byId.set(item.id, item);
+    }
+  }
+
+  const seen = new Set<number>();
+
+  const tiers: Ranking[] = ["S", "A", "B", "C", "D"];
+  for (let t = 0; t < tiers.length; t++) {
+    const tierName = tiers[t];
+    const ids = userVotes[t] ?? [];
+
+    for (const idBig of ids) {
+      const id = Number(idBig);
+      const item = byId.get(id);
+      if (!item) continue; // item removed / not in current dataset
+      if (seen.has(id)) continue; // contract allows dups; UI will ignore repeats
+      seen.add(id);
+      out[tierName].push(item);
+    }
+  }
+
+  // Remaining items go into POOL, preserve incoming POOL order as fallback
+  for (const tierName of TIER_NAMES) {
+    for (const item of allItems[tierName]) {
+      if (!seen.has(item.id)) out.POOL.push(item);
+    }
+  }
+
+  return out;
+}
+
 export function TierList(props: TierListProps) {
   const { tlId, items, editable = true } = props;
-  const [originalItems] = useState<TierListBuckets>(() => cloneBuckets(items));
+
+  const { address } = useConnection();
+  const write = useWriteContract();
+
+  const userVotesQuery = useReadContract({
+    address: tierListAddress,
+    abi,
+    functionName: "getUserVotes",
+    args:
+      tierListAddress && address
+        ? [BigInt(tlId), address]
+        : undefined,
+    query: { enabled: Boolean(tierListAddress && address) },
+  });
+
+  const [originalItems, setOriginalItems] = useState<TierListBuckets>(() =>
+    cloneBuckets(items),
+  );
   const [updatedItems, setUpdatedItems] = useState<TierListBuckets>(() =>
     cloneBuckets(items),
   );
 
-  const { address } = useConnection();
-  const write = useWriteContract();
+  // If the user has an existing ranking, use it as the initial state.
+  // Also re-run when tlId/address changes.
+  useEffect(() => {
+    // When not connected, fall back to the passed-in buckets.
+    if (!address) {
+      const next = cloneBuckets(items);
+      setOriginalItems(next);
+      setUpdatedItems(next);
+      return;
+    }
+
+    const votes = userVotesQuery.data as readonly (readonly bigint[])[] | undefined;
+    if (!votes) return;
+
+    const next = bucketsFromUserVotes(items, votes);
+    setOriginalItems(next);
+    setUpdatedItems(next);
+  }, [tlId, address, items, userVotesQuery.data]);
 
   const hasPendingChanges = useMemo(
     () => !areBucketsEqual(originalItems, updatedItems),
@@ -129,8 +206,6 @@ export function TierList(props: TierListProps) {
       return;
     }
 
-    // Solidity expects uint256[NUM_TIERS][] where NUM_TIERS=5, in tier-index order:
-    // 0=S, 1=A, 2=B, 3=C, 4=D
     const ranked: bigint[][] = [
       updatedItems.S.map((x) => BigInt(x.id)),
       updatedItems.A.map((x) => BigInt(x.id)),
@@ -157,7 +232,6 @@ export function TierList(props: TierListProps) {
     <div className="w-full select-none" draggable={false}>
       <DragDropContext
         onDragEnd={(result) => {
-          // dropped outside the list
           if (!result.destination || !editable) {
             return;
           }
