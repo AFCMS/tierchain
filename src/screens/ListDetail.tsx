@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useParams } from "react-router";
 import { useReadContract } from "wagmi";
+import type { Address } from "viem";
 
 import { TierList, type TierListBuckets } from "../components/TierList";
 import {
@@ -9,10 +10,12 @@ import {
   type Ranking,
 } from "../components/ItemRankings";
 
-import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
+import TierListArtifact from "../../artifacts/contracts/TierList.sol/TierList.json";
+
+const abi = TierListArtifact.abi as const;
 
 const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS as
-  | `0x${string}`
+  | Address
   | undefined;
 
 const RANKS: Ranking[] = ["S", "A", "B", "C", "D"];
@@ -65,8 +68,11 @@ export function ListDetail() {
 
     const emptyTotals: ItemRankingData = { S: 0, A: 0, B: 0, C: 0, D: 0 };
 
-    // If queries haven't resolved yet, keep stable return shape.
-    if (!tierListQuery.data || !itemsQuery.data || !votesQuery.data) {
+    const tierListData = tierListQuery.data;
+    const itemsData = itemsQuery.data;
+    const votesData = votesQuery.data;
+
+    if (!tierListData || !itemsData || !votesData) {
       return {
         name: "",
         active: false,
@@ -76,21 +82,11 @@ export function ListDetail() {
       };
     }
 
-    const [name, active, numActiveItems] = tierListQuery.data as unknown as [
-      string,
-      boolean,
-      bigint,
-    ];
+    // wagmi infers these as tuples because abi is `as const`
+    const [name, active, numActiveItems] = tierListData;
 
-    const [itemIds, itemInfos] = itemsQuery.data as unknown as [
-      bigint[],
-      { name: string; active: boolean }[],
-    ];
-
-    const [voteItemIds, counts] = votesQuery.data as unknown as [
-      bigint[],
-      bigint[][],
-    ];
+    const [itemIds, itemInfos] = itemsData;
+    const [voteItemIds, counts] = votesData;
 
     const buckets: TierListBuckets = {
       S: [],
@@ -105,7 +101,6 @@ export function ListDetail() {
 
     const itemById = new Map<string, { id: number; name: string }>();
 
-    // Active items => default to POOL
     for (let i = 0; i < itemIds.length; i++) {
       const info = itemInfos[i];
       if (!info?.active) continue;
@@ -118,7 +113,6 @@ export function ListDetail() {
       buckets.POOL.push(item);
     }
 
-    // Votes => compute totals + assign "best tier"
     for (let i = 0; i < voteItemIds.length; i++) {
       const key = voteItemIds[i].toString();
       const item = itemById.get(key);
@@ -149,8 +143,6 @@ export function ListDetail() {
 
     return { name, active, numActiveItems, buckets, totals };
   }, [tierListQuery.data, itemsQuery.data, votesQuery.data]);
-
-  // ---- early returns AFTER hooks ----
 
   if (!tierListAddress) {
     return (
