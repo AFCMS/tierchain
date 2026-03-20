@@ -2,6 +2,7 @@ import { useConnect, useConnection, useDisconnect } from "wagmi";
 import { useBalance } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { formatUnits } from "viem";
+import { AddressLink } from "./AddressLink";
 
 /**
  * MetaMask wallet connection + display of the connected Ethereum address
@@ -14,12 +15,6 @@ export function HeaderAuth() {
     address,
     chainId,
   });
-
-  const explorerBaseUrl = chain?.blockExplorers?.default?.url;
-  const explorerUrl =
-    address != null && explorerBaseUrl != null
-      ? `${explorerBaseUrl}/address/${address}`
-      : null;
 
   const formattedBalance =
     balance.data != null
@@ -34,20 +29,7 @@ export function HeaderAuth() {
     <div className="flex-none">
       {address != null ? (
         <div className="flex flex-wrap items-center justify-end gap-2">
-          {explorerUrl != null ? (
-            <a
-              className="link link-hover text-sm font-mono break-all"
-              href={explorerUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {address}
-            </a>
-          ) : (
-            <span className="text-sm font-mono break-all" aria-live="polite">
-              {address}
-            </span>
-          )}
+          <AddressLink address={address} />
           <span className="opacity-70"> · </span>
           <span className="font-bold">{chain?.name ?? "Unknown network"}</span>
           <span className="badge badge-ghost font-mono">
