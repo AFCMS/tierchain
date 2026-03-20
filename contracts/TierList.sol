@@ -5,6 +5,10 @@ contract TierList {
     address public immutable owner;
     uint256 private nextTierListId = 1;
 
+    // submissions[tlId][i] = voter address at submission index i (0-based)
+    mapping(uint256 => address[]) private submissions;
+    mapping(uint256 => uint256) public submissionsNextIndex; // == submissions[tlId].length
+
     uint256 public constant NUM_TIERS = 5;
 
     // ──────────────────────────────────────────────────────────────────────────────
@@ -254,6 +258,8 @@ contract TierList {
             }
         }
 
+        submissions[tlId].push(msg.sender);
+        submissionsNextIndex[tlId] = submissions[tlId].length;
         emit RankingSubmitted(msg.sender, tlId);
     }
 
@@ -475,5 +481,43 @@ contract TierList {
 
     function tierListExists(uint256 tlId) external view returns (bool) {
         return bytes(tierListInfos[tlId].name).length > 0;
+    }
+
+    function getSubmissionsNextIndex(
+        uint256 tlId
+    ) external view tierListMustExist(tlId) returns (uint256) {
+        return submissions[tlId].length;
+    }
+
+    function getLatestSubmissions(
+        uint256 tlId,
+        uint256 limit,
+        uint256 offset
+    )
+        external
+        view
+        tierListMustExist(tlId)
+        returns (address[] memory accounts)
+    {
+        // offset=0 => start from latest
+        // returns up to `limit` accounts, newest -> older
+
+        uint256 n = submissions[tlId].length;
+        if (n == 0 || limit == 0) return new address[](0);
+
+        // start is exclusive upper bound index in [0..n]
+        // start = n - offset
+        if (offset >= n) return new address[](0);
+
+        uint256 start = n - offset; // 1..n
+        uint256 available = start; // indices [0 .. start-1]
+        uint256 size = limit < available ? limit : available;
+
+        accounts = new address[](size);
+
+        // fill newest -> older
+        for (uint256 i = 0; i < size; i++) {
+            accounts[i] = submissions[tlId][start - 1 - i];
+        }
     }
 }

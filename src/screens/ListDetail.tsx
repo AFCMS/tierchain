@@ -5,7 +5,7 @@ import type { Address } from "viem";
 import { AlertTriangle } from "lucide-react";
 
 import { TierList, type TierListBuckets } from "../components/TierList";
-import { type ItemRankingData, type Ranking } from "../components/ItemRankings";
+import { ItemRankings, type ItemRankingData, type Ranking } from "../components/ItemRankings";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 
@@ -58,6 +58,15 @@ export function ListDetail() {
     query: { enabled },
   });
 
+  const submissionsQuery = useReadContract({
+    address: tierListAddress,
+    abi,
+    functionName: "getLatestSubmissions",
+    args: _id !== undefined ? [_id, 20n, 0n] : undefined, // limit=20, offset=0
+    query: { enabled },
+  });
+  const latestSubmitters = (submissionsQuery.data ?? []) as Address[];
+  
   // Single-point typing: cast the .data values once.
   const tierListData = tierListQuery.data as GetTierListReturn | undefined;
   const itemsData = itemsQuery.data as GetTierListItemsReturn | undefined;
@@ -223,6 +232,45 @@ export function ListDetail() {
           globalVotesItemId={1}
           globalVotesItem={derived.totals}
         />
+
+        <div className="card bg-base-300 card-md w-auto shadow-lg">
+          <ItemRankings data={derived.totals} />
+        </div>
+        
+        <div className="mt-6">
+          <h2 className="mb-2 text-lg font-semibold">Latest submissions</h2>
+
+          <div className="overflow-x-auto">
+            <table className="table table-zebra">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Account</th>
+                  <th>View</th>
+                </tr>
+              </thead>
+              <tbody>
+                {latestSubmitters.map((acct, i) => (
+                  <tr key={`${acct}-${i}`}>
+                    <td>{i + 1}</td>
+                    <td className="font-mono">{acct}</td>
+                    <td>
+                      <a href={`/list/${id}/address/${acct}`}>View tier list</a>
+                    </td>
+                  </tr>
+                ))}
+
+                {latestSubmitters.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="text-sm text-zinc-500">
+                      No submissions yet.
+                    </td>
+                  </tr>
+                ) : null}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
