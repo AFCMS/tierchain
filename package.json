@@ -15,7 +15,7 @@
     "insert:tierlist": "pnpm tierlist:cli create"
   },
   "dependencies": {
-    "@dnd-kit/react": "^0.3.2",
+    "@hello-pangea/dnd": "^18.0.1",
     "@metamask/sdk": "^0.34.0",
     "@tanstack/react-query": "^5.91.2",
     "lucide-react": "^0.577.0",
@@ -49,7 +49,8 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.0",
     "vite": "^8.0.1",
-    "vite-imagetools": "^10.0.0"
+    "vite-imagetools": "^10.0.0",
+    "vite-plugin-sri-gen": "^1.3.2"
   },
   "packageManager": "pnpm@10.32.1"
 }
