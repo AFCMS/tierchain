@@ -8,15 +8,18 @@ export interface TierListTierProps {
     readonly id: number;
     readonly name: string;
   }[];
+  readonly editable?: boolean;
 }
 
 export function TierListTier(props: TierListTierProps) {
+  const { editable = true } = props;
   return (
     <Droppable
       droppableId={props.tierName}
       type="tier_item"
       direction="horizontal"
       isCombineEnabled={false}
+      isDropDisabled={!editable}
     >
       {(dropProvided) => (
         <div
@@ -32,6 +35,7 @@ export function TierListTier(props: TierListTierProps) {
                 key={item.id}
                 draggableId={item.id.toString()}
                 index={index}
+                isDragDisabled={!editable}
               >
                 {(dragProvided, dragSnapshot) => (
                   <TierItem

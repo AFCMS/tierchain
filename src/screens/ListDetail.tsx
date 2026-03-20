@@ -221,7 +221,7 @@ export function ListDetail() {
           </p>
         </div>
 
-        <TierList tlId={Number(_id)} items={derived.buckets} />
+        <TierList tlId={Number(_id)} items={derived.buckets} editable={true} />
 
         <div className="card bg-base-300 card-md w-auto shadow-lg">
           <ItemRankings data={derived.totals} />

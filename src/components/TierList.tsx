@@ -14,6 +14,7 @@ export type TierListBuckets = Record<Ranking | "POOL", TierItemDef[]>;
 export interface TierListProps {
   readonly tlId: number;
   readonly items: TierListBuckets;
+  readonly editable?: boolean;
 }
 
 const TIER_NAMES: Array<Ranking | "POOL"> = ["S", "A", "B", "C", "D", "POOL"];
@@ -54,7 +55,7 @@ function isTierName(value: string): value is Ranking | "POOL" {
 }
 
 export function TierList(props: TierListProps) {
-  const { tlId, items } = props;
+  const { tlId, items, editable = true } = props;
   const [originalItems] = useState<TierListBuckets>(() => cloneBuckets(items));
   const [updatedItems, setUpdatedItems] = useState<TierListBuckets>(() =>
     cloneBuckets(items),
@@ -116,7 +117,7 @@ export function TierList(props: TierListProps) {
       <DragDropContext
         onDragEnd={(result) => {
           // dropped outside the list
-          if (!result.destination) {
+          if (!result.destination || !editable) {
             return;
           }
 
@@ -130,7 +131,12 @@ export function TierList(props: TierListProps) {
           >
             S
           </div>
-          <TierListTier tlId={tlId} tierName="S" items={updatedItems.S} />
+          <TierListTier
+            tlId={tlId}
+            tierName="S"
+            items={updatedItems.S}
+            editable={editable}
+          />
 
           <div
             className="flex size-20 items-center justify-center text-black"
@@ -138,7 +144,12 @@ export function TierList(props: TierListProps) {
           >
             A
           </div>
-          <TierListTier tlId={tlId} tierName="A" items={updatedItems.A} />
+          <TierListTier
+            tlId={tlId}
+            tierName="A"
+            items={updatedItems.A}
+            editable={editable}
+          />
 
           <div
             className="flex size-20 items-center justify-center text-black"
@@ -146,7 +157,12 @@ export function TierList(props: TierListProps) {
           >
             B
           </div>
-          <TierListTier tlId={tlId} tierName="B" items={updatedItems.B} />
+          <TierListTier
+            tlId={tlId}
+            tierName="B"
+            items={updatedItems.B}
+            editable={editable}
+          />
 
           <div
             className="flex size-20 items-center justify-center text-black"
@@ -154,7 +170,12 @@ export function TierList(props: TierListProps) {
           >
             C
           </div>
-          <TierListTier tlId={tlId} tierName="C" items={updatedItems.C} />
+          <TierListTier
+            tlId={tlId}
+            tierName="C"
+            items={updatedItems.C}
+            editable={editable}
+          />
 
           <div
             className="flex size-20 items-center justify-center text-black"
@@ -162,10 +183,20 @@ export function TierList(props: TierListProps) {
           >
             D
           </div>
-          <TierListTier tlId={tlId} tierName="D" items={updatedItems.D} />
+          <TierListTier
+            tlId={tlId}
+            tierName="D"
+            items={updatedItems.D}
+            editable={editable}
+          />
         </div>
 
-        <TierListTier tlId={tlId} tierName="POOL" items={updatedItems.POOL} />
+        <TierListTier
+          tlId={tlId}
+          tierName="POOL"
+          items={updatedItems.POOL}
+          editable={editable}
+        />
 
         {hasPendingChanges ? (
           <div className="my-4 flex w-full justify-end">

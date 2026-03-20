@@ -25,6 +25,7 @@ export function TierItem(props: TierItemProps) {
       loading="lazy"
       fetchPriority="auto"
       ref={(ref) => props.provided.innerRef(ref)}
+      draggable={false}
       {...props.provided.draggableProps}
       {...props.provided.dragHandleProps}
     />
@@ -33,6 +34,7 @@ export function TierItem(props: TierItemProps) {
       className="flex size-20 items-center justify-center rounded bg-zinc-300 text-wrap text-ellipsis select-none"
       title={props.name}
       ref={(ref) => props.provided.innerRef(ref)}
+      draggable={false}
       {...props.provided.draggableProps}
       {...props.provided.dragHandleProps}
     >
