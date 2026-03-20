@@ -24,7 +24,6 @@ type GetTierListItemsReturn = readonly [
   readonly bigint[],
   readonly { name: string; active: boolean }[],
 ];
-type GetGlobalVotesReturn = readonly [readonly bigint[], readonly bigint[][]];
 
 export function ListDetail() {
   const { id } = useParams<{ id: string }>();
@@ -62,18 +61,9 @@ export function ListDetail() {
     query: { enabled },
   });
 
-  const votesQuery = useReadContract({
-    address: tierListAddress,
-    abi,
-    functionName: "getGlobalVotes",
-    args: _id !== undefined ? [_id] : undefined,
-    query: { enabled },
-  });
-
   // Single-point typing: cast the .data values once.
   const tierListData = tierListQuery.data as GetTierListReturn | undefined;
   const itemsData = itemsQuery.data as GetTierListItemsReturn | undefined;
-  const votesData = votesQuery.data as GetGlobalVotesReturn | undefined;
 
   const derived = useMemo(() => {
     const emptyBuckets: TierListBuckets = {
@@ -87,7 +77,7 @@ export function ListDetail() {
 
     const emptyTotals: ItemRankingData = { S: 0, A: 0, B: 0, C: 0, D: 0 };
 
-    if (!tierListData || !itemsData || !votesData) {
+    if (!tierListData || !itemsData) {
       return {
         name: "",
         active: false,
@@ -99,7 +89,6 @@ export function ListDetail() {
 
     const [name, active, numActiveItems] = tierListData;
     const [itemIds, itemInfos] = itemsData;
-    const [voteItemIds, counts] = votesData;
 
     const buckets: TierListBuckets = {
       S: [],
@@ -126,36 +115,8 @@ export function ListDetail() {
       buckets.POOL.push(item);
     }
 
-    for (let i = 0; i < voteItemIds.length; i++) {
-      const key = voteItemIds[i].toString();
-      const item = itemById.get(key);
-      if (!item) continue;
-
-      const perTier = counts[i] ?? [];
-
-      for (let t = 0; t < 5; t++) {
-        totals[tierIndexToRank(t)] += Number(perTier[t] ?? 0n);
-      }
-
-      let bestTier = 0;
-      let bestVotes = -1;
-      for (let t = 0; t < 5; t++) {
-        const v = Number(perTier[t] ?? 0n);
-        if (v > bestVotes) {
-          bestVotes = v;
-          bestTier = t;
-        }
-      }
-
-      if (bestVotes > 0) {
-        const rank = tierIndexToRank(bestTier);
-        buckets.POOL = buckets.POOL.filter((x) => x.id !== item.id);
-        buckets[rank].push(item);
-      }
-    }
-
     return { name, active, numActiveItems, buckets, totals };
-  }, [tierListData, itemsData, votesData]);
+  }, [tierListData, itemsData]);
 
   // early returns AFTER hooks
   if (!tierListAddress) {
@@ -176,7 +137,7 @@ export function ListDetail() {
     );
   }
 
-  if (tierListQuery.isLoading || itemsQuery.isLoading || votesQuery.isLoading) {
+  if (tierListQuery.isLoading || itemsQuery.isLoading) {
     return <div className="text-sm text-zinc-600">Loading your tier list…</div>;
   }
 
@@ -194,15 +155,6 @@ export function ListDetail() {
       <div role="alert" className="alert alert-error">
         <AlertTriangle className="h-4 w-4" />
         <span>{itemsQuery.error?.message ?? "Error"}</span>
-      </div>
-    );
-  }
-
-  if (votesQuery.isError) {
-    return (
-      <div role="alert" className="alert alert-error">
-        <AlertTriangle className="h-4 w-4" />
-        <span>{votesQuery.error?.message ?? "Error"}</span>
       </div>
     );
   }
