@@ -18,8 +18,7 @@ export function ItemRankings(props: ItemRankingsProps) {
   );
 
   return (
-    <div className="card-body flex max-w-96 flex-col gap-2 p-4">
-      <h1 className="card-title">Scores</h1>
+    <div className="gap-2">
       {(Object.keys(props.data) as Ranking[]).map((ranking) => {
         const score = safeNumber(props.data[ranking]);
         const pct = total > 0 ? (score / total) * 100 : 0;

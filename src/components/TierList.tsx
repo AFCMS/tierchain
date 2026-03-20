@@ -5,8 +5,13 @@ import type { Address } from "viem";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 
-import type { Ranking } from "./ItemRankings";
+import {
+  ItemRankings,
+  type ItemRankingData,
+  type Ranking,
+} from "./ItemRankings";
 import { TierListTier } from "./TierListTier";
+import { TierItemSimple } from "./TierItemSimple";
 
 export interface TierItemDef {
   readonly id: number;
@@ -19,6 +24,9 @@ export interface TierListProps {
   readonly tlId: number;
   readonly items: TierListBuckets;
   readonly editable?: boolean;
+  readonly globalVotesItem?: ItemRankingData;
+  readonly globalVotesItemId?: number | null;
+  readonly setGlobalVotesItemId?: (itemId: number | null) => void;
 }
 
 const TIER_NAMES: Array<Ranking | "POOL"> = ["S", "A", "B", "C", "D", "POOL"];
@@ -238,71 +246,91 @@ export function TierList(props: TierListProps) {
           reorderTierList(result.source, result.destination);
         }}
       >
-        <div className="bg-base-100 mb-0.5 grid max-w-3xl grid-cols-[5rem_1fr] gap-0.5 select-none">
-          <div
-            className="flex size-20 items-center justify-center text-black"
-            data-rank-bg="S"
-          >
-            S
-          </div>
-          <TierListTier
-            tlId={tlId}
-            tierName="S"
-            items={updatedItems.S}
-            editable={editable}
-          />
+        <div className="flex w-full flex-row gap-0.5">
+          <div className="bg-base-100 mb-0.5 grid w-3xl grid-cols-[5rem_1fr] gap-0.5 select-none">
+            <div
+              className="flex size-20 items-center justify-center text-black"
+              data-rank-bg="S"
+            >
+              S
+            </div>
+            <TierListTier
+              tlId={tlId}
+              tierName="S"
+              items={updatedItems.S}
+              editable={editable}
+            />
 
-          <div
-            className="flex size-20 items-center justify-center text-black"
-            data-rank-bg="A"
-          >
-            A
-          </div>
-          <TierListTier
-            tlId={tlId}
-            tierName="A"
-            items={updatedItems.A}
-            editable={editable}
-          />
+            <div
+              className="flex size-20 items-center justify-center text-black"
+              data-rank-bg="A"
+            >
+              A
+            </div>
+            <TierListTier
+              tlId={tlId}
+              tierName="A"
+              items={updatedItems.A}
+              editable={editable}
+            />
 
-          <div
-            className="flex size-20 items-center justify-center text-black"
-            data-rank-bg="B"
-          >
-            B
-          </div>
-          <TierListTier
-            tlId={tlId}
-            tierName="B"
-            items={updatedItems.B}
-            editable={editable}
-          />
+            <div
+              className="flex size-20 items-center justify-center text-black"
+              data-rank-bg="B"
+            >
+              B
+            </div>
+            <TierListTier
+              tlId={tlId}
+              tierName="B"
+              items={updatedItems.B}
+              editable={editable}
+            />
 
-          <div
-            className="flex size-20 items-center justify-center text-black"
-            data-rank-bg="C"
-          >
-            C
-          </div>
-          <TierListTier
-            tlId={tlId}
-            tierName="C"
-            items={updatedItems.C}
-            editable={editable}
-          />
+            <div
+              className="flex size-20 items-center justify-center text-black"
+              data-rank-bg="C"
+            >
+              C
+            </div>
+            <TierListTier
+              tlId={tlId}
+              tierName="C"
+              items={updatedItems.C}
+              editable={editable}
+            />
 
-          <div
-            className="flex size-20 items-center justify-center text-black"
-            data-rank-bg="D"
-          >
-            D
+            <div
+              className="flex size-20 items-center justify-center text-black"
+              data-rank-bg="D"
+            >
+              D
+            </div>
+            <TierListTier
+              tlId={tlId}
+              tierName="D"
+              items={updatedItems.D}
+              editable={editable}
+            />
           </div>
-          <TierListTier
-            tlId={tlId}
-            tierName="D"
-            items={updatedItems.D}
-            editable={editable}
-          />
+          <div className="bg-base-300 relative mb-0.5 flex min-h-full flex-1 flex-col gap-2 p-4">
+            <h2 className="text-lg font-semibold">Scores</h2>
+            {props.globalVotesItem && props.globalVotesItemId ? (
+              <>
+                <div className="flex-1"></div>
+                <div className="absolute top-4 right-4">
+                  <TierItemSimple
+                    tlId={props.tlId}
+                    id={props.globalVotesItemId!}
+                    name={"chrome"}
+                  />
+                </div>
+                <ItemRankings data={props.globalVotesItem} />
+              </>
+            ) : (
+              <p className="text-sm italic">No item selected</p>
+            )}
+          </div>
         </div>
 
         <TierListTier
@@ -310,19 +338,21 @@ export function TierList(props: TierListProps) {
           tierName="POOL"
           items={updatedItems.POOL}
           editable={editable}
+          setGlobalVotesItemId={props.setGlobalVotesItemId}
         />
 
-        {hasPendingChanges ? (
-          <div className="my-4 flex w-full justify-end">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleUpdateUserData}
-            >
-              Update user data
-            </button>
-          </div>
-        ) : undefined}
+        <div className="my-4 flex w-full justify-end">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleUpdateUserData}
+            disabled={
+              !editable || !address || !hasPendingChanges || write.isPending
+            }
+          >
+            {address ? "Update user data" : "Connect wallet to update data"}
+          </button>
+        </div>
       </DragDropContext>
     </div>
   );

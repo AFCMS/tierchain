@@ -9,10 +9,11 @@ export interface TierListTierProps {
     readonly name: string;
   }[];
   readonly editable?: boolean;
+  readonly setGlobalVotesItemId?: (id: number | null) => void;
 }
 
 export function TierListTier(props: TierListTierProps) {
-  const { editable = true } = props;
+  const { editable = true, setGlobalVotesItemId } = props;
   return (
     <Droppable
       droppableId={props.tierName}
@@ -45,6 +46,11 @@ export function TierListTier(props: TierListTierProps) {
                     id={item.id}
                     provided={dragProvided}
                     snapshot={dragSnapshot}
+                    onClick={
+                      setGlobalVotesItemId
+                        ? () => setGlobalVotesItemId(item.id)
+                        : undefined
+                    }
                   />
                 )}
               </Draggable>

@@ -5,11 +5,7 @@ import type { Address } from "viem";
 import { AlertTriangle } from "lucide-react";
 
 import { TierList, type TierListBuckets } from "../components/TierList";
-import {
-  ItemRankings,
-  type ItemRankingData,
-  type Ranking,
-} from "../components/ItemRankings";
+import { type ItemRankingData, type Ranking } from "../components/ItemRankings";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 
@@ -207,7 +203,8 @@ export function ListDetail() {
             {derived.name}
             <div
               className={
-                "badge" + (derived.active ? " badge-success" : " badge-error")
+                "badge badge-soft" +
+                (derived.active ? " badge-success" : " badge-error")
               }
             >
               {derived.active ? "Active" : "Inactive"}
@@ -219,11 +216,13 @@ export function ListDetail() {
           </p>
         </div>
 
-        <TierList tlId={Number(_id)} items={derived.buckets} editable={true} />
-
-        <div className="card bg-base-300 card-md w-auto shadow-lg">
-          <ItemRankings data={derived.totals} />
-        </div>
+        <TierList
+          tlId={Number(_id)}
+          items={derived.buckets}
+          editable={true}
+          globalVotesItemId={1}
+          globalVotesItem={derived.totals}
+        />
       </div>
     </div>
   );
