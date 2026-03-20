@@ -116,10 +116,7 @@ export function TierList(props: TierListProps) {
     address: tierListAddress,
     abi,
     functionName: "getUserVotes",
-    args:
-      tierListAddress && address
-        ? [BigInt(tlId), address]
-        : undefined,
+    args: tierListAddress && address ? [BigInt(tlId), address] : undefined,
     query: { enabled: Boolean(tierListAddress && address) },
   });
 
@@ -141,7 +138,9 @@ export function TierList(props: TierListProps) {
       return;
     }
 
-    const votes = userVotesQuery.data as readonly (readonly bigint[])[] | undefined;
+    const votes = userVotesQuery.data as
+      | readonly (readonly bigint[])[]
+      | undefined;
     if (!votes) return;
 
     const next = bucketsFromUserVotes(items, votes);
@@ -220,7 +219,7 @@ export function TierList(props: TierListProps) {
       return;
     }
 
-    write.writeContract({
+    write.mutate({
       address: tierListAddress,
       abi,
       functionName: "submitRanking",
