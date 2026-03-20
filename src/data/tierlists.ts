@@ -22,8 +22,23 @@ export const tierlistsAssets = {
   },
 } as const satisfies TierListAssets;
 
+export function hasTierListAssets(
+  id: number,
+): id is keyof typeof tierlistsAssets {
+  return id in tierlistsAssets;
+}
+
 export function getTierListAssets(id: number): TierListAssetsItem | undefined {
-  return id in tierlistsAssets
-    ? tierlistsAssets[id as keyof typeof tierlistsAssets]
-    : undefined;
+  if (hasTierListAssets(id)) {
+    return tierlistsAssets[id];
+  }
+  return undefined;
+}
+
+export function getTierListItemAsset(
+  id: number,
+  item: string,
+): string | undefined {
+  const assets = getTierListAssets(id);
+  return assets?.[item];
 }
