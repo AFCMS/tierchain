@@ -74,36 +74,6 @@ export function AllLists({ includeInactive = false }: AllListsProps) {
           />
         );
       })}
-      {lists.map((tl) => {
-        const id = Number(tl.id);
-        const assets = getTierListAssets(id);
-
-        return (
-          <TierListItem
-            key={tl.id.toString()}
-            id={id}
-            name={tl.name}
-            description={tl.description}
-            active={tl.active}
-            cover={assets?.cover}
-          />
-        );
-      })}
-      {lists.map((tl) => {
-        const id = Number(tl.id);
-        const assets = getTierListAssets(id);
-
-        return (
-          <TierListItem
-            key={tl.id.toString()}
-            id={id}
-            name={tl.name}
-            description={tl.description}
-            active={tl.active}
-            cover={assets?.cover}
-          />
-        );
-      })}
     </div>
   );
 }
