@@ -22,10 +22,7 @@ contract TierList {
         uint256[] itemIds,
         string[] names
     );
-    event ItemsRemoved(
-        uint256 indexed tierListId,
-        uint256[] indexed itemId,
-    );
+    event ItemsRemoved(uint256 indexed tierListId, uint256[] indexed itemId);
 
     event RankingSubmitted(address indexed voter, uint256 indexed tierListId);
     event RankingDeleted(address indexed voter, uint256 indexed tierListId);
@@ -347,15 +344,10 @@ contract TierList {
         external
         view
         tierListMustExist(tlId)
-        returns (
-            string memory name,
-            string memory description,
-            bool active,
-            uint256 numActiveItems
-        )
+        returns (string memory name, bool active, uint256 numActiveItems)
     {
         TierListInfo memory info = tierListInfos[tlId];
-        return (info.name, info.description, info.active, info.numActiveItems);
+        return (info.name, info.active, info.numActiveItems);
     }
 
     /**
