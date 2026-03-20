@@ -11,13 +11,11 @@ import {
   type Ranking,
 } from "../components/ItemRankings";
 
-import TierListArtifact from "../../artifacts/contracts/TierList.sol/TierList.json";
+import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 
 const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS as
   | Address
   | undefined;
-
-const abi = TierListArtifact.abi;
 
 const RANKS: Ranking[] = ["S", "A", "B", "C", "D"];
 
