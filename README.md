@@ -42,16 +42,27 @@ pnpm hardhat ignition deploy ignition/modules/TierList.ts --network localhost
 ```
 
 Populate the tier lists :
+
 ```bash
 node ./scripts/tierlist-manager.ts create --file ./tierlists/which-browser-is-the-best.json --mode hardhat
 ```
 
 Run in dev mode :
+
 ```bash
 pnpm run dev
 ```
 
 Build and run :
+
 ```bash
 pnpm run build
 ```
+
+---
+
+<img align="right" src=".github/Hexa_Logo_Sign_RVB_Full.svg" width="300px"/>
+
+**Made with ❤️ by [AFCMS](https://github.com/AFCMS) & [AKArien](https://github.com/AKArien)**
+
+[**Ecole Hexagone**](https://www.ecole-hexagone.com) 🇫🇷 - Class of 2025/2026
