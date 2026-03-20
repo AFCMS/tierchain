@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useParams } from "react-router";
 import { TierItem } from "./TierItem";
 import type { Ranking } from "./ItemRankings";
 
 export function TierList() {
-  const { id } = useParams();
   // const editable = false;
 
   const [items] = useState<{
