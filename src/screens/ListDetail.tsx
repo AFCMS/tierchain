@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useParams } from "react-router";
 import { useReadContract } from "wagmi";
 import type { Address } from "viem";
@@ -33,6 +33,18 @@ export function ListDetail() {
   const _id = Number.isInteger(idNum) && idNum >= 0 ? BigInt(idNum) : undefined;
 
   const enabled = Boolean(tierListAddress) && _id !== undefined;
+ 
+  const PAGE_SIZE = 20n;
+  const [submissionsOffset, setSubmissionsOffset] = useState(0n);
+
+  const submissionsQuery = useReadContract({
+    address: tierListAddress,
+    abi,
+    functionName: "getLatestSubmissions",
+    args: _id !== undefined ? [_id, PAGE_SIZE, submissionsOffset] : undefined,
+    query: { enabled },
+  });
+  const latestSubmitters = (submissionsQuery.data ?? []) as Address[];
 
   const tierListQuery = useReadContract({
     address: tierListAddress,
@@ -58,15 +70,6 @@ export function ListDetail() {
     query: { enabled },
   });
 
-  const submissionsQuery = useReadContract({
-    address: tierListAddress,
-    abi,
-    functionName: "getLatestSubmissions",
-    args: _id !== undefined ? [_id, 20n, 0n] : undefined, // limit=20, offset=0
-    query: { enabled },
-  });
-  const latestSubmitters = (submissionsQuery.data ?? []) as Address[];
-  
   // Single-point typing: cast the .data values once.
   const tierListData = tierListQuery.data as GetTierListReturn | undefined;
   const itemsData = itemsQuery.data as GetTierListItemsReturn | undefined;
@@ -237,7 +240,8 @@ export function ListDetail() {
           <ItemRankings data={derived.totals} />
         </div>
         
-        <div className="mt-6">
+
+        <div className="mt-8">
           <h2 className="mb-2 text-lg font-semibold">Latest submissions</h2>
 
           <div className="overflow-x-auto">
@@ -246,29 +250,57 @@ export function ListDetail() {
                 <tr>
                   <th>#</th>
                   <th>Account</th>
-                  <th>View</th>
+                  <th />
                 </tr>
               </thead>
-              <tbody>
-                {latestSubmitters.map((acct, i) => (
-                  <tr key={`${acct}-${i}`}>
-                    <td>{i + 1}</td>
-                    <td className="font-mono">{acct}</td>
-                    <td>
-                      <a href={`/list/${id}/address/${acct}`}>View tier list</a>
-                    </td>
-                  </tr>
-                ))}
 
+              <tbody>
                 {latestSubmitters.length === 0 ? (
                   <tr>
                     <td colSpan={3} className="text-sm text-zinc-500">
                       No submissions yet.
                     </td>
                   </tr>
-                ) : null}
+                ) : (
+                  latestSubmitters.map((acct, i) => (
+                    <tr key={`${acct}-${i}`}>
+                      <td>{Number(submissionsOffset) + i + 1}</td>
+                      <td className="font-mono">{acct}</td>
+                      <td>
+                        <a
+                          className="link link-primary"
+                          href={`/list/${id}/address/${acct}`}
+                        >
+                          View
+                        </a>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
+          </div>
+
+          <div className="mt-3 flex justify-end gap-2">
+            <button
+              type="button"
+              className="btn"
+              disabled={submissionsOffset === 0n}
+              onClick={() =>
+                setSubmissionsOffset((x) => (x > PAGE_SIZE ? x - PAGE_SIZE : 0n))
+              }
+            >
+              Prev
+            </button>
+
+            <button
+              type="button"
+              className="btn"
+              disabled={latestSubmitters.length < Number(PAGE_SIZE)}
+              onClick={() => setSubmissionsOffset((x) => x + PAGE_SIZE)}
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>
