@@ -5,7 +5,7 @@ export function Header() {
   return (
     <header className="navbar bg-base-100 gap-2">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">TierChain</a>
+        <a href="/" className="btn btn-ghost text-xl">TierChain</a>
       </div>
       <ThemeSwitcher />
       <HeaderAuth />
