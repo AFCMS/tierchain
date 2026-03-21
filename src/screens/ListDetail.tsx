@@ -71,7 +71,7 @@ export function ListDetail() {
   }
 
   return (
-    <div className="mt-4 flex w-full justify-center">
+    <div className="mt-4 flex w-full justify-center px-4">
       <main className="w-full max-w-6xl">
         <div className="mb-8 flex w-full flex-col gap-2">
           <h1 className="flex w-full justify-between text-2xl font-bold">

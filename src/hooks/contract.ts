@@ -25,15 +25,15 @@ function useTierListEventWatcher<TArgs>(params: {
   const { enabled, eventName, parseArgs, onEvent } = params;
 
   const { data: bn } = useBlockNumber({ watch: false });
-  const [startBlockExclusive, setStartBlockExclusive] = useState<bigint | undefined>(
-    undefined,
-  );
+  const [startBlockExclusive, setStartBlockExclusive] = useState<
+    bigint | undefined
+  >(undefined);
 
   // Reset when disabled so next enable re-captures "now"
   useEffect(() => {
     (async () => {
       if (!enabled) setStartBlockExclusive(undefined);
-    })()
+    })();
   }, [enabled]);
 
   // Capture once when enabling (mirrors the commit’s "set ref once" behavior)
@@ -41,7 +41,9 @@ function useTierListEventWatcher<TArgs>(params: {
     if (!enabled) return;
     if (startBlockExclusive !== undefined) return;
     if (bn === undefined) return;
-    (async () => { setStartBlockExclusive(bn) })(); // everything <= this is "past"
+    (async () => {
+      setStartBlockExclusive(bn);
+    })(); // everything <= this is "past"
   }, [enabled, bn, startBlockExclusive]);
 
   const watchEnabled = enabled && startBlockExclusive !== undefined;
@@ -149,7 +151,10 @@ export function useGetItemVoteCounts(
   };
 }
 
-export function useGetSubmissionsNextIndex(id: bigint | undefined, enabled: boolean) {
+export function useGetSubmissionsNextIndex(
+  id: bigint | undefined,
+  enabled: boolean,
+) {
   const q = useReadContract({
     address: tierListAddress,
     abi,
@@ -198,7 +203,10 @@ export type ItemsAddedLogArgs = {
 
 type OnItemsAdded = (args: ItemsAddedLogArgs) => void;
 
-export function useWatchItemsAdded(enabled: boolean, onItemsAdded: OnItemsAdded) {
+export function useWatchItemsAdded(
+  enabled: boolean,
+  onItemsAdded: OnItemsAdded,
+) {
   return useTierListEventWatcher<ItemsAddedLogArgs>({
     enabled,
     eventName: "ItemsAdded",
@@ -221,7 +229,10 @@ export type ItemRemovedLogArgs = {
 
 type OnItemRemoved = (args: ItemRemovedLogArgs) => void;
 
-export function useWatchItemRemoved(enabled: boolean, onItemRemoved: OnItemRemoved) {
+export function useWatchItemRemoved(
+  enabled: boolean,
+  onItemRemoved: OnItemRemoved,
+) {
   return useTierListEventWatcher<ItemRemovedLogArgs>({
     enabled,
     eventName: "ItemRemoved",
@@ -279,7 +290,8 @@ export function useWatchTierListStatusChanged(
     enabled,
     eventName: "TierListStatusChanged",
     parseArgs: (l) => {
-      const args = (l as unknown as { args: TierListStatusChangedLogArgs }).args;
+      const args = (l as unknown as { args: TierListStatusChangedLogArgs })
+        .args;
       if (!args) return;
       if (args.tierListId === undefined) return;
       if (args.active === undefined) return;
@@ -287,4 +299,18 @@ export function useWatchTierListStatusChanged(
     },
     onEvent: (args) => onTierListStatusChanged(args),
   });
+}
+
+// Hook to get the contract owner address
+export function useGetOwner(enabled: boolean) {
+  const ownerQuery = useReadContract({
+    address: tierListAddress,
+    abi,
+    functionName: "owner",
+    query: { enabled },
+  });
+  return {
+    ...ownerQuery,
+    data: ownerQuery.data as Address | undefined,
+  };
 }

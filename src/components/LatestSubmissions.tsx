@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-import { useGetLatestSubmissions, useWatchRankingSubmitted } from "../hooks/contract";
-import { AddressLink } from "./AddressLink";
 import type { Address } from "viem";
+import { useConnection } from "wagmi";
+
+import {
+  useGetLatestSubmissions,
+  useWatchRankingSubmitted,
+  useGetOwner,
+} from "../hooks/contract";
+import { AddressLink } from "./AddressLink";
 
 interface LatestSubmissionsProps {
   readonly id: bigint;
@@ -16,6 +21,10 @@ type LiveRow = {
 };
 
 export function LatestSubmissions(props: LatestSubmissionsProps) {
+  const { address: userAddress } = useConnection();
+  // Get contract owner address (must be inside component)
+  const { data: ownerAddress } = useGetOwner(true);
+
   const PAGE_SIZE = 20n;
   const [submissionsOffset, setSubmissionsOffset] = useState(0n);
 
@@ -100,6 +109,20 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
                   <td>{num}</td>
                   <td>
                     <AddressLink address={acct} />
+                    {userAddress === acct && (
+                      <div className="badge badge-soft badge-info ml-2">
+                        You
+                      </div>
+                    )}
+                    {ownerAddress &&
+                      acct.toLowerCase() === ownerAddress.toLowerCase() && (
+                        <div
+                          className="badge badge-soft badge-success ml-2"
+                          title="Smart Contract owner"
+                        >
+                          Owner
+                        </div>
+                      )}
                   </td>
                   <td>
                     <Link
