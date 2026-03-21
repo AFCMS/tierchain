@@ -576,7 +576,7 @@ export function TierList(props: TierListProps) {
               <>
                 <span className="font-mono text-sm">Rankings by</span>
                 <span className="font-mono text-sm">·</span>
-                <AddressLink address={address!} />
+                <AddressLink address={votesAddress!} />
               </>
             )}
           </div>
