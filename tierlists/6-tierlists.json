@@ -1,0 +1,13 @@
+{
+    "$schema": "./tierlist.schema.json",
+    "name": "Tier Lists",
+    "description": "Which were the best Tier Lists so far ?",
+    "items": [
+        "browsers",
+        "gaming_publishers",
+        "red_flags",
+        "resident_evil",
+        "vibe_coding",
+        "tier_lists"
+    ]
+}

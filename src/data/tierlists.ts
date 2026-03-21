@@ -64,6 +64,10 @@ import reddji from "./assets/vibe-coders/reddji.png?format=avif&h=80&w=80&imaget
 import zenkai from "./assets/vibe-coders/zenkai.png?format=avif&h=80&w=80&imagetools";
 import afcm from "./assets/vibe-coders/afcm.png?format=avif&h=80&w=80&imagetools"
 
+// 6
+
+import s_rank from "./assets/s-rank.png?format=avif&h=80&w=80&imagetools"
+
 //?format=avif&h=80&w=80&imagetools
 
 export type Ranking = "S" | "A" | "B" | "C" | "D";
@@ -141,6 +145,15 @@ export const tierlistsAssets = {
     reddji: reddji,
     zenkai: zenkai,
     linus: linus
+  },
+  6: {
+    cover: s_rank,
+    browsers: chrome,
+    gaming_publishers: steam,
+    red_flags: red_flag,
+    resident_evil: leon,
+    vibe_coding: copilot,
+    tier_lists: s_rank
   }
 } as const satisfies TierListAssets;
 
