@@ -43,27 +43,28 @@ export function AllLists({ includeInactive = false }: AllListsProps) {
   // Keep newest-first in UI (reverse IDs).
   useEffect(() => {
     const set = async () => {
-        setUiLists([...lists].reverse());
-    }
+      setUiLists([...lists].reverse());
+    };
     set();
-  }, [data]);
+  }, [data, lists]);
 
-  useWatchTierListCreated(enabled, ({ tierListId, name, description, numActiveItems }) => {
+  useWatchTierListCreated(
+    enabled,
+    ({ tierListId, name, description, numActiveItems }) => {
+      setUiLists((cur) => {
+        const next: TierListView = {
+          id: tierListId,
+          name,
+          description,
+          active: true, // createTierList sets active=true
+          numActiveItems,
+        };
 
-    setUiLists((cur) => {
-
-      const next: TierListView = {
-        id: tierListId,
-        name,
-        description,
-        active: true, // createTierList sets active=true
-        numActiveItems,
-      };
-
-      // prepend newest
-      return [next, ...cur];
-    });
-  });
+        // prepend newest
+        return [next, ...cur];
+      });
+    },
+  );
 
   useWatchTierListStatusChanged(enabled, ({ tierListId, active }) => {
     setUiLists((cur) => {
