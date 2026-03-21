@@ -26,16 +26,31 @@ import blizzard from "./assets/blizzard.jpg?format=avif&h=80&w=80&imagetools";
 
 // 3
 
-import red_flag from "./assets/red_flag.svg?format=avif&h=80&w=80&imagetools"
-import love_bombing from "./assets/love_bombing.png?format=avif&h=80&w=80&imagetools"
-import league_of_legends from "./assets/league_of_legends.svg?format=avif&h=80&w=80&imagetools"
-import domestical_violence from "./assets/domestical_violence.svg?format=avif&h=80&w=80&imagetools"
-import ghosting from "./assets/ghosting.svg?format=avif&h=80&w=80&imagetools"
-import animal_cruelty from "./assets/animal_cruelty.png?format=avif&h=80&w=80&imagetools"
-import asks_for_money from "./assets/asks_for_money.png?format=avif&h=80&w=80&imagetools"
-import isolating from "./assets/isolating.png?format=avif&h=80&w=80&imagetools"
-import valorant from "./assets/valorant.svg?format=avif&h=80&w=80&imagetools"
-import insults from "./assets/insults.png?format=avif&h=80&w=80&imagetools"
+import red_flag from "./assets/red_flag.svg";
+import love_bombing from "./assets/love_bombing.png?format=avif&h=80&w=80&imagetools";
+import league_of_legends from "./assets/league_of_legends.svg";
+import domestical_violence from "./assets/domestical_violence.svg";
+import ghosting from "./assets/ghosting.svg";
+import animal_cruelty from "./assets/animal_cruelty.png?format=avif&quality=100&h=80&w=80&imagetools";
+import asks_for_money from "./assets/asks_for_money.png?format=avif&quality=100&h=80&w=80&imagetools";
+import isolating from "./assets/isolating.png?format=avif&quality=100&h=80&w=80&imagetools";
+import valorant from "./assets/valorant.svg";
+import insults from "./assets/insults.png?format=avif&quality=100&h=80&w=80&imagetools";
+
+// 4
+
+import umbrella from "./assets/re/umbrella.svg";
+import leon from "./assets/re/leon_kenedy.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import claire from "./assets/re/claire_redfield.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import chris from "./assets/re/chris_redfield.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import jill from "./assets/re/jill_valentine.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import ada from "./assets/re/ada_wong.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import ashley from "./assets/re/ashley_graham.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import grace from "./assets/re/grace_ashcroft.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import rebecca from "./assets/re/rebeca_chambers.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import sheva from "./assets/re/sheva_alomar.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import carlos from "./assets/re/carlos_olivera.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import sherry from "./assets/re/sherry_birkin.jpg?format=avif&quality=100&h=80&w=80&imagetools";
 
 //?format=avif&h=80&w=80&imagetools
 
@@ -88,8 +103,22 @@ export const tierlistsAssets = {
     isolating: isolating,
     valorant: valorant,
     insults: insults,
-    loves_chromium: chromium
-  }
+    loves_chromium: chromium,
+  },
+  4: {
+    cover: umbrella,
+    "Leon S. Kennedy": leon,
+    "Claire Redfield": claire,
+    "Chris Redfield": chris,
+    "Jill Valentine": jill,
+    "Ada Wong": ada,
+    "Ashley Graham": ashley,
+    "Grace Ashcroft": grace,
+    "Rebecca Chambers": rebecca,
+    "Sheva Alomar": sheva,
+    "Carlos Oliveira": carlos,
+    "Sherry Birkin": sherry,
+  },
 } as const satisfies TierListAssets;
 
 export function hasTierListAssets(

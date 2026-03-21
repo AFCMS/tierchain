@@ -1,0 +1,18 @@
+{
+    "$schema": "./tierlist.schema.json",
+    "name": "Resident Evil characters",
+    "description": "cleon or aeon btw?",
+    "items": [
+        "Leon S. Kennedy",
+        "Claire Redfield",
+        "Chris Redfield",
+        "Jill Valentine",
+        "Ada Wong",
+        "Ashley Graham",
+        "Grace Ashcroft",
+        "Rebecca Chambers",
+        "Sheva Alomar",
+        "Carlos Oliveira",
+        "Sherry Birkin"
+    ]
+}
