@@ -1,7 +1,7 @@
 import { useReadContract, useWatchContractEvent } from "wagmi";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
-import type { Address } from "viem";
+import type { Address, Log } from "viem";
 
 const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS!;
 
@@ -119,10 +119,10 @@ export function useWatchRankingSubmitted(
     eventName: "RankingSubmitted",
     enabled,
     strict: true,
-    onLogs: (logs) => {
+    onLogs: (logs: Log[]) => {
       for (const l of logs) {
         // wagmi/viem types here can be annoying; keep it tight but not magical
-        const args = (l as any).args as RankingSubmittedLogArgs | undefined;
+        const args = (l as unknown as {args: RankingSubmittedLogArgs}).args;
         if (!args) continue;
         if (!args.voter) continue;
         if (args.tierListId === undefined) continue;
@@ -139,14 +139,7 @@ export type ItemsAddedLogArgs = {
   names: readonly string[];
 };
 
-export type ItemRemovedLogArgs = {
-  tierListId: bigint;
-  itemId: bigint;
-  name: string;
-};
-
 type OnItemsAdded = (args: ItemsAddedLogArgs) => void;
-type OnItemRemoved = (args: ItemRemovedLogArgs) => void;
 
 export function useWatchItemsAdded(enabled: boolean, onItemsAdded: OnItemsAdded) {
   return useWatchContractEvent({
@@ -155,9 +148,9 @@ export function useWatchItemsAdded(enabled: boolean, onItemsAdded: OnItemsAdded)
     eventName: "ItemsAdded",
     enabled,
     strict: true,
-    onLogs: (logs) => {
+    onLogs: (logs: Log[]) => {
       for (const l of logs) {
-        const args = (l as any).args as ItemsAddedLogArgs | undefined;
+        const args = (l as unknown as {args : ItemsAddedLogArgs}).args;
         if (!args) continue;
         if (args.tierListId === undefined) continue;
         if (!args.itemIds || !args.names) continue;
@@ -166,6 +159,14 @@ export function useWatchItemsAdded(enabled: boolean, onItemsAdded: OnItemsAdded)
     },
   });
 }
+
+export type ItemRemovedLogArgs = {
+  tierListId: bigint;
+  itemId: bigint;
+  name: string;
+};
+
+type OnItemRemoved = (args: ItemRemovedLogArgs) => void;
 
 export function useWatchItemRemoved(
   enabled: boolean,
@@ -177,9 +178,9 @@ export function useWatchItemRemoved(
     eventName: "ItemRemoved",
     enabled,
     strict: true,
-    onLogs: (logs) => {
+    onLogs: (logs: Log[]) => {
       for (const l of logs) {
-        const args = (l as any).args as ItemRemovedLogArgs | undefined;
+        const args = (l as unknown as {args: ItemRemovedLogArgs}).args;
         if (!args) continue;
         if (args.tierListId === undefined) continue;
         if (args.itemId === undefined) continue;
@@ -198,13 +199,7 @@ export type TierListCreatedLogArgs = {
   numActiveItems: bigint;
 };
 
-export type TierListStatusChangedLogArgs = {
-  tierListId: bigint;
-  active: boolean;
-};
-
 type OnTierListCreated = (args: TierListCreatedLogArgs) => void;
-type OnTierListStatusChanged = (args: TierListStatusChangedLogArgs) => void;
 
 export function useWatchTierListCreated(
   enabled: boolean,
@@ -216,9 +211,9 @@ export function useWatchTierListCreated(
     eventName: "TierListCreated",
     enabled,
     strict: true,
-    onLogs: (logs) => {
+    onLogs: (logs: Log[]) => {
       for (const l of logs) {
-        const args = (l as any).args as TierListCreatedLogArgs | undefined;
+        const args = (l as unknown as {args: TierListCreatedLogArgs}).args;
         if (!args) continue;
         if (args.tierListId === undefined) continue;
         if (args.name === undefined) continue;
@@ -227,6 +222,14 @@ export function useWatchTierListCreated(
     },
   });
 }
+
+
+export type TierListStatusChangedLogArgs = {
+  tierListId: bigint;
+  active: boolean;
+};
+
+type OnTierListStatusChanged = (args: TierListStatusChangedLogArgs) => void;
 
 export function useWatchTierListStatusChanged(
   enabled: boolean,
@@ -238,9 +241,9 @@ export function useWatchTierListStatusChanged(
     eventName: "TierListStatusChanged",
     enabled,
     strict: true,
-    onLogs: (logs) => {
+    onLogs: (logs: Log[]) => {
       for (const l of logs) {
-        const args = (l as any).args as TierListStatusChangedLogArgs | undefined;
+        const args = (l as unknown as {args: TierListStatusChangedLogArgs}).args;
         if (!args) continue;
         if (args.tierListId === undefined) continue;
         if (args.active === undefined) continue;
