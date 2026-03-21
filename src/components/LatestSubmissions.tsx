@@ -126,7 +126,7 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
                   </td>
                   <td>
                     <Link
-                      className="btn btn-ghost"
+                      className="btn"
                       to={`/list/${props.id}/address/${acct}`}
                     >
                       View
