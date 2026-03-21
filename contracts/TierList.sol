@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.20; // using a more common version range
+pragma solidity ^0.8.20;
 
 contract TierList {
     address public immutable owner;
     uint256 private nextTierListId = 1;
 
-    // submissions[tlId][i] = voter address at submission index i (0-based)
     mapping(uint256 => address[]) private submissions;
     mapping(uint256 => uint256) public submissionsNextIndex; // == submissions[tlId].length
 
@@ -42,16 +41,6 @@ contract TierList {
     // ──────────────────────────────────────────────────────────────────────────────
     // DATA STRUCTURES
     // ──────────────────────────────────────────────────────────────────────────────
-    //
-    // This contract uses mappings as "sparse arrays".
-    // Key point: mappings are NOT enumerable on-chain.
-    // That means:
-    //  - you can read/write userVotes[tlId][user][itemId] in O(1)
-    //  - but you cannot iterate "all itemIds a user voted on" unless you store an index/list separately.
-    //
-    // As a result, view functions like getTierListItems() and getUserVotes() rebuild arrays by scanning
-    // from 1..tierListNextItemId[tlId]. That scan is OK in view calls (off-chain), but can be too expensive
-    // for state-changing functions if the tier list grows large.
 
     struct TierListInfo {
         string name;
@@ -60,6 +49,7 @@ contract TierList {
         uint256 numActiveItems; // number of items with items[tlId][id].active == true
     }
 
+    // Info with the id, used for discovering
     struct TierListView {
         uint256 id;
         string name;
@@ -94,7 +84,7 @@ contract TierList {
     // voteCounts[tlId][itemId][tier] = total number of votes from ALL users
     // that currently place itemId into 'tier' (tier is 0..NUM_TIERS-1).
     //
-    // This is the "global aggregate" used for displaying results without iterating over all users.
+    // This is a global aggregate used for displaying the global rankings of items.
     mapping(uint256 => mapping(uint256 => mapping(uint256 => uint256)))
         public voteCounts;
 
@@ -220,7 +210,7 @@ contract TierList {
     ) external tierListMustExist(tlId) tierListActive(tlId) {
         require(rankedItemIdsByTier.length == NUM_TIERS, "Invalid tiers");
 
-        // 1) Clear existing ranking (decrement aggregates)
+        // Clear existing ranking (decrement aggregates)
         for (uint256 t = 0; t < NUM_TIERS; t++) {
             uint256[] storage prevArr = userVotes[tlId][msg.sender][t];
 
@@ -237,7 +227,7 @@ contract TierList {
             delete userVotes[tlId][msg.sender][t];
         }
 
-        // 2) Set new ranking (increment aggregates + preserve order)
+        // Set new ranking (increment aggregates + preserve order)
         for (uint256 t = 0; t < NUM_TIERS; t++) {
             uint256[] calldata arr = rankedItemIdsByTier[t];
 
@@ -247,8 +237,8 @@ contract TierList {
 
                 require(items[tlId][itemId].active, "Item removed");
                 // NOTE: no duplicate protection; duplicates will overcount.
-                // If you want strict uniqueness across tiers, say so and I’ll add it.
-
+                // we count that as fine for now because we don’t really care
+                // and preventing it would cause quite a bit of extra gas use.
                 userVotes[tlId][msg.sender][t].push(itemId);
                 voteCounts[tlId][itemId][t]++;
             }
