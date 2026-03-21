@@ -36,7 +36,7 @@ export function TierListItem(props: TierListItemProps) {
           <img
             src={props.cover}
             alt="Movie"
-            className="aspect-square bg-contain"
+            className="aspect-square size-26 bg-contain"
             loading="lazy"
             fetchPriority="auto"
           />
