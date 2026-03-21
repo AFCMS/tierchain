@@ -13,6 +13,7 @@ The provided UI allows making and posting a tier list, and can also use provided
 - [Hardhat 3](https://hardhat.org) for smart contract development, local test chain and deployment scripts.
 - [React](https://react.dev), [Tailwind CSS](https://tailwindcss.com) and [daisyUI](https://daisyui.com) for the frontend, with [Vite](https://vitejs.dev) as the build tool.
 - [Wagmi](https://wagmi.sh) for Ethereum wallet integration in the frontend.
+- [Alchemy](https://www.alchemy.com) for Ethereum node access, used in the frontend to interact with the smart contract.
 - [Sepolia test network](https://sepolia.etherscan.io) for deploying the smart contract in a live environment without using real Ethereum.
 
 ## Running && handy copypastes

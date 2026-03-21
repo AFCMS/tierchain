@@ -9,6 +9,9 @@ import vivaldi from "./assets/vivaldi_2015.svg";
 import safari from "./assets/safari_2018.svg";
 import arc from "./assets/arc_2024.svg";
 import internet_explorer from "./assets/internet_explorer_2011.svg";
+import librewolf from "./assets/librewolf_2022.svg";
+
+//?format=avif&h=80&w=80&imagetools
 
 export type Ranking = "S" | "A" | "B" | "C" | "D";
 
