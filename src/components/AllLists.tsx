@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useReadContract } from "wagmi";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
@@ -35,7 +35,7 @@ export function AllLists({ includeInactive = false }: AllListsProps) {
     query: { enabled },
   });
 
-  const lists = (data ?? []) as TierListView[];
+  const lists = useMemo(() => (data ?? []) as TierListView[], [data]);
 
   const [uiLists, setUiLists] = useState<TierListView[]>([]);
 

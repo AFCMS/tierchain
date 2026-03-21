@@ -92,9 +92,11 @@ export function ListDetail() {
         </div>
 
         <TierList
+          key={userAddress ?? "self"}
           tlId={Number(_id)}
           items={derived.buckets}
           editable={!userAddress}
+          userAddress={userAddress}
         />
 
         {!userAddress && (

@@ -32,6 +32,7 @@ export interface TierListProps {
   readonly tlId: number;
   readonly items: TierListBuckets;
   readonly editable?: boolean;
+  readonly userAddress?: string | null;
 }
 
 const TIER_NAMES: Array<Ranking | "POOL"> = ["S", "A", "B", "C", "D", "POOL"];
@@ -173,7 +174,7 @@ function moveAllItemsToPool(buckets: TierListBuckets): TierListBuckets {
 }
 
 export function TierList(props: TierListProps) {
-  const { tlId, items, editable = true } = props;
+  const { tlId, items, editable = true, userAddress } = props;
 
   const { address } = useConnection();
   const write = useWriteContract();
@@ -181,12 +182,19 @@ export function TierList(props: TierListProps) {
 
   const resetModalRef = useRef<HTMLDialogElement | null>(null);
 
+  // When viewing someone else's submission, use their address; otherwise use connected wallet
+  const votesAddress =
+    !editable && userAddress ? (userAddress as Address) : address;
+
   const userVotesQuery = useReadContract({
     address: tierListAddress,
     abi,
     functionName: "getUserVotes",
-    args: tierListAddress && address ? [BigInt(tlId), address] : undefined,
-    query: { enabled: Boolean(tierListAddress && address) },
+    args:
+      tierListAddress && votesAddress
+        ? [BigInt(tlId), votesAddress]
+        : undefined,
+    query: { enabled: Boolean(tierListAddress && votesAddress) },
   });
 
   const [originalItems, setOriginalItems] = useState<TierListBuckets>(() =>
