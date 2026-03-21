@@ -39,8 +39,6 @@ contract TierList {
         uint256 submissionIndex
     );
 
-    event RankingDeleted(address indexed voter, uint256 indexed tierListId);
-
     // ──────────────────────────────────────────────────────────────────────────────
     // DATA STRUCTURES
     // ──────────────────────────────────────────────────────────────────────────────
@@ -294,26 +292,6 @@ contract TierList {
                 }
             }
         }
-    }
-
-    function deleteRanking(
-        uint256 tlId
-    ) external tierListMustExist(tlId) tierListActive(tlId) {
-        for (uint256 t = 0; t < NUM_TIERS; t++) {
-            uint256[] storage prevArr = userVotes[tlId][msg.sender][t];
-
-            for (uint256 i = 0; i < prevArr.length; i++) {
-                uint256 itemId = prevArr[i];
-
-                if (items[tlId][itemId].active) {
-                    voteCounts[tlId][itemId][t]--;
-                }
-            }
-
-            delete userVotes[tlId][msg.sender][t];
-        }
-
-        emit RankingDeleted(msg.sender, tlId);
     }
 
     // ──────────────────────────────────────────────────────────────────────────────
