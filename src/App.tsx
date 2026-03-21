@@ -20,6 +20,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/list/:id" element={<ListDetail />} />
+            <Route path="/list/:id/address/:address" element={<ListDetail />} />
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>

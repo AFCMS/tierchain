@@ -10,7 +10,14 @@ import { useDerivedData } from "../hooks/derived_data";
 const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS;
 
 export function ListDetail() {
-  const { id } = useParams<{ id: string }>();
+  /**
+   * - `id`: required, the id of the tier list to show.
+   * - `address`: optional, if present we show a non-editable view of the tier list with that address's submission highlighted.
+   */
+  const { id, address: userAddress } = useParams<{
+    id: string;
+    address: string | undefined;
+  }>();
 
   const idNum = id ? Number(id) : NaN;
   const _id = Number.isInteger(idNum) && idNum >= 0 ? BigInt(idNum) : undefined;
@@ -84,11 +91,17 @@ export function ListDetail() {
           </p>
         </div>
 
-        <TierList tlId={Number(_id)} items={derived.buckets} editable={true} />
+        <TierList
+          tlId={Number(_id)}
+          items={derived.buckets}
+          editable={!userAddress}
+        />
 
-        <div className="mt-8">
-          <LatestSubmissions id={_id} />
-        </div>
+        {!userAddress && (
+          <div className="mt-8">
+            <LatestSubmissions id={_id} />
+          </div>
+        )}
       </div>
     </div>
   );

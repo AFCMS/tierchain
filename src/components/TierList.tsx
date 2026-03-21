@@ -8,6 +8,8 @@ import {
 } from "wagmi";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Address } from "viem";
+import { Link } from "react-router";
+import { ChevronLeft, Eye, ListCheck, ListRestart, Share } from "lucide-react";
 
 import { useWatchItemRemoved, useWatchItemsAdded } from "../hooks/contract";
 
@@ -16,6 +18,8 @@ import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 import { type Ranking } from "./ItemRankings";
 import { TierListTier } from "./TierListTier";
 import { TierListScores } from "./TierListScores";
+
+import { AddressLink } from "./AddressLink";
 
 export interface TierItemDef {
   readonly id: number;
@@ -491,25 +495,83 @@ export function TierList(props: TierListProps) {
           setGlobalVotesItem={setGlobalVotesItem}
         />
 
-        <div className="my-4 flex w-full justify-end gap-2">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={handleResetClick}
-            disabled={!editable || write.isPending}
-          >
-            Reset
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleUpdateUserData}
-            disabled={
-              !editable || !address || !hasPendingChanges || write.isPending
-            }
-          >
-            {address ? "Save" : "Connect wallet to be able to save"}
-          </button>
+        <div className="my-4 flex w-full items-center justify-between gap-2">
+          <div className="flex gap-2">
+            {!props.editable ? (
+              <>
+                <Link to={`/list/${props.tlId}`} className="btn btn-secondary">
+                  <ChevronLeft />
+                  View List
+                </Link>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    const url = window.location.href;
+
+                    if ("share" in window.navigator) {
+                      window.navigator.share({
+                        url: url,
+                      });
+                    } else {
+                      navigator.clipboard.writeText(url);
+                      alert("Link copied to clipboard");
+                    }
+                  }}
+                >
+                  <Share />
+                  Share
+                </button>
+              </>
+            ) : address ? (
+              <Link
+                to={`/list/${props.tlId}/address/${address ?? ""}`}
+                className="btn btn-secondary"
+              >
+                <Eye />
+                View my submission
+              </Link>
+            ) : (
+              <div className="btn btn-secondary btn-disabled">
+                <Eye />
+                View my submission
+              </div>
+            )}
+          </div>
+          <div className="flex flex-row gap-2">
+            {props.editable ? (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleResetClick}
+                  disabled={!editable || write.isPending}
+                >
+                  <ListRestart />
+                  Reset
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleUpdateUserData}
+                  disabled={
+                    !editable ||
+                    !address ||
+                    !hasPendingChanges ||
+                    write.isPending
+                  }
+                >
+                  <ListCheck />
+                  {address ? "Save" : "Connect wallet to be able to save"}
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="font-mono text-sm">Rankings by</span>
+                <span className="font-mono text-sm">·</span>
+                <AddressLink address={address!} />
+              </>
+            )}
+          </div>
         </div>
       </DragDropContext>
     </div>
