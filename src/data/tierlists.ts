@@ -62,11 +62,11 @@ import linus from "./assets/vibe-coders/linus.png?format=avif&h=80&w=80&imagetoo
 import puechamp from "./assets/vibe-coders/puechamp.png?format=avif&h=80&w=80&imagetools.png";
 import reddji from "./assets/vibe-coders/reddji.png?format=avif&h=80&w=80&imagetools";
 import zenkai from "./assets/vibe-coders/zenkai.png?format=avif&h=80&w=80&imagetools";
-import afcm from "./assets/vibe-coders/afcm.png?format=avif&h=80&w=80&imagetools"
+import afcm from "./assets/vibe-coders/afcm.png?format=avif&h=80&w=80&imagetools";
 
 // 6
 
-import s_rank from "./assets/s-rank.png?format=avif&h=80&w=80&imagetools"
+import s_rank from "./assets/s-rank.png?format=avif&h=104&w=104&imagetools";
 
 //?format=avif&h=80&w=80&imagetools
 
@@ -144,7 +144,7 @@ export const tierlistsAssets = {
     puechamp: puechamp,
     reddji: reddji,
     zenkai: zenkai,
-    linus: linus
+    linus: linus,
   },
   6: {
     cover: s_rank,
@@ -153,8 +153,8 @@ export const tierlistsAssets = {
     red_flags: red_flag,
     resident_evil: leon,
     vibe_coding: copilot,
-    tier_lists: s_rank
-  }
+    tier_lists: s_rank,
+  },
 } as const satisfies TierListAssets;
 
 export function hasTierListAssets(
