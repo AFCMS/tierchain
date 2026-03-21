@@ -3,6 +3,12 @@
     "fluid": true,
     "framework": "vite",
     "buildCommand": "pnpm run build:contract && pnpm run build",
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
+        }
+    ],
     "headers": [
         {
             "source": "/(.*)",
