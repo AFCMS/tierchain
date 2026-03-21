@@ -470,7 +470,7 @@ export function TierList(props: TierListProps) {
               !editable || !address || !hasPendingChanges || write.isPending
             }
           >
-            {address ? "Update user data" : "Connect wallet to update data"}
+            {address ? "Save" : "Connect wallet to be able to save"}
           </button>
         </div>
       </DragDropContext>
