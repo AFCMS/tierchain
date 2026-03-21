@@ -114,7 +114,8 @@ function loadTierlistDefinition(filePath: string): TierlistDefinition {
       }
       return item.trim();
     })
-    .filter((item) => item.length > 0);
+    .filter((item) => item.length > 0)
+    .sort();
 
   return {
     name: parsed.name.trim(),
