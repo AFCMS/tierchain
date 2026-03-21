@@ -220,16 +220,6 @@ contract TierList {
     ) external tierListMustExist(tlId) tierListActive(tlId) {
         require(rankedItemIdsByTier.length == NUM_TIERS, "Invalid tiers");
 
-        // Require at least one ranked item total (any tier non-empty)
-        bool hasAny = false;
-        for (uint256 t = 0; t < NUM_TIERS; t++) {
-            if (rankedItemIdsByTier[t].length > 0) {
-                hasAny = true;
-                break;
-            }
-        }
-        require(hasAny, "Empty ranking");
-
         // 1) Clear existing ranking (decrement aggregates)
         for (uint256 t = 0; t < NUM_TIERS; t++) {
             uint256[] storage prevArr = userVotes[tlId][msg.sender][t];

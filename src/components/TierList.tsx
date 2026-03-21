@@ -361,12 +361,6 @@ export function TierList(props: TierListProps) {
       updatedItems.D.map((x) => BigInt(x.id)),
     ];
 
-    const hasAny = ranked.some((arr) => arr.length > 0);
-    if (!hasAny) {
-      console.error("Empty ranking (contract will revert)");
-      return;
-    }
-
     write.mutate({
       address: tierListAddress,
       abi,
