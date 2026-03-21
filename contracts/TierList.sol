@@ -238,7 +238,8 @@ contract TierList {
                 require(items[tlId][itemId].active, "Item removed");
                 // NOTE: no duplicate protection; duplicates will overcount.
                 // we count that as fine for now because we don’t really care
-                // and preventing it would cause quite a bit of extra gas use.
+                // and preventing it would cause quite a bit of extra gas use that.
+                // enable it by calling the below function _revertIfDuplicateIds.
                 userVotes[tlId][msg.sender][t].push(itemId);
                 voteCounts[tlId][itemId][t]++;
             }
