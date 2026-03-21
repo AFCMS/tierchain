@@ -1,5 +1,5 @@
 import { useReadContract, useWatchContractEvent, useBlockNumber } from "wagmi";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 import type { Address, Log } from "viem";
@@ -24,29 +24,26 @@ function useTierListEventWatcher<TArgs>(params: {
 }) {
   const { enabled, eventName, parseArgs, onEvent } = params;
 
-  // same as commit: just grab a block number snapshot
   const { data: bn } = useBlockNumber({ watch: false });
+  const [startBlockExclusive, setStartBlockExclusive] = useState<bigint | undefined>(
+    undefined,
+  );
 
-  // stable "everything <= this is past"
-  const startBlockRef = useRef<bigint | null>(null);
-
-  // reset behavior when disabled, so re-enabling acts like "from now"
+  // Reset when disabled so next enable re-captures "now"
   useEffect(() => {
-    if (!enabled) {
-      startBlockRef.current = null;
-      return;
-    }
+    (async () => {
+      if (!enabled) setStartBlockExclusive(undefined);
+    })()
+  }, [enabled]);
 
-    if (startBlockRef.current !== null) return;
+  // Capture once when enabling (mirrors the commit’s "set ref once" behavior)
+  useEffect(() => {
+    if (!enabled) return;
+    if (startBlockExclusive !== undefined) return;
     if (bn === undefined) return;
+    (async () => { setStartBlockExclusive(bn) })(); // everything <= this is "past"
+  }, [enabled, bn, startBlockExclusive]);
 
-    startBlockRef.current = bn;
-  }, [enabled, bn]);
-
-  const startBlockExclusive = startBlockRef.current ?? undefined;
-
-  // critical: don't subscribe until we have a startBlockExclusive,
-  // otherwise we can receive the last event before we can filter it.
   const watchEnabled = enabled && startBlockExclusive !== undefined;
 
   return useWatchContractEvent({
@@ -58,7 +55,6 @@ function useTierListEventWatcher<TArgs>(params: {
     onLogs: (logs: Log[]) => {
       for (const l of logs) {
         const blockNumber = getLogBlockNumber(l);
-
         if (
           startBlockExclusive !== undefined &&
           blockNumber !== undefined &&
