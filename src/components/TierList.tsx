@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DragDropContext, type DraggableLocation } from "@hello-pangea/dnd";
 import { useReadContract, useWriteContract, useConnection } from "wagmi";
 import type { Address } from "viem";
@@ -145,11 +145,30 @@ function addItemsToPool(
   return next;
 }
 
+function moveAllItemsToPool(buckets: TierListBuckets): TierListBuckets {
+  const next = cloneBuckets(buckets);
+
+  const allRanked = [...next.S, ...next.A, ...next.B, ...next.C, ...next.D];
+  next.S = [];
+  next.A = [];
+  next.B = [];
+  next.C = [];
+  next.D = [];
+
+  // Put ranked items back at the front of the pool, preserving their relative order
+  // (top-to-bottom tier order, then existing order within each tier)
+  next.POOL = [...allRanked, ...next.POOL];
+
+  return next;
+}
+
 export function TierList(props: TierListProps) {
   const { tlId, items, editable = true } = props;
 
   const { address } = useConnection();
   const write = useWriteContract();
+
+  const resetModalRef = useRef<HTMLDialogElement | null>(null);
 
   const userVotesQuery = useReadContract({
     address: tierListAddress,
@@ -179,8 +198,7 @@ export function TierList(props: TierListProps) {
     setGlobalVotesItemName(name);
   }
 
-  // If the user has an existing ranking, use it as the initial state.
-  // Also re-run when tlId/address changes.
+  // If the user has an existing ranking, use it as the initial state.  // Also re-run when tlId/address changes.
   useEffect(() => {
     // When not connected, fall back to the passed-in buckets.
     if (!address) {
@@ -273,8 +291,12 @@ export function TierList(props: TierListProps) {
     });
   }
 
-  function handleResetUserData() {
-    setUpdatedItems(cloneBuckets(originalItems));
+  function handleResetClick() {
+    resetModalRef.current?.showModal();
+  }
+
+  function handleConfirmReset() {
+    setUpdatedItems((cur) => moveAllItemsToPool(cur));
   }
 
   function handleUpdateUserData() {
@@ -311,6 +333,30 @@ export function TierList(props: TierListProps) {
 
   return (
     <div className="w-full select-none" draggable={false}>
+      <dialog ref={resetModalRef} className="modal">
+        <div className="modal-box">
+          <h3 className="text-lg font-bold">Are you sure?</h3>
+          <p className="py-4">This will move every item back into the pool.</p>
+          <div className="modal-action">
+            <form method="dialog" className="flex gap-2">
+              <button type="submit" className="btn">
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-secondary"
+                onClick={handleConfirmReset}
+              >
+                Reset
+              </button>
+            </form>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+
       <DragDropContext
         onDragEnd={(result) => {
           if (!result.destination || !editable) {
@@ -411,8 +457,8 @@ export function TierList(props: TierListProps) {
           <button
             type="button"
             className="btn btn-secondary"
-            onClick={handleResetUserData}
-            disabled={!editable || !hasPendingChanges || write.isPending}
+            onClick={handleResetClick}
+            disabled={!editable || write.isPending}
           >
             Reset
           </button>
