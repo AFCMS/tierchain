@@ -8,7 +8,9 @@ import {
   getAddress,
   http,
   type Chain,
+  type WalletClient,
 } from "viem";
+import type { LocalAccount } from "viem/accounts";
 import { privateKeyToAccount } from "viem/accounts";
 import { hardhat, sepolia } from "viem/chains";
 
@@ -20,10 +22,11 @@ type TierlistDefinition = {
 
 type CliContext = {
   publicClient: ReturnType<typeof createPublicClient>;
-  walletClient: ReturnType<typeof createWalletClient>;
+  walletClient: WalletClient;
   chain: Chain;
   contractAddress: `0x${string}`;
   abi: readonly unknown[];
+  account: LocalAccount;
   accountAddress: `0x${string}`;
 };
 
@@ -213,6 +216,7 @@ async function createCliContext(options: {
     chain,
     contractAddress,
     abi,
+    account,
     accountAddress: account.address,
   };
 }
@@ -246,7 +250,7 @@ async function executeTransaction(params: {
   const hash = await params.context.walletClient.writeContract({
     address: params.context.contractAddress,
     abi: params.context.abi,
-    account: params.context.accountAddress,
+    account: params.context.account,
     chain: params.context.chain,
     functionName: params.functionName,
     args: params.args,
