@@ -1,0 +1,15 @@
+{
+    "$schema": "./tierlist.schema.json",
+    "name": "Vibe coding",
+    "description": "Who’s the biggest vibe coder ?",
+    "items": [
+        "kategaia",
+        "afcm",
+        "akarien",
+        "haven",
+        "reddji",
+        "puechamp",
+        "zenkai",
+        "linus"
+    ]
+}

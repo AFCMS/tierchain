@@ -52,6 +52,18 @@ import sheva from "./assets/re/sheva_alomar.jpg?format=avif&quality=100&h=80&w=8
 import carlos from "./assets/re/carlos_olivera.jpg?format=avif&quality=100&h=80&w=80&imagetools";
 import sherry from "./assets/re/sherry_birkin.jpg?format=avif&quality=100&h=80&w=80&imagetools";
 
+// 5
+
+import akarien from "./assets/vibe-coders/akarien.jpg?format=avif&h=80&w=80&imagetools";
+import copilot from "./assets/vibe-coders/copilot.svg?format=avif&h=80&w=80&imagetools";
+import haven from "./assets/vibe-coders/haven.png?format=avif&h=80&w=80&imagetools";
+import kategaia from "./assets/vibe-coders/kategaia.png?format=avif&h=80&w=80&imagetools";
+import linus from "./assets/vibe-coders/linus.png?format=avif&h=80&w=80&imagetools";
+import puechamp from "./assets/vibe-coders/puechamp.png?format=avif&h=80&w=80&imagetools.png";
+import reddji from "./assets/vibe-coders/reddji.png?format=avif&h=80&w=80&imagetools";
+import zenkai from "./assets/vibe-coders/zenkai.png?format=avif&h=80&w=80&imagetools";
+import afcm from "./assets/vibe-coders/afcm.png?format=avif&h=80&w=80&imagetools"
+
 //?format=avif&h=80&w=80&imagetools
 
 export type Ranking = "S" | "A" | "B" | "C" | "D";
@@ -119,6 +131,17 @@ export const tierlistsAssets = {
     "Carlos Oliveira": carlos,
     "Sherry Birkin": sherry,
   },
+  5: {
+    cover: copilot,
+    akarien: akarien,
+    afcm: afcm,
+    haven: haven,
+    kategaia: kategaia,
+    puechamp: puechamp,
+    reddji: reddji,
+    zenkai: zenkai,
+    linus: linus
+  }
 } as const satisfies TierListAssets;
 
 export function hasTierListAssets(
