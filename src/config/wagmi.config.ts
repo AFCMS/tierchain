@@ -1,4 +1,4 @@
-import { createConfig, http } from "wagmi";
+import { createConfig, fallback, http, webSocket } from "wagmi";
 import { hardhat, mainnet, sepolia } from "wagmi/chains";
 import { metaMask } from "wagmi/connectors";
 
@@ -23,9 +23,12 @@ function createSingleChainConfig(
       chains: [hardhat],
       connectors: [metaMask()],
       transports: {
-        [hardhat.id]: http(
-          import.meta.env.VITE_HARDHAT_RPC_URL ?? "http://127.0.0.1:8545",
-        ),
+        [hardhat.id]: fallback([
+          webSocket(
+            import.meta.env.VITE_HARDHAT_WS_RPC_URL ?? "ws://127.0.0.1:8545",
+          ),
+          http(import.meta.env.VITE_HARDHAT_RPC_URL ?? "http://127.0.0.1:8545"),
+        ]),
       },
     });
   }
@@ -36,7 +39,10 @@ function createSingleChainConfig(
       chains: [mainnet],
       connectors: [metaMask()],
       transports: {
-        [mainnet.id]: http(import.meta.env.VITE_MAINNET_RPC_URL),
+        [mainnet.id]: fallback([
+          webSocket(import.meta.env.VITE_MAINNET_WS_RPC_URL),
+          http(import.meta.env.VITE_MAINNET_RPC_URL),
+        ]),
       },
     });
   }
@@ -46,7 +52,10 @@ function createSingleChainConfig(
     chains: [sepolia],
     connectors: [metaMask()],
     transports: {
-      [sepolia.id]: http(import.meta.env.VITE_SEPOLIA_RPC_URL),
+      [sepolia.id]: fallback([
+        webSocket(import.meta.env.VITE_SEPOLIA_WS_RPC_URL),
+        http(import.meta.env.VITE_SEPOLIA_RPC_URL),
+      ]),
     },
   });
 }
