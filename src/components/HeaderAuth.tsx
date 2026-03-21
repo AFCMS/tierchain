@@ -2,6 +2,8 @@ import { useConnect, useConnection, useDisconnect } from "wagmi";
 import { useBalance } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { formatUnits } from "viem";
+import { LogIn, LogOut } from "lucide-react";
+
 import { AddressLink } from "./AddressLink";
 
 /**
@@ -38,20 +40,37 @@ export function HeaderAuth() {
               : "_.____ ETH"}
           </span>
           <button
-            className="btn btn-ghost btn-sm"
+            className="btn"
             disabled={disconnect.isPending}
             onClick={() => disconnect.mutate()}
           >
-            {disconnect.isPending ? "Disconnecting..." : "Disconnect"}
+            {disconnect.isPending ? (
+              <>
+                <span className="loading loading-spinner"></span>
+                Disconnecting...
+              </>
+            ) : (
+              <>
+                <LogOut /> Disconnect
+              </>
+            )}
           </button>
         </div>
       ) : (
         <button
-          className="btn btn-ghost btn-sm"
+          className="btn"
           disabled={connect.isPending}
           onClick={() => connect.mutate({ connector: injected() })}
         >
-          {connect.isPending ? "Connecting..." : "Connect"}
+          {connect.isPending ? (
+            <>
+              <span className="loading loading-spinner"></span>Connecting...
+            </>
+          ) : (
+            <>
+              <LogIn /> Connect
+            </>
+          )}
         </button>
       )}
     </div>
