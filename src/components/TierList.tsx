@@ -3,6 +3,8 @@ import { DragDropContext, type DraggableLocation } from "@hello-pangea/dnd";
 import { useReadContract, useWriteContract, useConnection } from "wagmi";
 import type { Address } from "viem";
 
+import { useWatchItemRemoved, useWatchItemsAdded } from "../hooks/contract";
+
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 
 import { type Ranking } from "./ItemRankings";
@@ -107,6 +109,42 @@ function bucketsFromUserVotes(
   return out;
 }
 
+function removeItemEverywhere(
+  buckets: TierListBuckets,
+  itemId: number,
+): TierListBuckets {
+  const next = cloneBuckets(buckets);
+
+  next.S = next.S.filter((x) => x.id !== itemId);
+  next.A = next.A.filter((x) => x.id !== itemId);
+  next.B = next.B.filter((x) => x.id !== itemId);
+  next.C = next.C.filter((x) => x.id !== itemId);
+  next.D = next.D.filter((x) => x.id !== itemId);
+  next.POOL = next.POOL.filter((x) => x.id !== itemId);
+
+  return next;
+}
+
+function addItemsToPool(
+  buckets: TierListBuckets,
+  newItems: readonly TierItemDef[],
+): TierListBuckets {
+  const next = cloneBuckets(buckets);
+
+  const seen = new Set<number>();
+  for (const tierName of TIER_NAMES) {
+    for (const it of next[tierName]) seen.add(it.id);
+  }
+
+  for (const it of newItems) {
+    if (seen.has(it.id)) continue;
+    next.POOL = [it, ...next.POOL]; // prepend newest items to POOL
+    seen.add(it.id);
+  }
+
+  return next;
+}
+
 export function TierList(props: TierListProps) {
   const { tlId, items, editable = true } = props;
 
@@ -166,6 +204,35 @@ export function TierList(props: TierListProps) {
     () => !areBucketsEqual(originalItems, updatedItems),
     [originalItems, updatedItems],
   );
+
+  useWatchItemsAdded(true, ({ tierListId, itemIds, names }) => {
+    if (Number(tierListId) !== tlId) return;
+
+    // defensive: contract should keep lengths aligned, but don't assume
+    const n = Math.min(itemIds.length, names.length);
+    if (n === 0) return;
+
+    const newItems: TierItemDef[] = [];
+    for (let i = 0; i < n; i++) {
+      newItems.push({ id: Number(itemIds[i]!), name: names[i]! });
+    }
+
+    // Add to both original + updated so "pending changes" doesn't flicker
+    setOriginalItems((cur) => addItemsToPool(cur, newItems));
+    setUpdatedItems((cur) => addItemsToPool(cur, newItems));
+  });
+
+  useWatchItemRemoved(true, ({ tierListId, itemId }) => {
+    if (Number(tierListId) !== tlId) return;
+
+    const id = Number(itemId);
+
+    setOriginalItems((cur) => removeItemEverywhere(cur, id));
+    setUpdatedItems((cur) => removeItemEverywhere(cur, id));
+
+    // if scores view is tracking this removed item, clear it
+    props.setGlobalVotesItemId?.((cur) => (cur === id ? null : cur));
+  });
 
   function reorderTierList(
     source: DraggableLocation<string>,

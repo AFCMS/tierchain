@@ -23,7 +23,6 @@ export function ListDetail() {
 
   const derived = useDerivedData(tierListQuery.data, itemsQuery.data);
 
-  // early returns AFTER hooks
   if (!tierListAddress) {
     return (
       <div role="alert" className="alert alert-error">

@@ -132,3 +132,60 @@ export function useWatchRankingSubmitted(
     },
   });
 }
+
+export type ItemsAddedLogArgs = {
+  tierListId: bigint;
+  itemIds: readonly bigint[];
+  names: readonly string[];
+};
+
+export type ItemRemovedLogArgs = {
+  tierListId: bigint;
+  itemId: bigint;
+  name: string;
+};
+
+type OnItemsAdded = (args: ItemsAddedLogArgs) => void;
+type OnItemRemoved = (args: ItemRemovedLogArgs) => void;
+
+export function useWatchItemsAdded(enabled: boolean, onItemsAdded: OnItemsAdded) {
+  return useWatchContractEvent({
+    address: tierListAddress,
+    abi: abi,
+    eventName: "ItemsAdded",
+    enabled,
+    strict: true,
+    onLogs: (logs) => {
+      for (const l of logs) {
+        const args = (l as any).args as ItemsAddedLogArgs | undefined;
+        if (!args) continue;
+        if (args.tierListId === undefined) continue;
+        if (!args.itemIds || !args.names) continue;
+        onItemsAdded(args);
+      }
+    },
+  });
+}
+
+export function useWatchItemRemoved(
+  enabled: boolean,
+  onItemRemoved: OnItemRemoved,
+) {
+  return useWatchContractEvent({
+    address: tierListAddress,
+    abi: abi,
+    eventName: "ItemRemoved",
+    enabled,
+    strict: true,
+    onLogs: (logs) => {
+      for (const l of logs) {
+        const args = (l as any).args as ItemRemovedLogArgs | undefined;
+        if (!args) continue;
+        if (args.tierListId === undefined) continue;
+        if (args.itemId === undefined) continue;
+        if (args.name === undefined) continue;
+        onItemRemoved(args);
+      }
+    },
+  });
+}
