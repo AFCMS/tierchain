@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { Link } from "react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { useBlockNumber } from "wagmi";
 import { useGetLatestSubmissions, useWatchRankingSubmitted } from "../hooks/contract";
 import { AddressLink } from "./AddressLink";
 import type { Address } from "viem";
@@ -30,23 +31,36 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
 
   const [liveRows, setLiveRows] = useState<readonly LiveRow[]>([]);
 
+  const { data: bn } = useBlockNumber({ watch: false });
+  const startBlockRef = useRef<bigint | null>(null);
+
   useEffect(() => {
     if (submissionsOffset !== 0n) setLiveRows([]);
   }, [submissionsOffset]);
 
-  useWatchRankingSubmitted(true, ({ voter, tierListId, submissionIndex }) => {
-    if (tierListId !== props.id) return;
-    if (submissionsOffset !== 0n) return;
+  useEffect(() => {
+    if (startBlockRef.current !== null) return;
+    if (bn === undefined) return;
+    startBlockRef.current = bn; // everything <= this is "past"
+  }, [bn]);
+  
+  useWatchRankingSubmitted(
+    submissionsOffset === 0n && startBlockRef.current !== null,
+    ({ voter, tierListId, submissionIndex }) => {
+      if (tierListId !== props.id) return;
+      if (submissionsOffset !== 0n) return;
 
-    setLiveRows((cur) => {
-      if (cur.some((r) => r.submissionIndex === submissionIndex)) return cur;
+      setLiveRows((cur) => {
+        if (cur.some((r) => r.submissionIndex === submissionIndex)) return cur;
 
-      const next = [{ voter, submissionIndex }, ...cur];
+        const next = [{ voter, submissionIndex }, ...cur];
 
-      // keep it bounded so UI doesn't grow forever if user sits here
-      return next.slice(0, Number(PAGE_SIZE));
-    });
-  });
+        // keep it bounded so UI doesn't grow forever if user sits here
+        return next.slice(0, Number(PAGE_SIZE));
+      });
+    },
+    startBlockRef.current ?? undefined,
+  );
 
   const rows = useMemo(() => {
     if (submissionsOffset !== 0n) return latestSubmitters;

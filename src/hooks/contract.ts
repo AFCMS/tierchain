@@ -112,21 +112,31 @@ type OnRankingSubmitted = (args: RankingSubmittedLogArgs) => void;
 export function useWatchRankingSubmitted(
   enabled: boolean,
   onRankingSubmitted: OnRankingSubmitted,
+  startBlockExclusive?: bigint, // ignore <= this
 ) {
   return useWatchContractEvent({
     address: tierListAddress,
-    abi: abi,
+    abi,
     eventName: "RankingSubmitted",
     enabled,
     strict: true,
     onLogs: (logs: Log[]) => {
       for (const l of logs) {
-        // wagmi/viem types here can be annoying; keep it tight but not magical
-        const args = (l as unknown as {args: RankingSubmittedLogArgs}).args;
-        if (!args) continue;
-        if (!args.voter) continue;
+        // IMPORTANT: blockNumber/txHash/logIndex are on the log itself
+        const blockNumber = (l as unknown as {blockNumber: bigint}).blockNumber;
+        if (
+          startBlockExclusive !== undefined &&
+          blockNumber !== undefined &&
+          blockNumber <= startBlockExclusive
+        ) {
+          continue;
+        }
+
+        const args = (l as unknown as { args: RankingSubmittedLogArgs }).args;
+        if (!args?.voter) continue;
         if (args.tierListId === undefined) continue;
         if (args.submissionIndex === undefined) continue;
+
         onRankingSubmitted(args);
       }
     },
@@ -144,7 +154,7 @@ type OnItemsAdded = (args: ItemsAddedLogArgs) => void;
 export function useWatchItemsAdded(enabled: boolean, onItemsAdded: OnItemsAdded) {
   return useWatchContractEvent({
     address: tierListAddress,
-    abi: abi,
+    abi,
     eventName: "ItemsAdded",
     enabled,
     strict: true,
@@ -174,7 +184,7 @@ export function useWatchItemRemoved(
 ) {
   return useWatchContractEvent({
     address: tierListAddress,
-    abi: abi,
+    abi,
     eventName: "ItemRemoved",
     enabled,
     strict: true,
@@ -207,7 +217,7 @@ export function useWatchTierListCreated(
 ) {
   return useWatchContractEvent({
     address: tierListAddress,
-    abi: abi,
+    abi,
     eventName: "TierListCreated",
     enabled,
     strict: true,
@@ -237,7 +247,7 @@ export function useWatchTierListStatusChanged(
 ) {
   return useWatchContractEvent({
     address: tierListAddress,
-    abi: abi,
+    abi,
     eventName: "TierListStatusChanged",
     enabled,
     strict: true,
