@@ -217,10 +217,11 @@ export function TierList(props: TierListProps) {
     setGlobalVotesItemName(name);
   }
 
-  // If the user has an existing ranking, use it as the initial state.  // Also re-run when tlId/address changes.
+  // If the user has an existing ranking, use it as the initial state.
+  // Also re-run when tlId/address changes.
   useEffect(() => {
-    // When not connected, fall back to the passed-in buckets.
-    if (!address) {
+    // When we don't have a target address to load votes for, fall back to passed-in buckets.
+    if (!votesAddress) {
       const next = cloneBuckets(items);
       setOriginalItems(next);
       setUpdatedItems(next);
@@ -235,8 +236,8 @@ export function TierList(props: TierListProps) {
     const next = bucketsFromUserVotes(items, votes);
     setOriginalItems(next);
     setUpdatedItems(next);
-  }, [tlId, address, items, userVotesQuery.data]);
-
+  }, [tlId, votesAddress, items, userVotesQuery.data]);
+  
   const hasPendingChanges = useMemo(
     () => !areBucketsEqual(originalItems, updatedItems),
     [originalItems, updatedItems],
