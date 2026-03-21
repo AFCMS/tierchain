@@ -102,10 +102,11 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
             rows.map((row, i) => {
               const acct = typeof row === "string" ? (row as Address) : row.acct;
               const live = typeof row === "string" ? undefined : row.live;
-
+            
               const num = live
-                ? Number(live.submissionIndex) + 1
-                : Number(submissionsOffset) + i + 1;
+                ? i
+                : Number(submissionsOffset) + i;
+            
 
               return (
                 <tr key={`${acct}-${i}`}>
