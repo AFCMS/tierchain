@@ -1,0 +1,17 @@
+{
+    "$schema": "./tierlist.schema.json",
+    "name": "Red flags",
+    "description": "Rate the severity of these red flags",
+    "items": [
+        "love_bombing",
+        "league_of_legends",
+        "domestical_violence",
+        "ghosting",
+        "animal_cruelty",
+        "asks_for_money",
+        "isolating",
+        "valorant",
+        "insults",
+        "loves_chromium"
+    ]
+}
