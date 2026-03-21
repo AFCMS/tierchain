@@ -1,9 +1,80 @@
-import { useReadContract, useWatchContractEvent } from "wagmi";
+import { useReadContract, useWatchContractEvent, useBlockNumber } from "wagmi";
+import { useEffect, useRef } from "react";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 import type { Address, Log } from "viem";
 
 const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS!;
+
+function getLogBlockNumber(l: Log): bigint | undefined {
+  return (l as unknown as { blockNumber?: bigint }).blockNumber;
+}
+
+/**
+ * Mirrors commit 2a8c7e0a... behavior:
+ * - capture a "start block" once
+ * - only enable the watcher after we have it
+ * - ignore logs whose blockNumber <= startBlockExclusive
+ */
+function useTierListEventWatcher<TArgs>(params: {
+  enabled: boolean;
+  eventName: string;
+  parseArgs: (l: Log) => TArgs | undefined;
+  onEvent: (args: TArgs) => void;
+}) {
+  const { enabled, eventName, parseArgs, onEvent } = params;
+
+  // same as commit: just grab a block number snapshot
+  const { data: bn } = useBlockNumber({ watch: false });
+
+  // stable "everything <= this is past"
+  const startBlockRef = useRef<bigint | null>(null);
+
+  // reset behavior when disabled, so re-enabling acts like "from now"
+  useEffect(() => {
+    if (!enabled) {
+      startBlockRef.current = null;
+      return;
+    }
+
+    if (startBlockRef.current !== null) return;
+    if (bn === undefined) return;
+
+    startBlockRef.current = bn;
+  }, [enabled, bn]);
+
+  const startBlockExclusive = startBlockRef.current ?? undefined;
+
+  // critical: don't subscribe until we have a startBlockExclusive,
+  // otherwise we can receive the last event before we can filter it.
+  const watchEnabled = enabled && startBlockExclusive !== undefined;
+
+  return useWatchContractEvent({
+    address: tierListAddress,
+    abi,
+    eventName,
+    enabled: watchEnabled,
+    strict: true,
+    onLogs: (logs: Log[]) => {
+      for (const l of logs) {
+        const blockNumber = getLogBlockNumber(l);
+
+        if (
+          startBlockExclusive !== undefined &&
+          blockNumber !== undefined &&
+          blockNumber <= startBlockExclusive
+        ) {
+          continue;
+        }
+
+        const args = parseArgs(l);
+        if (!args) continue;
+
+        onEvent(args);
+      }
+    },
+  });
+}
 
 export type GetTierListReturn = readonly [string, string, boolean, bigint];
 
@@ -82,10 +153,7 @@ export function useGetItemVoteCounts(
   };
 }
 
-export function useGetSubmissionsNextIndex(
-  id: bigint | undefined,
-  enabled: boolean,
-) {
+export function useGetSubmissionsNextIndex(id: bigint | undefined, enabled: boolean) {
   const q = useReadContract({
     address: tierListAddress,
     abi,
@@ -100,7 +168,6 @@ export function useGetSubmissionsNextIndex(
   };
 }
 
-
 export type RankingSubmittedLogArgs = {
   voter: Address;
   tierListId: bigint;
@@ -113,23 +180,17 @@ export function useWatchRankingSubmitted(
   enabled: boolean,
   onRankingSubmitted: OnRankingSubmitted,
 ) {
-  return useWatchContractEvent({
-    address: tierListAddress,
-    abi: abi,
-    eventName: "RankingSubmitted",
+  return useTierListEventWatcher<RankingSubmittedLogArgs>({
     enabled,
-    strict: true,
-    onLogs: (logs: Log[]) => {
-      for (const l of logs) {
-        // wagmi/viem types here can be annoying; keep it tight but not magical
-        const args = (l as unknown as {args: RankingSubmittedLogArgs}).args;
-        if (!args) continue;
-        if (!args.voter) continue;
-        if (args.tierListId === undefined) continue;
-        if (args.submissionIndex === undefined) continue;
-        onRankingSubmitted(args);
-      }
+    eventName: "RankingSubmitted",
+    parseArgs: (l) => {
+      const args = (l as unknown as { args: RankingSubmittedLogArgs }).args;
+      if (!args?.voter) return;
+      if (args.tierListId === undefined) return;
+      if (args.submissionIndex === undefined) return;
+      return args;
     },
+    onEvent: (args) => onRankingSubmitted(args),
   });
 }
 
@@ -142,21 +203,17 @@ export type ItemsAddedLogArgs = {
 type OnItemsAdded = (args: ItemsAddedLogArgs) => void;
 
 export function useWatchItemsAdded(enabled: boolean, onItemsAdded: OnItemsAdded) {
-  return useWatchContractEvent({
-    address: tierListAddress,
-    abi: abi,
-    eventName: "ItemsAdded",
+  return useTierListEventWatcher<ItemsAddedLogArgs>({
     enabled,
-    strict: true,
-    onLogs: (logs: Log[]) => {
-      for (const l of logs) {
-        const args = (l as unknown as {args : ItemsAddedLogArgs}).args;
-        if (!args) continue;
-        if (args.tierListId === undefined) continue;
-        if (!args.itemIds || !args.names) continue;
-        onItemsAdded(args);
-      }
+    eventName: "ItemsAdded",
+    parseArgs: (l) => {
+      const args = (l as unknown as { args: ItemsAddedLogArgs }).args;
+      if (!args) return;
+      if (args.tierListId === undefined) return;
+      if (!args.itemIds || !args.names) return;
+      return args;
     },
+    onEvent: (args) => onItemsAdded(args),
   });
 }
 
@@ -168,29 +225,21 @@ export type ItemRemovedLogArgs = {
 
 type OnItemRemoved = (args: ItemRemovedLogArgs) => void;
 
-export function useWatchItemRemoved(
-  enabled: boolean,
-  onItemRemoved: OnItemRemoved,
-) {
-  return useWatchContractEvent({
-    address: tierListAddress,
-    abi: abi,
-    eventName: "ItemRemoved",
+export function useWatchItemRemoved(enabled: boolean, onItemRemoved: OnItemRemoved) {
+  return useTierListEventWatcher<ItemRemovedLogArgs>({
     enabled,
-    strict: true,
-    onLogs: (logs: Log[]) => {
-      for (const l of logs) {
-        const args = (l as unknown as {args: ItemRemovedLogArgs}).args;
-        if (!args) continue;
-        if (args.tierListId === undefined) continue;
-        if (args.itemId === undefined) continue;
-        if (args.name === undefined) continue;
-        onItemRemoved(args);
-      }
+    eventName: "ItemRemoved",
+    parseArgs: (l) => {
+      const args = (l as unknown as { args: ItemRemovedLogArgs }).args;
+      if (!args) return;
+      if (args.tierListId === undefined) return;
+      if (args.itemId === undefined) return;
+      if (args.name === undefined) return;
+      return args;
     },
+    onEvent: (args) => onItemRemoved(args),
   });
 }
-
 
 export type TierListCreatedLogArgs = {
   tierListId: bigint;
@@ -205,24 +254,19 @@ export function useWatchTierListCreated(
   enabled: boolean,
   onTierListCreated: OnTierListCreated,
 ) {
-  return useWatchContractEvent({
-    address: tierListAddress,
-    abi: abi,
-    eventName: "TierListCreated",
+  return useTierListEventWatcher<TierListCreatedLogArgs>({
     enabled,
-    strict: true,
-    onLogs: (logs: Log[]) => {
-      for (const l of logs) {
-        const args = (l as unknown as {args: TierListCreatedLogArgs}).args;
-        if (!args) continue;
-        if (args.tierListId === undefined) continue;
-        if (args.name === undefined) continue;
-        onTierListCreated(args);
-      }
+    eventName: "TierListCreated",
+    parseArgs: (l) => {
+      const args = (l as unknown as { args: TierListCreatedLogArgs }).args;
+      if (!args) return;
+      if (args.tierListId === undefined) return;
+      if (args.name === undefined) return;
+      return args;
     },
+    onEvent: (args) => onTierListCreated(args),
   });
 }
-
 
 export type TierListStatusChangedLogArgs = {
   tierListId: bigint;
@@ -235,20 +279,16 @@ export function useWatchTierListStatusChanged(
   enabled: boolean,
   onTierListStatusChanged: OnTierListStatusChanged,
 ) {
-  return useWatchContractEvent({
-    address: tierListAddress,
-    abi: abi,
-    eventName: "TierListStatusChanged",
+  return useTierListEventWatcher<TierListStatusChangedLogArgs>({
     enabled,
-    strict: true,
-    onLogs: (logs: Log[]) => {
-      for (const l of logs) {
-        const args = (l as unknown as {args: TierListStatusChangedLogArgs}).args;
-        if (!args) continue;
-        if (args.tierListId === undefined) continue;
-        if (args.active === undefined) continue;
-        onTierListStatusChanged(args);
-      }
+    eventName: "TierListStatusChanged",
+    parseArgs: (l) => {
+      const args = (l as unknown as { args: TierListStatusChangedLogArgs }).args;
+      if (!args) return;
+      if (args.tierListId === undefined) return;
+      if (args.active === undefined) return;
+      return args;
     },
+    onEvent: (args) => onTierListStatusChanged(args),
   });
 }
