@@ -229,9 +229,6 @@ export function TierList(props: TierListProps) {
 
     setOriginalItems((cur) => removeItemEverywhere(cur, id));
     setUpdatedItems((cur) => removeItemEverywhere(cur, id));
-
-    // if scores view is tracking this removed item, clear it
-    props.setGlobalVotesItemId?.((cur) => (cur === id ? null : cur));
   });
 
   function reorderTierList(

@@ -49,7 +49,6 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
   });
 
   const rows = useMemo(() => {
-    console.log("here")
     if (submissionsOffset !== 0n) return latestSubmitters;
 
     // build a list: live prepends first, then fetched list, de-duped by address
