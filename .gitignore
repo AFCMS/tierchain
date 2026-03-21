@@ -26,5 +26,6 @@ dist-ssr
 
 .env
 cache
-artifacts
+/artifacts
 coverage
+ignition/deployments/chain-31337
