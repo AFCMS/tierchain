@@ -35,10 +35,16 @@ Start hardat :
 pnpm hardhat node
 ```
 
-Deploy the contract :
+Deploy the contract (Hardhat node) :
 
 ```bash
 pnpm hardhat ignition deploy ignition/modules/TierList.ts --network localhost
+```
+
+Deploy the contract (Sepolia) :
+
+```bash
+pnpm hardhat ignition deploy ignition/modules/TierList.ts --network sepolia
 ```
 
 Populate the tier lists :
