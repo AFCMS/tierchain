@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DragDropContext, type DraggableLocation } from "@hello-pangea/dnd";
-import { useReadContract, useWriteContract, useConnection } from "wagmi";
+import {
+  useReadContract,
+  useWriteContract,
+  useConnection,
+  useWaitForTransactionReceipt,
+} from "wagmi";
+import { useQueryClient } from "@tanstack/react-query";
 import type { Address } from "viem";
 
 import { useWatchItemRemoved, useWatchItemsAdded } from "../hooks/contract";
@@ -167,6 +173,7 @@ export function TierList(props: TierListProps) {
 
   const { address } = useConnection();
   const write = useWriteContract();
+  const queryClient = useQueryClient();
 
   const resetModalRef = useRef<HTMLDialogElement | null>(null);
 
@@ -248,6 +255,43 @@ export function TierList(props: TierListProps) {
     setOriginalItems((cur) => removeItemEverywhere(cur, id));
     setUpdatedItems((cur) => removeItemEverywhere(cur, id));
   });
+
+  const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash: write.data, // The transaction hash from the mutation
+  });
+
+  // Log on mutation error
+  useEffect(() => {
+    if (write.error) {
+      console.log(
+        "Mutation error:",
+        write.error.name,
+        ":",
+        write.error.message,
+      );
+    }
+  }, [write.error]);
+
+  // Log on transaction success (confirmation) and refresh contract data
+  useEffect(() => {
+    if (isConfirmed) {
+      console.log("Transaction confirmed successfully!");
+      // Invalidate getUserVotes to refetch the user's ranking and reset buckets
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "readContract" &&
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (query.queryKey[1] as any)?.functionName === "getUserVotes",
+      });
+      // Invalidate getItemVoteCounts queries to refresh global scores
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "readContract" &&
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (query.queryKey[1] as any)?.functionName === "getItemVoteCounts",
+      });
+    }
+  }, [isConfirmed, queryClient]);
 
   function reorderTierList(
     source: DraggableLocation<string>,

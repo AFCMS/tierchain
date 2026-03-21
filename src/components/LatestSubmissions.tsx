@@ -3,7 +3,10 @@ import { Link } from "react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useBlockNumber } from "wagmi";
-import { useGetLatestSubmissions, useWatchRankingSubmitted } from "../hooks/contract";
+import {
+  useGetLatestSubmissions,
+  useWatchRankingSubmitted,
+} from "../hooks/contract";
 import { AddressLink } from "./AddressLink";
 import type { Address } from "viem";
 
@@ -27,7 +30,10 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
     submissionsOffset,
   );
 
-  const latestSubmitters = latestSubmissions.data ?? [];
+  const latestSubmitters = useMemo(
+    () => latestSubmissions.data ?? [],
+    [latestSubmissions.data],
+  );
 
   const [liveRows, setLiveRows] = useState<readonly LiveRow[]>([]);
 
@@ -43,7 +49,7 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
     if (bn === undefined) return;
     startBlockRef.current = bn; // everything <= this is "past"
   }, [bn]);
-  
+
   useWatchRankingSubmitted(
     submissionsOffset === 0n && startBlockRef.current !== null,
     ({ voter, tierListId, submissionIndex }) => {
@@ -100,13 +106,11 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
             </tr>
           ) : (
             rows.map((row, i) => {
-              const acct = typeof row === "string" ? (row as Address) : row.acct;
+              const acct =
+                typeof row === "string" ? (row as Address) : row.acct;
               const live = typeof row === "string" ? undefined : row.live;
-            
-              const num = live
-                ? i
-                : Number(submissionsOffset) + i;
-            
+
+              const num = live ? i : Number(submissionsOffset) + i;
 
               return (
                 <tr key={`${acct}-${i}`}>
@@ -129,7 +133,7 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
         </tbody>
       </table>
 
-      <div className="mt-4 flex flex-row justify-center">
+      <div className="my-4 flex flex-row justify-center">
         <div className="join">
           <button
             className="join-item btn"
