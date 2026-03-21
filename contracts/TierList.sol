@@ -15,7 +15,12 @@ contract TierList {
     // EVENTS
     // ──────────────────────────────────────────────────────────────────────────────
 
-    event TierListCreated(uint256 indexed tierListId, string name);
+    event TierListCreated(
+        uint256 indexed tierListId,
+        string name,
+        string description,
+        uint256 numActiveItems
+    );
     event TierListStatusChanged(uint256 indexed tierListId, bool active);
     event ItemsAdded(
         uint256 indexed tierListId,
@@ -144,7 +149,7 @@ contract TierList {
             numActiveItems: 0
         });
 
-        emit TierListCreated(tlId, name);
+        emit TierListCreated(tlId, name, description, initialItemNames.length);
 
         if (initialItemNames.length > 0) {
             _addItems(tlId, initialItemNames);

@@ -189,3 +189,63 @@ export function useWatchItemRemoved(
     },
   });
 }
+
+
+export type TierListCreatedLogArgs = {
+  tierListId: bigint;
+  name: string;
+  description: string;
+  numActiveItems: bigint;
+};
+
+export type TierListStatusChangedLogArgs = {
+  tierListId: bigint;
+  active: boolean;
+};
+
+type OnTierListCreated = (args: TierListCreatedLogArgs) => void;
+type OnTierListStatusChanged = (args: TierListStatusChangedLogArgs) => void;
+
+export function useWatchTierListCreated(
+  enabled: boolean,
+  onTierListCreated: OnTierListCreated,
+) {
+  return useWatchContractEvent({
+    address: tierListAddress,
+    abi: abi,
+    eventName: "TierListCreated",
+    enabled,
+    strict: true,
+    onLogs: (logs) => {
+      for (const l of logs) {
+        const args = (l as any).args as TierListCreatedLogArgs | undefined;
+        if (!args) continue;
+        if (args.tierListId === undefined) continue;
+        if (args.name === undefined) continue;
+        onTierListCreated(args);
+      }
+    },
+  });
+}
+
+export function useWatchTierListStatusChanged(
+  enabled: boolean,
+  onTierListStatusChanged: OnTierListStatusChanged,
+) {
+  return useWatchContractEvent({
+    address: tierListAddress,
+    abi: abi,
+    eventName: "TierListStatusChanged",
+    enabled,
+    strict: true,
+    onLogs: (logs) => {
+      for (const l of logs) {
+        const args = (l as any).args as TierListStatusChangedLogArgs | undefined;
+        if (!args) continue;
+        if (args.tierListId === undefined) continue;
+        if (args.active === undefined) continue;
+        onTierListStatusChanged(args);
+      }
+    },
+  });
+}

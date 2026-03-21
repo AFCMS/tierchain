@@ -1,9 +1,14 @@
+import { useEffect, useState } from "react";
 import { useReadContract } from "wagmi";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
 import { TierListItem } from "./TierListItem";
 import { getTierListAssets } from "../data/tierlists";
 import { AlertTriangle } from "lucide-react";
+import {
+  useWatchTierListCreated,
+  useWatchTierListStatusChanged,
+} from "../hooks/contract";
 
 const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS;
 
@@ -32,6 +37,50 @@ export function AllLists({ includeInactive = false }: AllListsProps) {
 
   const lists = (data ?? []) as TierListView[];
 
+  const [uiLists, setUiLists] = useState<TierListView[]>([]);
+
+  // Seed/refresh from chain reads.
+  // Keep newest-first in UI (reverse IDs).
+  useEffect(() => {
+    const set = async () => {
+        setUiLists([...lists].reverse());
+    }
+    set();
+  }, [data]);
+
+  useWatchTierListCreated(enabled, ({ tierListId, name, description, numActiveItems }) => {
+
+    setUiLists((cur) => {
+
+      const next: TierListView = {
+        id: tierListId,
+        name,
+        description,
+        active: true, // createTierList sets active=true
+        numActiveItems,
+      };
+
+      // prepend newest
+      return [next, ...cur];
+    });
+  });
+
+  useWatchTierListStatusChanged(enabled, ({ tierListId, active }) => {
+    setUiLists((cur) => {
+      const idx = cur.findIndex((x) => x.id === tierListId);
+      if (idx === -1) return cur;
+
+      // if includeInactive=false and it becomes inactive, remove it from the UI list
+      if (!includeInactive && !active) {
+        return cur.filter((x) => x.id !== tierListId);
+      }
+
+      const next = [...cur];
+      next[idx] = { ...next[idx]!, active };
+      return next;
+    });
+  });
+
   if (!tierListAddress) {
     return (
       <div className="text-sm text-zinc-600">
@@ -53,13 +102,13 @@ export function AllLists({ includeInactive = false }: AllListsProps) {
     );
   }
 
-  if (lists.length === 0) {
+  if (uiLists.length === 0) {
     return <div className="text-sm text-zinc-600">No tier lists yet.</div>;
   }
 
   return (
     <div className="flex w-full flex-row flex-wrap gap-4">
-      {lists.map((tl) => {
+      {uiLists.map((tl) => {
         const id = Number(tl.id);
         const assets = getTierListAssets(id);
 
