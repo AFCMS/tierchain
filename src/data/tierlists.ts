@@ -38,6 +38,7 @@ export const tierlistsAssets = {
     arc: arc,
     internet_explorer: internet_explorer,
     chromium: chromium,
+    librewolf: librewolf,
   },
 } as const satisfies TierListAssets;
 
