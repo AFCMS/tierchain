@@ -24,6 +24,19 @@ import ea from "./assets/ea.svg";
 import ubisoft from "./assets/ubisoft.jpg?format=avif&h=80&w=80&imagetools";
 import blizzard from "./assets/blizzard.jpg?format=avif&h=80&w=80&imagetools";
 
+// 3
+
+import red_flag from "./assets/red_flag.svg?format=avif&h=80&w=80&imagetools"
+import love_bombing from "./assets/love_bombing.png?format=avif&h=80&w=80&imagetools"
+import league_of_legends from "./assets/league_of_legends.svg?format=avif&h=80&w=80&imagetools"
+import domestical_violence from "./assets/domestical_violence.svg?format=avif&h=80&w=80&imagetools"
+import ghosting from "./assets/ghosting.svg?format=avif&h=80&w=80&imagetools"
+import animal_cruelty from "./assets/animal_cruelty.png?format=avif&h=80&w=80&imagetools"
+import asks_for_money from "./assets/asks_for_money.png?format=avif&h=80&w=80&imagetools"
+import isolating from "./assets/isolating.png?format=avif&h=80&w=80&imagetools"
+import valorant from "./assets/valorant.svg?format=avif&h=80&w=80&imagetools"
+import insults from "./assets/insults.png?format=avif&h=80&w=80&imagetools"
+
 //?format=avif&h=80&w=80&imagetools
 
 export type Ranking = "S" | "A" | "B" | "C" | "D";
@@ -64,6 +77,19 @@ export const tierlistsAssets = {
     ubisoft: ubisoft,
     blizzard: blizzard,
   },
+  3: {
+    cover: red_flag,
+    love_bombing: love_bombing,
+    league_of_legends: league_of_legends,
+    domestical_violence: domestical_violence,
+    ghosting: ghosting,
+    animal_cruelty: animal_cruelty,
+    asks_for_money: asks_for_money,
+    isolating: isolating,
+    valorant: valorant,
+    insults: insults,
+    loves_chromium: chromium
+  }
 } as const satisfies TierListAssets;
 
 export function hasTierListAssets(
