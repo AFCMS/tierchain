@@ -32,7 +32,7 @@ export function TierListItem(props: TierListItemProps) {
         <p>{props.description}</p>
       </div>
       {props.cover ? (
-        <figure>
+        <figure className="aspect-square">
           <img
             src={props.cover}
             alt="Movie"
