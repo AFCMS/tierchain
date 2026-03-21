@@ -1,0 +1,15 @@
+{
+    "$schema": "./tierlist.schema.json",
+    "name": "Gaming publishers",
+    "description": "How respectable are these video game publishers ?",
+    "items": [
+        "steam",
+        "epic_games",
+        "nintendo",
+        "sony",
+        "microsoft",
+        "ea",
+        "ubisoft",
+        "blizzard"
+    ]
+}
