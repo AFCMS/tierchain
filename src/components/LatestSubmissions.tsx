@@ -138,6 +138,7 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
           <button
             className="join-item btn"
             disabled={submissionsOffset === 0n}
+            aria-label="Previous page"
             onClick={() =>
               setSubmissionsOffset((x) => (x > PAGE_SIZE ? x - PAGE_SIZE : 0n))
             }
@@ -150,6 +151,7 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
           <button
             className="join-item btn"
             disabled={latestSubmitters.length < Number(PAGE_SIZE)}
+            aria-label="Next page"
             onClick={() => setSubmissionsOffset((x) => x + PAGE_SIZE)}
           >
             <ChevronRight />

@@ -72,7 +72,7 @@ export function ListDetail() {
 
   return (
     <div className="mt-4 flex w-full justify-center">
-      <div className="w-full max-w-6xl">
+      <main className="w-full max-w-6xl">
         <div className="mb-8 flex w-full flex-col gap-2">
           <h1 className="flex w-full justify-between text-2xl font-bold">
             {derived.name}
@@ -102,7 +102,7 @@ export function ListDetail() {
             <LatestSubmissions id={_id} />
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }
