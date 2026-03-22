@@ -63,6 +63,8 @@ import puechamp from "./assets/vibe-coders/puechamp.png?format=avif&h=80&w=80&im
 import reddji from "./assets/vibe-coders/reddji.png?format=avif&h=80&w=80&imagetools";
 import zenkai from "./assets/vibe-coders/zenkai.png?format=avif&h=80&w=80&imagetools";
 import afcm from "./assets/vibe-coders/afcm.png?format=avif&h=80&w=80&imagetools";
+import parzy from "./assets/vibe-coders/parzy.png?format=avif&h=80&w=80&imagetools"
+import bichon from "./assets/vibe-coders/bichon.png?format=avif&h=80&w=80&imagetools"
 
 // 6
 
@@ -144,6 +146,8 @@ export const tierlistsAssets = {
     puechamp: puechamp,
     reddji: reddji,
     zenkai: zenkai,
+    parzy: parzy,
+    bichon: bichon,
     linus: linus,
   },
   6: {
