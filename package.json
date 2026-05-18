@@ -51,6 +51,5 @@
     "vite": "^8.0.13",
     "vite-imagetools": "^10.0.0",
     "vite-plugin-sri-gen": "^1.4.1"
-  },
-  "packageManager": "pnpm@10.33.0"
+  }
 }
