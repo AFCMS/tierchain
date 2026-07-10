@@ -1,5 +1,11 @@
+---
 allowBuilds:
   bufferutil: true
   esbuild: true
   sharp: true
   utf-8-validate: true
+
+blockExoticSubdeps: true
+
+minimumReleaseAgeStrict: true
+minimumReleaseAge: 1440
