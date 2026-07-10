@@ -9,13 +9,9 @@ export interface ItemRankingsProps {
 }
 
 export function ItemRankings(props: ItemRankingsProps) {
-  const safeNumber = (v: unknown) =>
-    typeof v === "number" && Number.isFinite(v) ? v : 0;
+  const safeNumber = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? v : 0);
 
-  const total = Object.values(props.data).reduce(
-    (acc, value) => acc + safeNumber(value),
-    0,
-  );
+  const total = Object.values(props.data).reduce((acc, value) => acc + safeNumber(value), 0);
 
   return (
     <div className="gap-2">

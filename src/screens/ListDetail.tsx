@@ -1,10 +1,9 @@
-import { useParams } from "react-router";
 import { AlertTriangle } from "lucide-react";
+import { useParams } from "react-router";
 
-import { TierList } from "../components/TierList";
-
-import { useGetTierList, useGetTierListItems } from "../hooks/contract";
 import { LatestSubmissions } from "../components/LatestSubmissions";
+import { TierList } from "../components/TierList";
+import { useGetTierList, useGetTierListItems } from "../hooks/contract";
 import { useDerivedData } from "../hooks/derived_data";
 
 const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS;
@@ -77,10 +76,7 @@ export function ListDetail() {
           <h1 className="flex w-full justify-between text-2xl font-bold">
             {derived.name}
             <div
-              className={
-                "badge badge-soft" +
-                (derived.active ? " badge-success" : " badge-error")
-              }
+              className={"badge badge-soft" + (derived.active ? " badge-success" : " badge-error")}
             >
               {derived.active ? "Active" : "Inactive"}
             </div>

@@ -1,22 +1,19 @@
 {
-    "description": "TierChain Definition",
-    "type": "object",
-    "properties": {
-        "name": {
-            "type": "string"
-        },
-        "description": {
-            "type": "string"
-        },
-        "items": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        }
+  "description": "TierChain Definition",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
     },
-    "required": [
-        "name",
-        "items"
-    ]
+    "description": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": ["name", "items"]
 }

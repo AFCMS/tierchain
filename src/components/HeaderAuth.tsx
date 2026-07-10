@@ -1,8 +1,8 @@
+import { LogIn, LogOut } from "lucide-react";
+import { formatUnits } from "viem";
 import { useConnect, useConnection, useDisconnect } from "wagmi";
 import { useBalance } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { formatUnits } from "viem";
-import { LogIn, LogOut } from "lucide-react";
 
 import { AddressLink } from "./AddressLink";
 
@@ -20,12 +20,9 @@ export function HeaderAuth() {
 
   const formattedBalance =
     balance.data != null
-      ? Number(formatUnits(balance.data.value, balance.data.decimals)).toFixed(
-          4,
-        )
+      ? Number(formatUnits(balance.data.value, balance.data.decimals)).toFixed(4)
       : null;
-  const balanceSymbol =
-    balance.data?.symbol ?? chain?.nativeCurrency.symbol ?? "ETH";
+  const balanceSymbol = balance.data?.symbol ?? chain?.nativeCurrency.symbol ?? "ETH";
 
   return (
     <div className="flex-none">
@@ -35,9 +32,7 @@ export function HeaderAuth() {
           <span className="opacity-70"> · </span>
           <span className="font-bold">{chain?.name ?? "Unknown network"}</span>
           <span className="badge badge-ghost font-mono">
-            {formattedBalance != null
-              ? `${formattedBalance} ${balanceSymbol}`
-              : "_.____ ETH"}
+            {formattedBalance != null ? `${formattedBalance} ${balanceSymbol}` : "_.____ ETH"}
           </span>
           <button
             className="btn"

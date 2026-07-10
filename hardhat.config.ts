@@ -1,7 +1,6 @@
-import { defineConfig } from "hardhat/config";
-import hardhatVerify from "@nomicfoundation/hardhat-verify";
 import hardhatIgnitionViemPlugin from "@nomicfoundation/hardhat-ignition-viem";
-
+import hardhatVerify from "@nomicfoundation/hardhat-verify";
+import { defineConfig } from "hardhat/config";
 import "dotenv/config";
 
 export default defineConfig({

@@ -27,6 +27,7 @@ https://github.com/AFCMS/tierchain.git
 ```
 
 Install dependencies :
+
 ```bash
 pnpm install
 ```
@@ -36,6 +37,7 @@ Build the contract :
 ```bash
 pnpm run build:contract
 ```
+
 This will create the directory `artifacts/`, which, among other things, contains the abi.
 
 Start hardat :
@@ -43,6 +45,7 @@ Start hardat :
 ```bash
 pnpm hardhat node
 ```
+
 Of course, leave this running as long as you are using or developping.
 Take an account in there, and set `HARDHAT_PRIVATE_KEY` in your .env to it’s private key, visible in the output.
 
@@ -51,6 +54,7 @@ Deploy the contract (Hardhat node) :
 ```bash
 pnpm hardhat ignition deploy ignition/modules/TierList.ts --network localhost
 ```
+
 Note you will need to restart hardhat and redeploy the contract every time you change the contract. Hardhat tries to keep the same addresses, but double-check if something goes wrong.
 In your .env, set VITE_CONTRACT_TIERLIST_ADDRESS to the outputted address.
 
@@ -65,6 +69,7 @@ Populate the tier lists :
 ```bash
 node ./scripts/tierlist-manager.ts create --file ./tierlists/which-browser-is-the-best.json --mode hardhat
 ```
+
 The script doesn’t yet have a « populate all » option, so for now, use a shell loop.
 
 Run in dev mode :
@@ -96,6 +101,7 @@ Events are emitted when a Tier List is created, it’s active status changes, a 
 There is one user function, submitRanking, which, you guessed it, submits a ranking.
 
 Views to be used by frontends are :
+
 - getTierLists(none) : returns all the tier lists currently available
 - getTierList(tlId uint256) : returns information about a tier list by it’s id
 - getTierListItems(tlId uint256) : returns the items a tier list has for ranking
@@ -104,11 +110,10 @@ Views to be used by frontends are :
 - getLatestSubmissions(tlId uint256, limit uint256, offset uint256) : returns a slice of user rankings for a tier list in reverse chronological order. Supports pagination with limit and offset.
 
 Constraints :
+
 - each user can only have one ranking per tier list
 - items of a tier list are unique
 - rankings are formed correctly, this means : 5 tiers, containing valid items. Items can be left in the pool. For gas economy, we chose to disable enforcing each item be unique within a ranking, but it can be enabled (see line 239 of TierList.sol).
-
-
 
 ---
 

@@ -1,14 +1,11 @@
+import { AlertTriangle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useReadContract } from "wagmi";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
-import { TierListItem } from "./TierListItem";
 import { getTierListAssets } from "../data/tierlists";
-import { AlertTriangle } from "lucide-react";
-import {
-  useWatchTierListCreated,
-  useWatchTierListStatusChanged,
-} from "../hooks/contract";
+import { useWatchTierListCreated, useWatchTierListStatusChanged } from "../hooks/contract";
+import { TierListItem } from "./TierListItem";
 
 const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS;
 
@@ -48,23 +45,20 @@ export function AllLists({ includeInactive = false }: AllListsProps) {
     set();
   }, [data, lists]);
 
-  useWatchTierListCreated(
-    enabled,
-    ({ tierListId, name, description, numActiveItems }) => {
-      setUiLists((cur) => {
-        const next: TierListView = {
-          id: tierListId,
-          name,
-          description,
-          active: true, // createTierList sets active=true
-          numActiveItems,
-        };
+  useWatchTierListCreated(enabled, ({ tierListId, name, description, numActiveItems }) => {
+    setUiLists((cur) => {
+      const next: TierListView = {
+        id: tierListId,
+        name,
+        description,
+        active: true, // createTierList sets active=true
+        numActiveItems,
+      };
 
-        // prepend newest
-        return [next, ...cur];
-      });
-    },
-  );
+      // prepend newest
+      return [next, ...cur];
+    });
+  });
 
   useWatchTierListStatusChanged(enabled, ({ tierListId, active }) => {
     setUiLists((cur) => {
@@ -83,11 +77,7 @@ export function AllLists({ includeInactive = false }: AllListsProps) {
   });
 
   if (!tierListAddress) {
-    return (
-      <div className="text-sm text-zinc-600">
-        Missing VITE_CONTRACT_TIERLIST_ADDRESS
-      </div>
-    );
+    return <div className="text-sm text-zinc-600">Missing VITE_CONTRACT_TIERLIST_ADDRESS</div>;
   }
 
   if (isLoading) {

@@ -1,19 +1,19 @@
 {
-    "$schema": "./tierlist.schema.json",
-    "name": "Browsers",
-    "description": "Which browser is the best?",
-    "items": [
-        "chrome",
-        "brave",
-        "firefox",
-        "chromium",
-        "edge",
-        "opera",
-        "opera_gx",
-        "safari",
-        "vivaldi",
-        "arc",
-        "internet_explorer",
-        "librewolf"
-    ]
+  "$schema": "./tierlist.schema.json",
+  "name": "Browsers",
+  "description": "Which browser is the best?",
+  "items": [
+    "chrome",
+    "brave",
+    "firefox",
+    "chromium",
+    "edge",
+    "opera",
+    "opera_gx",
+    "safari",
+    "vivaldi",
+    "arc",
+    "internet_explorer",
+    "librewolf"
+  ]
 }

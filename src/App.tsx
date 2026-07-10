@@ -1,11 +1,9 @@
-import { BrowserRouter, Routes, Route } from "react-router";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router";
 import { WagmiProvider } from "wagmi";
 
 import { Header } from "./components/Header";
 import { config } from "./config/wagmi.config";
-
 import { Home } from "./screens/Home";
 import { ListDetail } from "./screens/ListDetail";
 

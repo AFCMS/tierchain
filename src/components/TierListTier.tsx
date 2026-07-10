@@ -1,4 +1,5 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
+
 import { TierItem } from "./TierItem";
 
 export interface TierListTierProps {
@@ -9,10 +10,7 @@ export interface TierListTierProps {
     readonly name: string;
   }[];
   readonly editable?: boolean;
-  readonly setGlobalVotesItem?: (
-    id: number | null,
-    name: string | null,
-  ) => void;
+  readonly setGlobalVotesItem?: (id: number | null, name: string | null) => void;
 }
 
 export function TierListTier(props: TierListTierProps) {
@@ -26,14 +24,8 @@ export function TierListTier(props: TierListTierProps) {
       isDropDisabled={!editable}
     >
       {(dropProvided) => (
-        <div
-          {...dropProvided.droppableProps}
-          className="bg-base-300 h-full w-full select-none"
-        >
-          <div
-            ref={dropProvided.innerRef}
-            className="flex h-full min-h-20 w-full flex-wrap"
-          >
+        <div {...dropProvided.droppableProps} className="bg-base-300 h-full w-full select-none">
+          <div ref={dropProvided.innerRef} className="flex h-full min-h-20 w-full flex-wrap">
             {props.items.map((item, index) => (
               <Draggable
                 key={item.id}

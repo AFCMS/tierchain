@@ -10,13 +10,9 @@ const CHAIN_BY_KEY = {
 
 type ChainKey = keyof typeof CHAIN_BY_KEY;
 
-const chainKey = (
-  import.meta.env.VITE_CHAIN ?? "sepolia"
-).toLowerCase() as ChainKey;
+const chainKey = (import.meta.env.VITE_CHAIN ?? "sepolia").toLowerCase() as ChainKey;
 
-function createSingleChainConfig(
-  chain: typeof hardhat | typeof mainnet | typeof sepolia,
-) {
+function createSingleChainConfig(chain: typeof hardhat | typeof mainnet | typeof sepolia) {
   if (chain.id === hardhat.id) {
     return createConfig({
       ssr: false,
@@ -24,9 +20,7 @@ function createSingleChainConfig(
       connectors: [metaMask()],
       transports: {
         [hardhat.id]: fallback([
-          webSocket(
-            import.meta.env.VITE_HARDHAT_WS_RPC_URL ?? "ws://127.0.0.1:8545",
-          ),
+          webSocket(import.meta.env.VITE_HARDHAT_WS_RPC_URL ?? "ws://127.0.0.1:8545"),
           http(import.meta.env.VITE_HARDHAT_RPC_URL ?? "http://127.0.0.1:8545"),
         ]),
       },
@@ -60,6 +54,4 @@ function createSingleChainConfig(
   });
 }
 
-export const config = createSingleChainConfig(
-  CHAIN_BY_KEY[chainKey] ?? sepolia,
-);
+export const config = createSingleChainConfig(CHAIN_BY_KEY[chainKey] ?? sepolia);

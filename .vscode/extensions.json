@@ -1,6 +1,7 @@
 {
-    "recommendations": [
-        "dbaeumer.vscode-eslint",
-        "nomicfoundation.hardhat-solidity"
-    ]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "nomicfoundation.hardhat-solidity",
+    "oxc.oxc-vscode"
+  ]
 }

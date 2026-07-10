@@ -1,25 +1,22 @@
-import { useEffect, useMemo, useRef, useState } from "react";
 import { DragDropContext, type DraggableLocation } from "@hello-pangea/dnd";
+import { useQueryClient } from "@tanstack/react-query";
+import { ChevronLeft, Eye, ListCheck, ListRestart, Share } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router";
+import type { Address } from "viem";
 import {
   useReadContract,
   useWriteContract,
   useConnection,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { useQueryClient } from "@tanstack/react-query";
-import type { Address } from "viem";
-import { Link } from "react-router";
-import { ChevronLeft, Eye, ListCheck, ListRestart, Share } from "lucide-react";
-
-import { useWatchItemRemoved, useWatchItemsAdded } from "../hooks/contract";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
-
-import { type Ranking } from "./ItemRankings";
-import { TierListTier } from "./TierListTier";
-import { TierListScores } from "./TierListScores";
-
+import { useWatchItemRemoved, useWatchItemsAdded } from "../hooks/contract";
 import { AddressLink } from "./AddressLink";
+import { type Ranking } from "./ItemRankings";
+import { TierListScores } from "./TierListScores";
+import { TierListTier } from "./TierListTier";
 
 export interface TierItemDef {
   readonly id: number;
@@ -48,10 +45,7 @@ function cloneBuckets(items: TierListBuckets): TierListBuckets {
   };
 }
 
-function areBucketsEqual(
-  left: TierListBuckets,
-  right: TierListBuckets,
-): boolean {
+function areBucketsEqual(left: TierListBuckets, right: TierListBuckets): boolean {
   return TIER_NAMES.every((tierName) => {
     const leftTier = left[tierName];
     const rightTier = right[tierName];
@@ -61,9 +55,7 @@ function areBucketsEqual(
     }
 
     return leftTier.every(
-      (item, index) =>
-        item.id === rightTier[index]?.id &&
-        item.name === rightTier[index]?.name,
+      (item, index) => item.id === rightTier[index]?.id && item.name === rightTier[index]?.name,
     );
   });
 }
@@ -72,9 +64,7 @@ function isTierName(value: string): value is Ranking | "POOL" {
   return TIER_NAMES.includes(value as Ranking | "POOL");
 }
 
-const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS as
-  | Address
-  | undefined;
+const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS as Address | undefined;
 
 function emptyBuckets(): TierListBuckets {
   return { S: [], A: [], B: [], C: [], D: [], POOL: [] };
@@ -120,10 +110,7 @@ function bucketsFromUserVotes(
   return out;
 }
 
-function removeItemEverywhere(
-  buckets: TierListBuckets,
-  itemId: number,
-): TierListBuckets {
+function removeItemEverywhere(buckets: TierListBuckets, itemId: number): TierListBuckets {
   const next = cloneBuckets(buckets);
 
   next.S = next.S.filter((x) => x.id !== itemId);
@@ -183,34 +170,22 @@ export function TierList(props: TierListProps) {
   const resetModalRef = useRef<HTMLDialogElement | null>(null);
 
   // When viewing someone else's submission, use their address; otherwise use connected wallet
-  const votesAddress =
-    !editable && userAddress ? (userAddress as Address) : address;
+  const votesAddress = !editable && userAddress ? (userAddress as Address) : address;
 
   const userVotesQuery = useReadContract({
     address: tierListAddress,
     abi,
     functionName: "getUserVotes",
-    args:
-      tierListAddress && votesAddress
-        ? [BigInt(tlId), votesAddress]
-        : undefined,
+    args: tierListAddress && votesAddress ? [BigInt(tlId), votesAddress] : undefined,
     query: { enabled: Boolean(tierListAddress && votesAddress) },
   });
 
-  const [originalItems, setOriginalItems] = useState<TierListBuckets>(() =>
-    cloneBuckets(items),
-  );
-  const [updatedItems, setUpdatedItems] = useState<TierListBuckets>(() =>
-    cloneBuckets(items),
-  );
+  const [originalItems, setOriginalItems] = useState<TierListBuckets>(() => cloneBuckets(items));
+  const [updatedItems, setUpdatedItems] = useState<TierListBuckets>(() => cloneBuckets(items));
 
-  const [globalVotesItemId, setGlobalVotesItemId] = useState<number | null>(
-    null,
-  );
+  const [globalVotesItemId, setGlobalVotesItemId] = useState<number | null>(null);
 
-  const [globalVotesItemName, setGlobalVotesItemName] = useState<string | null>(
-    null,
-  );
+  const [globalVotesItemName, setGlobalVotesItemName] = useState<string | null>(null);
 
   function setGlobalVotesItem(id: number | null, name: string | null) {
     setGlobalVotesItemId(id);
@@ -228,16 +203,14 @@ export function TierList(props: TierListProps) {
       return;
     }
 
-    const votes = userVotesQuery.data as
-      | readonly (readonly bigint[])[]
-      | undefined;
+    const votes = userVotesQuery.data as readonly (readonly bigint[])[] | undefined;
     if (!votes) return;
 
     const next = bucketsFromUserVotes(items, votes);
     setOriginalItems(next);
     setUpdatedItems(next);
   }, [tlId, votesAddress, items, userVotesQuery.data]);
-  
+
   const hasPendingChanges = useMemo(
     () => !areBucketsEqual(originalItems, updatedItems),
     [originalItems, updatedItems],
@@ -276,12 +249,7 @@ export function TierList(props: TierListProps) {
   // Log on mutation error
   useEffect(() => {
     if (write.error) {
-      console.log(
-        "Mutation error:",
-        write.error.name,
-        ":",
-        write.error.message,
-      );
+      console.log("Mutation error:", write.error.name, ":", write.error.message);
     }
   }, [write.error]);
 
@@ -310,10 +278,7 @@ export function TierList(props: TierListProps) {
     source: DraggableLocation<string>,
     destination: DraggableLocation<string>,
   ) {
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    ) {
+    if (source.droppableId === destination.droppableId && source.index === destination.index) {
       return;
     }
 
@@ -393,11 +358,7 @@ export function TierList(props: TierListProps) {
               <button type="submit" className="btn">
                 Cancel
               </button>
-              <button
-                type="submit"
-                className="btn btn-secondary"
-                onClick={handleConfirmReset}
-              >
+              <button type="submit" className="btn btn-secondary" onClick={handleConfirmReset}>
                 Reset
               </button>
             </form>
@@ -419,10 +380,7 @@ export function TierList(props: TierListProps) {
       >
         <div className="flex w-full flex-row gap-0.5">
           <div className="bg-base-100 mb-0.5 grid w-3xl grid-cols-[5rem_1fr] gap-0.5 select-none">
-            <div
-              className="flex size-20 items-center justify-center text-black"
-              data-rank-bg="S"
-            >
+            <div className="flex size-20 items-center justify-center text-black" data-rank-bg="S">
               S
             </div>
             <TierListTier
@@ -433,10 +391,7 @@ export function TierList(props: TierListProps) {
               setGlobalVotesItem={setGlobalVotesItem}
             />
 
-            <div
-              className="flex size-20 items-center justify-center text-black"
-              data-rank-bg="A"
-            >
+            <div className="flex size-20 items-center justify-center text-black" data-rank-bg="A">
               A
             </div>
             <TierListTier
@@ -447,10 +402,7 @@ export function TierList(props: TierListProps) {
               setGlobalVotesItem={setGlobalVotesItem}
             />
 
-            <div
-              className="flex size-20 items-center justify-center text-black"
-              data-rank-bg="B"
-            >
+            <div className="flex size-20 items-center justify-center text-black" data-rank-bg="B">
               B
             </div>
             <TierListTier
@@ -461,10 +413,7 @@ export function TierList(props: TierListProps) {
               setGlobalVotesItem={setGlobalVotesItem}
             />
 
-            <div
-              className="flex size-20 items-center justify-center text-black"
-              data-rank-bg="C"
-            >
+            <div className="flex size-20 items-center justify-center text-black" data-rank-bg="C">
               C
             </div>
             <TierListTier
@@ -475,10 +424,7 @@ export function TierList(props: TierListProps) {
               setGlobalVotesItem={setGlobalVotesItem}
             />
 
-            <div
-              className="flex size-20 items-center justify-center text-black"
-              data-rank-bg="D"
-            >
+            <div className="flex size-20 items-center justify-center text-black" data-rank-bg="D">
               D
             </div>
             <TierListTier
@@ -562,12 +508,7 @@ export function TierList(props: TierListProps) {
                   type="button"
                   className="btn btn-primary"
                   onClick={handleUpdateUserData}
-                  disabled={
-                    !editable ||
-                    !address ||
-                    !hasPendingChanges ||
-                    write.isPending
-                  }
+                  disabled={!editable || !address || !hasPendingChanges || write.isPending}
                 >
                   <ListCheck />
                   {address ? "Save" : "Connect wallet to be able to save"}

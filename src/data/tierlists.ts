@@ -1,74 +1,64 @@
 // 1
 
-import chrome from "./assets/google_chrome_2022.svg";
-import chromium from "./assets/chromium_2022.svg";
+import animal_cruelty from "./assets/animal_cruelty.png?format=avif&quality=100&h=80&w=80&imagetools";
+import arc from "./assets/arc_2024.svg";
+import asks_for_money from "./assets/asks_for_money.png?format=avif&quality=100&h=80&w=80&imagetools";
+import blizzard from "./assets/blizzard.jpg?format=avif&h=80&w=80&imagetools";
 import brave from "./assets/brave_2022.svg";
-import edge from "./assets/microsoft_edge_2019.svg";
+import chromium from "./assets/chromium_2022.svg";
+import domestical_violence from "./assets/domestical_violence.svg";
+import ea from "./assets/ea.svg";
+import epic_games from "./assets/epic_games.svg";
 import firefox from "./assets/firefox_2019.svg";
+import ghosting from "./assets/ghosting.svg";
+import chrome from "./assets/google_chrome_2022.svg";
+// 2
+import insults from "./assets/insults.png?format=avif&quality=100&h=80&w=80&imagetools";
+import internet_explorer from "./assets/internet_explorer_2011.svg";
+import isolating from "./assets/isolating.png?format=avif&quality=100&h=80&w=80&imagetools";
+import league_of_legends from "./assets/league_of_legends.svg";
+import librewolf from "./assets/librewolf_2022.svg";
+import love_bombing from "./assets/love_bombing.png?format=avif&h=80&w=80&imagetools";
+import edge from "./assets/microsoft_edge_2019.svg";
+import nintendo from "./assets/nintendo.jpg?format=avif&h=80&w=80&imagetools";
+// 3
 import opera from "./assets/opera_2015.svg";
 import opera_gx from "./assets/opera_gx_2019.svg";
-import vivaldi from "./assets/vivaldi_2015.svg";
-import safari from "./assets/safari_2018.svg";
-import arc from "./assets/arc_2024.svg";
-import internet_explorer from "./assets/internet_explorer_2011.svg";
-import librewolf from "./assets/librewolf_2022.svg";
-
-// 2
-
-import steam from "./assets/steam.svg";
-import epic_games from "./assets/epic_games.svg";
-import nintendo from "./assets/nintendo.jpg?format=avif&h=80&w=80&imagetools";
-import sony from "./assets/sony.jpg?format=avif&h=80&w=80&imagetools";
-import microsoft from "./assets/xbox.jpg?format=avif&h=80&w=80&imagetools";
-import ea from "./assets/ea.svg";
-import ubisoft from "./assets/ubisoft.jpg?format=avif&h=80&w=80&imagetools";
-import blizzard from "./assets/blizzard.jpg?format=avif&h=80&w=80&imagetools";
-
-// 3
-
-import red_flag from "./assets/red_flag.svg";
-import love_bombing from "./assets/love_bombing.png?format=avif&h=80&w=80&imagetools";
-import league_of_legends from "./assets/league_of_legends.svg";
-import domestical_violence from "./assets/domestical_violence.svg";
-import ghosting from "./assets/ghosting.svg";
-import animal_cruelty from "./assets/animal_cruelty.png?format=avif&quality=100&h=80&w=80&imagetools";
-import asks_for_money from "./assets/asks_for_money.png?format=avif&quality=100&h=80&w=80&imagetools";
-import isolating from "./assets/isolating.png?format=avif&quality=100&h=80&w=80&imagetools";
-import valorant from "./assets/valorant.svg";
-import insults from "./assets/insults.png?format=avif&quality=100&h=80&w=80&imagetools";
-
-// 4
-
-import umbrella from "./assets/re/umbrella.svg";
-import leon from "./assets/re/leon_kenedy.jpg?format=avif&quality=100&h=80&w=80&imagetools";
-import claire from "./assets/re/claire_redfield.jpg?format=avif&quality=100&h=80&w=80&imagetools";
-import chris from "./assets/re/chris_redfield.jpg?format=avif&quality=100&h=80&w=80&imagetools";
-import jill from "./assets/re/jill_valentine.jpg?format=avif&quality=100&h=80&w=80&imagetools";
 import ada from "./assets/re/ada_wong.jpg?format=avif&quality=100&h=80&w=80&imagetools";
 import ashley from "./assets/re/ashley_graham.jpg?format=avif&quality=100&h=80&w=80&imagetools";
-import grace from "./assets/re/grace_ashcroft.jpg?format=avif&quality=100&h=80&w=80&imagetools";
-import rebecca from "./assets/re/rebeca_chambers.jpg?format=avif&quality=100&h=80&w=80&imagetools";
-import sheva from "./assets/re/sheva_alomar.jpg?format=avif&quality=100&h=80&w=80&imagetools";
 import carlos from "./assets/re/carlos_olivera.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import chris from "./assets/re/chris_redfield.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import claire from "./assets/re/claire_redfield.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import grace from "./assets/re/grace_ashcroft.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import jill from "./assets/re/jill_valentine.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import leon from "./assets/re/leon_kenedy.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+// 4
+import rebecca from "./assets/re/rebeca_chambers.jpg?format=avif&quality=100&h=80&w=80&imagetools";
 import sherry from "./assets/re/sherry_birkin.jpg?format=avif&quality=100&h=80&w=80&imagetools";
-
+import sheva from "./assets/re/sheva_alomar.jpg?format=avif&quality=100&h=80&w=80&imagetools";
+import umbrella from "./assets/re/umbrella.svg";
+import red_flag from "./assets/red_flag.svg";
+import s_rank from "./assets/s-rank.png?format=avif&h=104&w=104&imagetools";
+import safari from "./assets/safari_2018.svg";
+import sony from "./assets/sony.jpg?format=avif&h=80&w=80&imagetools";
+import steam from "./assets/steam.svg";
+import ubisoft from "./assets/ubisoft.jpg?format=avif&h=80&w=80&imagetools";
+import valorant from "./assets/valorant.svg";
+import afcm from "./assets/vibe-coders/afcm.png?format=avif&h=80&w=80&imagetools";
 // 5
-
 import akarien from "./assets/vibe-coders/akarien.jpg?format=avif&h=80&w=80&imagetools";
+import bichon from "./assets/vibe-coders/bichon.png?format=avif&h=80&w=80&imagetools";
 import copilot from "./assets/vibe-coders/copilot.svg?format=avif&h=80&w=80&imagetools";
 import haven from "./assets/vibe-coders/haven.png?format=avif&h=80&w=80&imagetools";
 import kategaia from "./assets/vibe-coders/kategaia.png?format=avif&h=80&w=80&imagetools";
 import linus from "./assets/vibe-coders/linus.png?format=avif&h=80&w=80&imagetools";
+import parzy from "./assets/vibe-coders/parzy.png?format=avif&h=80&w=80&imagetools";
 import puechamp from "./assets/vibe-coders/puechamp.png?format=avif&h=80&w=80&imagetools.png";
 import reddji from "./assets/vibe-coders/reddji.png?format=avif&h=80&w=80&imagetools";
 import zenkai from "./assets/vibe-coders/zenkai.png?format=avif&h=80&w=80&imagetools";
-import afcm from "./assets/vibe-coders/afcm.png?format=avif&h=80&w=80&imagetools";
-import parzy from "./assets/vibe-coders/parzy.png?format=avif&h=80&w=80&imagetools"
-import bichon from "./assets/vibe-coders/bichon.png?format=avif&h=80&w=80&imagetools"
-
+import vivaldi from "./assets/vivaldi_2015.svg";
 // 6
-
-import s_rank from "./assets/s-rank.png?format=avif&h=104&w=104&imagetools";
+import microsoft from "./assets/xbox.jpg?format=avif&h=80&w=80&imagetools";
 
 //?format=avif&h=80&w=80&imagetools
 
@@ -161,9 +151,7 @@ export const tierlistsAssets = {
   },
 } as const satisfies TierListAssets;
 
-export function hasTierListAssets(
-  id: number,
-): id is keyof typeof tierlistsAssets {
+export function hasTierListAssets(id: number): id is keyof typeof tierlistsAssets {
   return id in tierlistsAssets;
 }
 
@@ -174,10 +162,7 @@ export function getTierListAssets(id: number): TierListAssetsItem | undefined {
   return undefined;
 }
 
-export function getTierListItemAsset(
-  id: number,
-  item: string,
-): string | undefined {
+export function getTierListItemAsset(id: number, item: string): string | undefined {
   const assets = getTierListAssets(id);
   return assets?.[item];
 }

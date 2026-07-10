@@ -12,20 +12,12 @@ export function TierListItem(props: TierListItemProps) {
   return (
     <Link
       to={`/list/${props.id}`}
-      className={
-        "card bg-base-300 card-md w-lg shadow-lg" +
-        (props.cover ? " card-side" : "")
-      }
+      className={"card bg-base-300 card-md w-lg shadow-lg" + (props.cover ? " card-side" : "")}
     >
       <div className="card-body">
         <h2 className="card-title justify-between">
           {props.name}
-          <div
-            className={
-              "badge badge-soft" +
-              (props.active ? " badge-success" : " badge-error")
-            }
-          >
+          <div className={"badge badge-soft" + (props.active ? " badge-success" : " badge-error")}>
             {props.active ? "Active" : "Inactive"}
           </div>
         </h2>

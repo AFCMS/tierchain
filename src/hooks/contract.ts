@@ -1,8 +1,8 @@
-import { useReadContract, useWatchContractEvent, useBlockNumber } from "wagmi";
 import { useEffect, useState } from "react";
+import type { Address, Log } from "viem";
+import { useReadContract, useWatchContractEvent, useBlockNumber } from "wagmi";
 
 import { abi } from "../../artifacts/contracts/TierList.sol/TierList.json";
-import type { Address, Log } from "viem";
 
 const tierListAddress = import.meta.env.VITE_CONTRACT_TIERLIST_ADDRESS!;
 
@@ -25,9 +25,7 @@ function useTierListEventWatcher<TArgs>(params: {
   const { enabled, eventName, parseArgs, onEvent } = params;
 
   const { data: bn } = useBlockNumber({ watch: false });
-  const [startBlockExclusive, setStartBlockExclusive] = useState<
-    bigint | undefined
-  >(undefined);
+  const [startBlockExclusive, setStartBlockExclusive] = useState<bigint | undefined>(undefined);
 
   // Reset when disabled so next enable re-captures "now"
   useEffect(() => {
@@ -140,8 +138,7 @@ export function useGetItemVoteCounts(
     address: tierListAddress,
     abi,
     functionName: "getItemVoteCounts",
-    args:
-      tlId !== undefined && itemId !== undefined ? [tlId, itemId] : undefined,
+    args: tlId !== undefined && itemId !== undefined ? [tlId, itemId] : undefined,
     query: { enabled: enabled && tlId !== undefined && itemId !== undefined },
   });
 
@@ -151,10 +148,7 @@ export function useGetItemVoteCounts(
   };
 }
 
-export function useGetSubmissionsNextIndex(
-  id: bigint | undefined,
-  enabled: boolean,
-) {
+export function useGetSubmissionsNextIndex(id: bigint | undefined, enabled: boolean) {
   const q = useReadContract({
     address: tierListAddress,
     abi,
@@ -177,10 +171,7 @@ export type RankingSubmittedLogArgs = {
 
 type OnRankingSubmitted = (args: RankingSubmittedLogArgs) => void;
 
-export function useWatchRankingSubmitted(
-  enabled: boolean,
-  onRankingSubmitted: OnRankingSubmitted,
-) {
+export function useWatchRankingSubmitted(enabled: boolean, onRankingSubmitted: OnRankingSubmitted) {
   return useTierListEventWatcher<RankingSubmittedLogArgs>({
     enabled,
     eventName: "RankingSubmitted",
@@ -203,10 +194,7 @@ export type ItemsAddedLogArgs = {
 
 type OnItemsAdded = (args: ItemsAddedLogArgs) => void;
 
-export function useWatchItemsAdded(
-  enabled: boolean,
-  onItemsAdded: OnItemsAdded,
-) {
+export function useWatchItemsAdded(enabled: boolean, onItemsAdded: OnItemsAdded) {
   return useTierListEventWatcher<ItemsAddedLogArgs>({
     enabled,
     eventName: "ItemsAdded",
@@ -229,10 +217,7 @@ export type ItemRemovedLogArgs = {
 
 type OnItemRemoved = (args: ItemRemovedLogArgs) => void;
 
-export function useWatchItemRemoved(
-  enabled: boolean,
-  onItemRemoved: OnItemRemoved,
-) {
+export function useWatchItemRemoved(enabled: boolean, onItemRemoved: OnItemRemoved) {
   return useTierListEventWatcher<ItemRemovedLogArgs>({
     enabled,
     eventName: "ItemRemoved",
@@ -257,10 +242,7 @@ export type TierListCreatedLogArgs = {
 
 type OnTierListCreated = (args: TierListCreatedLogArgs) => void;
 
-export function useWatchTierListCreated(
-  enabled: boolean,
-  onTierListCreated: OnTierListCreated,
-) {
+export function useWatchTierListCreated(enabled: boolean, onTierListCreated: OnTierListCreated) {
   return useTierListEventWatcher<TierListCreatedLogArgs>({
     enabled,
     eventName: "TierListCreated",
@@ -290,8 +272,7 @@ export function useWatchTierListStatusChanged(
     enabled,
     eventName: "TierListStatusChanged",
     parseArgs: (l) => {
-      const args = (l as unknown as { args: TierListStatusChangedLogArgs })
-        .args;
+      const args = (l as unknown as { args: TierListStatusChangedLogArgs }).args;
       if (!args) return;
       if (args.tierListId === undefined) return;
       if (args.active === undefined) return;

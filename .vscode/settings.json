@@ -1,16 +1,28 @@
 {
-    "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "file",
-    "editor.formatOnPaste": true,
-    "editor.formatOnType": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "[typescript]": {
-        "editor.tabSize": 2
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "[typescript][typescriptreact]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.quickSuggestions": {
+      "strings": true
     },
-    "[typescriptreact]": {
-        "editor.tabSize": 2
+    "editor.suggest.insertMode": "replace",
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.quickSuggestions": {
+      "strings": true
     },
-    "[solidity]": {
-        "editor.defaultFormatter": "NomicFoundation.hardhat-solidity"
-    }
+    "editor.suggest.insertMode": "replace",
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[solidity]": {
+    "editor.defaultFormatter": "NomicFoundation.hardhat-solidity"
+  }
 }

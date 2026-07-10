@@ -9,14 +9,11 @@ export interface TierListScoresProps {
 }
 
 export function TierListScores(props: TierListScoresProps) {
-  const hasSelectedItem =
-    props.globalVotesItemId !== null && props.globalVotesItemName !== null;
+  const hasSelectedItem = props.globalVotesItemId !== null && props.globalVotesItemName !== null;
 
   const itemVotesCount = useGetItemVoteCounts(
     BigInt(props.tlId),
-    props.globalVotesItemId !== null
-      ? BigInt(props.globalVotesItemId)
-      : undefined,
+    props.globalVotesItemId !== null ? BigInt(props.globalVotesItemId) : undefined,
     hasSelectedItem,
   );
 

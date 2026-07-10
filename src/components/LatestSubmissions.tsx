@@ -1,14 +1,10 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Address } from "viem";
 import { useConnection } from "wagmi";
 
-import {
-  useGetLatestSubmissions,
-  useWatchRankingSubmitted,
-  useGetOwner,
-} from "../hooks/contract";
+import { useGetLatestSubmissions, useWatchRankingSubmitted, useGetOwner } from "../hooks/contract";
 import { AddressLink } from "./AddressLink";
 
 interface LatestSubmissionsProps {
@@ -28,17 +24,9 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
   const PAGE_SIZE = 20n;
   const [submissionsOffset, setSubmissionsOffset] = useState(0n);
 
-  const latestSubmissions = useGetLatestSubmissions(
-    props.id,
-    true,
-    PAGE_SIZE,
-    submissionsOffset,
-  );
+  const latestSubmissions = useGetLatestSubmissions(props.id, true, PAGE_SIZE, submissionsOffset);
 
-  const latestSubmitters = useMemo(
-    () => latestSubmissions.data ?? [],
-    [latestSubmissions.data],
-  );
+  const latestSubmitters = useMemo(() => latestSubmissions.data ?? [], [latestSubmissions.data]);
 
   const [liveRows, setLiveRows] = useState<readonly LiveRow[]>([]);
 
@@ -98,8 +86,7 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
             </tr>
           ) : (
             rows.map((row, i) => {
-              const acct =
-                typeof row === "string" ? (row as Address) : row.acct;
+              const acct = typeof row === "string" ? (row as Address) : row.acct;
               const live = typeof row === "string" ? undefined : row.live;
 
               const num = live ? i : Number(submissionsOffset) + i;
@@ -110,25 +97,19 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
                   <td>
                     <AddressLink address={acct} />
                     {userAddress === acct && (
-                      <div className="badge badge-soft badge-info ml-2">
-                        You
+                      <div className="badge badge-soft badge-info ml-2">You</div>
+                    )}
+                    {ownerAddress && acct.toLowerCase() === ownerAddress.toLowerCase() && (
+                      <div
+                        className="badge badge-soft badge-success ml-2"
+                        title="Smart Contract owner"
+                      >
+                        Owner
                       </div>
                     )}
-                    {ownerAddress &&
-                      acct.toLowerCase() === ownerAddress.toLowerCase() && (
-                        <div
-                          className="badge badge-soft badge-success ml-2"
-                          title="Smart Contract owner"
-                        >
-                          Owner
-                        </div>
-                      )}
                   </td>
                   <td>
-                    <Link
-                      className="btn"
-                      to={`/list/${props.id}/address/${acct}`}
-                    >
+                    <Link className="btn" to={`/list/${props.id}/address/${acct}`}>
                       View
                     </Link>
                   </td>
@@ -145,9 +126,7 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
             className="join-item btn"
             disabled={submissionsOffset === 0n}
             aria-label="Previous page"
-            onClick={() =>
-              setSubmissionsOffset((x) => (x > PAGE_SIZE ? x - PAGE_SIZE : 0n))
-            }
+            onClick={() => setSubmissionsOffset((x) => (x > PAGE_SIZE ? x - PAGE_SIZE : 0n))}
           >
             <ChevronLeft />
           </button>

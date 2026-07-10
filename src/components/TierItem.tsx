@@ -1,7 +1,4 @@
-import type {
-  DraggableProvided,
-  DraggableStateSnapshot,
-} from "@hello-pangea/dnd";
+import type { DraggableProvided, DraggableStateSnapshot } from "@hello-pangea/dnd";
 
 import { TierItemSimple } from "./TierItemSimple";
 

@@ -48,3 +48,6 @@ jobs:
       - name: Run frontend tests
         run: pnpm run test
         if: false
+
+      - name: Check formatting
+        run: pnpm run format:check

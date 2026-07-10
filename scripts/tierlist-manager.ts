@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+
 import { Command } from "commander";
 import {
   createPublicClient,
@@ -33,13 +34,12 @@ type CliContext = {
 type CliMode = "hardhat" | "sepolia";
 
 const ARTIFACT_PATH = "artifacts/contracts/TierList.sol/TierList.json";
-const LOCAL_DEPLOYMENT_PATH =
-  "ignition/deployments/chain-31337/deployed_addresses.json";
+const LOCAL_DEPLOYMENT_PATH = "ignition/deployments/chain-31337/deployed_addresses.json";
 
 function readArtifactAbi(): readonly unknown[] {
-  const artifact = JSON.parse(
-    readFileSync(resolve(ARTIFACT_PATH), "utf-8"),
-  ) as { abi?: readonly unknown[] };
+  const artifact = JSON.parse(readFileSync(resolve(ARTIFACT_PATH), "utf-8")) as {
+    abi?: readonly unknown[];
+  };
 
   if (!artifact.abi || !Array.isArray(artifact.abi)) {
     throw new Error(`Invalid artifact ABI in ${ARTIFACT_PATH}`);
@@ -101,13 +101,10 @@ function loadTierlistDefinition(filePath: string): TierlistDefinition {
     throw new Error("Invalid tierlist JSON: 'name' must be a non-empty string");
   }
 
-  const description =
-    typeof parsed.description === "string" ? parsed.description : "";
+  const description = typeof parsed.description === "string" ? parsed.description : "";
 
   if (!Array.isArray(parsed.items)) {
-    throw new Error(
-      "Invalid tierlist JSON: 'items' must be an array of strings",
-    );
+    throw new Error("Invalid tierlist JSON: 'items' must be an array of strings");
   }
 
   const items = parsed.items
@@ -142,15 +139,10 @@ async function createCliContext(options: {
 }): Promise<CliContext> {
   const mode = parseCliMode(options.mode);
 
-  const privateKey =
-    mode === "hardhat"
-      ? process.env.HARDHAT_PRIVATE_KEY
-      : process.env.PRIVATE_KEY;
+  const privateKey = mode === "hardhat" ? process.env.HARDHAT_PRIVATE_KEY : process.env.PRIVATE_KEY;
   if (!privateKey) {
     throw new Error(
-      mode === "hardhat"
-        ? "Missing HARDHAT_PRIVATE_KEY in .env"
-        : "Missing PRIVATE_KEY in .env",
+      mode === "hardhat" ? "Missing HARDHAT_PRIVATE_KEY in .env" : "Missing PRIVATE_KEY in .env",
     );
   }
 
@@ -169,10 +161,8 @@ async function createCliContext(options: {
 
   const fromEnv =
     mode === "hardhat"
-      ? process.env.HARDHAT_TIERLIST_CONTRACT_ADDRESS ||
-        process.env.TIERLIST_CONTRACT_ADDRESS
-      : process.env.SEPOLIA_TIERLIST_CONTRACT_ADDRESS ||
-        process.env.TIERLIST_CONTRACT_ADDRESS;
+      ? process.env.HARDHAT_TIERLIST_CONTRACT_ADDRESS || process.env.TIERLIST_CONTRACT_ADDRESS
+      : process.env.SEPOLIA_TIERLIST_CONTRACT_ADDRESS || process.env.TIERLIST_CONTRACT_ADDRESS;
   const fromLocalDeployment = readLocalDeployedAddress();
   const rawAddress =
     mode === "hardhat"
@@ -223,11 +213,7 @@ async function createCliContext(options: {
 
 async function executeTransaction(params: {
   context: CliContext;
-  functionName:
-    | "createTierList"
-    | "addItem"
-    | "removeItem"
-    | "setTierListActive";
+  functionName: "createTierList" | "addItem" | "removeItem" | "setTierListActive";
   args: readonly unknown[];
   actionLabel: string;
 }) {
@@ -275,9 +261,7 @@ program
 
 program
   .command("create")
-  .description(
-    "Create a tierlist from a JSON definition file (name, description, items)",
-  )
+  .description("Create a tierlist from a JSON definition file (name, description, items)")
   .requiredOption("--file <path>", "Path to the tierlist JSON file")
   .action(async (options: { file: string }) => {
     const rootOptions = program.opts<{
@@ -381,9 +365,7 @@ program
     const context = await createCliContext(rootOptions);
 
     console.log(`Contract: ${context.contractAddress}`);
-    console.log(
-      `Fetching tierlists${options.includeInactive ? " (including inactive)" : ""}...`,
-    );
+    console.log(`Fetching tierlists${options.includeInactive ? " (including inactive)" : ""}...`);
 
     const tierlists = (await context.publicClient.readContract({
       address: context.contractAddress,
