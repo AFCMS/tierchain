@@ -4,6 +4,8 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+packageExtensionsChecksum: sha256-TMChZfDeefs0bdXX0tfTuYL2Dk0VfCL7HFeIbgXzPOE=
+
 importers:
 
   .:
@@ -3118,6 +3120,7 @@ snapshots:
       bowser: 2.14.1
       buffer: 6.0.3
       cross-fetch: 4.1.0
+      debug: 4.4.3
       eciesjs: 0.4.17
       eventemitter3: 5.0.4
       pako: 2.2.0

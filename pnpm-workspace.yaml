@@ -8,5 +8,10 @@ allowBuilds:
 
 blockExoticSubdeps: true
 
+packageExtensions:
+  "@metamask/connect-multichain@*":
+    dependencies:
+      debug: ^4.4.3
+
 minimumReleaseAgeStrict: true
 minimumReleaseAge: 1440
