@@ -514,10 +514,7 @@ function TierListEditor(props: TierListEditorProps) {
                 </button>
               </>
             ) : address ? (
-              <Link
-                to={`/list/${tlId}/address/${address ?? ""}`}
-                className="btn btn-secondary"
-              >
+              <Link to={`/list/${tlId}/address/${address ?? ""}`} className="btn btn-secondary">
                 <Eye />
                 View my submission
               </Link>
