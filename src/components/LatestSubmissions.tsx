@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import type { Address } from "viem";
 import { useConnection } from "wagmi";
@@ -29,10 +29,6 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
   const latestSubmitters = useMemo(() => latestSubmissions.data ?? [], [latestSubmissions.data]);
 
   const [liveRows, setLiveRows] = useState<readonly LiveRow[]>([]);
-
-  useEffect(() => {
-    if (submissionsOffset !== 0n) setLiveRows([]);
-  }, [submissionsOffset]);
 
   useWatchRankingSubmitted(true, ({ voter, tierListId, submissionIndex }) => {
     if (tierListId !== props.id) return;
@@ -64,6 +60,16 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
 
     return out;
   }, [latestSubmitters, liveRows, submissionsOffset]);
+
+  function handlePreviousPage() {
+    setLiveRows([]);
+    setSubmissionsOffset((x) => (x > PAGE_SIZE ? x - PAGE_SIZE : 0n));
+  }
+
+  function handleNextPage() {
+    setLiveRows([]);
+    setSubmissionsOffset((x) => x + PAGE_SIZE);
+  }
 
   return (
     <section className="">
@@ -126,7 +132,7 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
             className="join-item btn"
             disabled={submissionsOffset === 0n}
             aria-label="Previous page"
-            onClick={() => setSubmissionsOffset((x) => (x > PAGE_SIZE ? x - PAGE_SIZE : 0n))}
+            onClick={handlePreviousPage}
           >
             <ChevronLeft />
           </button>
@@ -137,7 +143,7 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
             className="join-item btn"
             disabled={latestSubmitters.length < Number(PAGE_SIZE)}
             aria-label="Next page"
-            onClick={() => setSubmissionsOffset((x) => x + PAGE_SIZE)}
+            onClick={handleNextPage}
           >
             <ChevronRight />
           </button>

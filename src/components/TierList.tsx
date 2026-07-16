@@ -110,6 +110,18 @@ function bucketsFromUserVotes(
   return out;
 }
 
+function bucketsKey(buckets: TierListBuckets): string {
+  return JSON.stringify(
+    TIER_NAMES.map((tierName) => buckets[tierName].map((item) => [item.id, item.name])),
+  );
+}
+
+function userVotesKey(userVotes: readonly (readonly bigint[])[] | undefined): string {
+  if (!userVotes) return "loading";
+
+  return userVotes.map((tier) => tier.map((itemId) => itemId.toString()).join(",")).join("|");
+}
+
 function removeItemEverywhere(buckets: TierListBuckets, itemId: number): TierListBuckets {
   const next = cloneBuckets(buckets);
 
@@ -160,14 +172,18 @@ function moveAllItemsToPool(buckets: TierListBuckets): TierListBuckets {
   return next;
 }
 
+interface TierListEditorProps {
+  readonly tlId: number;
+  readonly editable: boolean;
+  readonly initialItems: TierListBuckets;
+  readonly connectedAddress?: Address;
+  readonly votesAddress?: Address;
+}
+
 export function TierList(props: TierListProps) {
   const { tlId, items, editable = true, userAddress } = props;
 
   const { address } = useConnection();
-  const write = useWriteContract();
-  const queryClient = useQueryClient();
-
-  const resetModalRef = useRef<HTMLDialogElement | null>(null);
 
   // When viewing someone else's submission, use their address; otherwise use connected wallet
   const votesAddress = !editable && userAddress ? (userAddress as Address) : address;
@@ -180,8 +196,47 @@ export function TierList(props: TierListProps) {
     query: { enabled: Boolean(tierListAddress && votesAddress) },
   });
 
-  const [originalItems, setOriginalItems] = useState<TierListBuckets>(() => cloneBuckets(items));
-  const [updatedItems, setUpdatedItems] = useState<TierListBuckets>(() => cloneBuckets(items));
+  const userVotes = userVotesQuery.data as readonly (readonly bigint[])[] | undefined;
+
+  const initialItems = useMemo(() => {
+    if (!votesAddress || !userVotes) return cloneBuckets(items);
+
+    return bucketsFromUserVotes(items, userVotes);
+  }, [items, userVotes, votesAddress]);
+
+  const editorKey = [
+    tlId,
+    votesAddress ?? "no-votes-address",
+    votesAddress ? userVotesKey(userVotes) : "without-votes",
+    bucketsKey(initialItems),
+  ].join("|");
+
+  return (
+    <TierListEditor
+      key={editorKey}
+      tlId={tlId}
+      editable={editable}
+      initialItems={initialItems}
+      connectedAddress={address}
+      votesAddress={votesAddress}
+    />
+  );
+}
+
+function TierListEditor(props: TierListEditorProps) {
+  const { tlId, editable, initialItems, connectedAddress: address, votesAddress } = props;
+
+  const write = useWriteContract();
+  const queryClient = useQueryClient();
+
+  const resetModalRef = useRef<HTMLDialogElement | null>(null);
+
+  const [originalItems, setOriginalItems] = useState<TierListBuckets>(() =>
+    cloneBuckets(initialItems),
+  );
+  const [updatedItems, setUpdatedItems] = useState<TierListBuckets>(() =>
+    cloneBuckets(initialItems),
+  );
 
   const [globalVotesItemId, setGlobalVotesItemId] = useState<number | null>(null);
 
@@ -191,25 +246,6 @@ export function TierList(props: TierListProps) {
     setGlobalVotesItemId(id);
     setGlobalVotesItemName(name);
   }
-
-  // If the user has an existing ranking, use it as the initial state.
-  // Also re-run when tlId/address changes.
-  useEffect(() => {
-    // When we don't have a target address to load votes for, fall back to passed-in buckets.
-    if (!votesAddress) {
-      const next = cloneBuckets(items);
-      setOriginalItems(next);
-      setUpdatedItems(next);
-      return;
-    }
-
-    const votes = userVotesQuery.data as readonly (readonly bigint[])[] | undefined;
-    if (!votes) return;
-
-    const next = bucketsFromUserVotes(items, votes);
-    setOriginalItems(next);
-    setUpdatedItems(next);
-  }, [tlId, votesAddress, items, userVotesQuery.data]);
 
   const hasPendingChanges = useMemo(
     () => !areBucketsEqual(originalItems, updatedItems),
@@ -436,7 +472,7 @@ export function TierList(props: TierListProps) {
             />
           </div>
           <TierListScores
-            tlId={props.tlId}
+            tlId={tlId}
             globalVotesItemId={globalVotesItemId}
             globalVotesItemName={globalVotesItemName}
           />
@@ -452,9 +488,9 @@ export function TierList(props: TierListProps) {
 
         <div className="my-4 flex w-full items-center justify-between gap-2">
           <div className="flex gap-2">
-            {!props.editable ? (
+            {!editable ? (
               <>
-                <Link to={`/list/${props.tlId}`} className="btn btn-secondary">
+                <Link to={`/list/${tlId}`} className="btn btn-secondary">
                   <ChevronLeft />
                   View List
                 </Link>
@@ -479,7 +515,7 @@ export function TierList(props: TierListProps) {
               </>
             ) : address ? (
               <Link
-                to={`/list/${props.tlId}/address/${address ?? ""}`}
+                to={`/list/${tlId}/address/${address ?? ""}`}
                 className="btn btn-secondary"
               >
                 <Eye />
@@ -493,7 +529,7 @@ export function TierList(props: TierListProps) {
             )}
           </div>
           <div className="flex flex-row gap-2">
-            {props.editable ? (
+            {editable ? (
               <>
                 <button
                   type="button"
