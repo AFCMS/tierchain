@@ -19,19 +19,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
+      - name: Install PNPM
+        uses: pnpm/setup@v2
         with:
-          version: 10
-
-      - name: Use Node.js LTS/Krypton
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: ".node-version"
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
+          install: true
 
       - name: Build contract
         run: pnpm run build:contract
