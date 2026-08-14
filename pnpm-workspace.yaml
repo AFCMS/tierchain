@@ -14,4 +14,4 @@ packageExtensions:
       debug: ^4.4.3
 
 minimumReleaseAgeStrict: true
-minimumReleaseAge: 1440
+minimumReleaseAge: 360
