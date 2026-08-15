@@ -89,6 +89,9 @@ importers:
       hardhat:
         specifier: ^3.13.0
         version: 3.13.0
+      oxc-transform-react:
+        specifier: ^0.145.0
+        version: 0.145.0
       oxfmt:
         specifier: ^0.64.0
         version: 0.64.0
@@ -4683,7 +4686,6 @@ snapshots:
       '@oxc-transform-react/binding-win32-arm64-msvc': 0.145.0
       '@oxc-transform-react/binding-win32-ia32-msvc': 0.145.0
       '@oxc-transform-react/binding-win32-x64-msvc': 0.145.0
-    optional: true
 
   oxfmt@0.64.0:
     dependencies:

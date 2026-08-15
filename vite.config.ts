@@ -7,7 +7,7 @@ import sri from "vite-plugin-sri-gen";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
+    react({ compiler: true }),
     tailwindcss(),
     imagetools(),
     sri({
