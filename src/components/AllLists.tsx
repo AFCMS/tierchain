@@ -42,7 +42,7 @@ export function AllLists({ includeInactive = false }: AllListsProps) {
     const set = async () => {
       setUiLists([...lists].reverse());
     };
-    set();
+    void set();
   }, [data, lists]);
 
   useWatchTierListCreated(enabled, ({ tierListId, name, description, numActiveItems }) => {

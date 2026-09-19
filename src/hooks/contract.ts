@@ -29,7 +29,7 @@ function useTierListEventWatcher<TArgs>(params: {
 
   // Reset when disabled so next enable re-captures "now"
   useEffect(() => {
-    (async () => {
+    void (async () => {
       if (!enabled) setStartBlockExclusive(undefined);
     })();
   }, [enabled]);
@@ -39,7 +39,7 @@ function useTierListEventWatcher<TArgs>(params: {
     if (!enabled) return;
     if (startBlockExclusive !== undefined) return;
     if (bn === undefined) return;
-    (async () => {
+    void (async () => {
       setStartBlockExclusive(bn);
     })(); // everything <= this is "past"
   }, [enabled, bn, startBlockExclusive]);

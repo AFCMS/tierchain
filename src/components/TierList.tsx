@@ -294,17 +294,17 @@ function TierListEditor(props: TierListEditorProps) {
     if (isConfirmed) {
       console.log("Transaction confirmed successfully!");
       // Invalidate getUserVotes to refetch the user's ranking and reset buckets
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey[0] === "readContract" &&
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // oxlint-disable-next-line typescript/no-explicit-any
           (query.queryKey[1] as any)?.functionName === "getUserVotes",
       });
       // Invalidate getItemVoteCounts queries to refresh global scores
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey[0] === "readContract" &&
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // oxlint-disable-next-line typescript/no-explicit-any
           (query.queryKey[1] as any)?.functionName === "getItemVoteCounts",
       });
     }
@@ -500,11 +500,11 @@ function TierListEditor(props: TierListEditorProps) {
                     const url = window.location.href;
 
                     if ("share" in window.navigator) {
-                      window.navigator.share({
+                      void window.navigator.share({
                         url: url,
                       });
                     } else {
-                      navigator.clipboard.writeText(url);
+                      void navigator.clipboard.writeText(url);
                       alert("Link copied to clipboard");
                     }
                   }}

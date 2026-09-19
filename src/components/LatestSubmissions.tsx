@@ -79,7 +79,7 @@ export function LatestSubmissions(props: LatestSubmissionsProps) {
           <tr>
             <th>#</th>
             <th>Account</th>
-            <th />
+            <th>Actions</th>
           </tr>
         </thead>
 
