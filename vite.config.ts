@@ -4,12 +4,15 @@ import { defineConfig } from "vite";
 import { imagetools } from "vite-imagetools";
 import sri from "vite-plugin-sri-gen";
 
+import { discordEmbed } from "./plugins/discord-embed.ts";
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react({ compiler: true }),
     tailwindcss(),
     imagetools(),
+    discordEmbed(),
     sri({
       algorithm: "sha512",
       crossorigin: "anonymous",

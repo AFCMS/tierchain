@@ -4,8 +4,16 @@
   "editor.formatOnPaste": true,
   "editor.formatOnType": true,
   "editor.defaultFormatter": "oxc.oxc-vscode",
-  "[typescript][typescriptreact]": {
+  "[typescript]": {
     "editor.tabSize": 2,
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[html]": {
+    "editor.suggest.insertMode": "replace",
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[json]": {

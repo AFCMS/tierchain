@@ -39,6 +39,7 @@
     "@vitejs/plugin-react": "^6.1.1",
     "commander": "^15.0.0",
     "daisyui": "^5.7.42",
+    "discord-api-types": "^0.38.55",
     "dotenv": "^18.0.1",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.1.1",

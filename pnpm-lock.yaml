@@ -71,6 +71,9 @@ importers:
       daisyui:
         specifier: ^5.7.42
         version: 5.7.42
+      discord-api-types:
+        specifier: ^0.38.55
+        version: 0.38.55
       dotenv:
         specifier: ^18.0.1
         version: 18.0.1
@@ -1748,6 +1751,9 @@ packages:
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
+
+  discord-api-types@0.38.55:
+    resolution: {integrity: sha512-ytuaRTzdnHUCXJ6KjL9MrItQX0xKncBKEeYI1Bst4+ud47eejH3cG6gaesYakjpPcUhh68XYS2YwGq3mmujFsA==}
 
   dotenv@18.0.1:
     resolution: {integrity: sha512-0eR4m4D/jH5eaI3evo2ZqqMii5mrTCR12v12VChdie6O1gPHs7XAjzTep0CWc1Bd+oNx3vVfbi734dK4zghigw==}
@@ -4211,6 +4217,8 @@ snapshots:
   deep-is@0.1.4: {}
 
   detect-libc@2.1.2: {}
+
+  discord-api-types@0.38.55: {}
 
   dotenv@18.0.1: {}
 
