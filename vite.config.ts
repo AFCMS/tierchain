@@ -9,7 +9,8 @@ import { discordEmbed } from "./plugins/discord-embed.ts";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    react({ compiler: true }),
+    // https://github.com/oxc-project/oxc/issues/26161
+    react({ compiler: false }),
     tailwindcss(),
     imagetools(),
     discordEmbed(),
