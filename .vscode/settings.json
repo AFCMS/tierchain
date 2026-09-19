@@ -24,5 +24,8 @@
   },
   "[solidity]": {
     "editor.defaultFormatter": "NomicFoundation.hardhat-solidity"
+  },
+  "files.associations": {
+    "llms.txt": "markdown"
   }
 }

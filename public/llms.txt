@@ -1,0 +1,39 @@
+# TierChain
+
+> TierChain is a decentralized tier-list app for browsing topics, ranking their items across five tiers, and comparing community submissions on Ethereum.
+
+TierChain lets users connect an Ethereum wallet, open a tier list, arrange its items into five tiers, and submit their ranking on-chain. The app also displays aggregate item scores and recent submissions. The production deployment uses the Sepolia test network, so submissions use test ETH rather than real funds.
+
+## Main pages
+
+- [All tier lists](https://tierchain.afcms.dev/): Browse the tier lists currently available from the smart contract.
+- [Tier list details](https://tierchain.afcms.dev/list/1): View a tier list, its active items, five ranking tiers, aggregate scores, and recent submissions. Replace `1` with another tier-list ID.
+- [Wallet submission](https://tierchain.afcms.dev/list/1/address/0x0000000000000000000000000000000000000000): View a specific wallet's submitted ranking for a tier list. Replace the example address with the wallet address to inspect.
+
+## How ranking works
+
+- Each tier list contains a unique set of active items.
+- Every ranking has exactly five tiers; items may remain unranked in the pool.
+- A connected wallet can submit one current ranking per tier list. Submitting again replaces that wallet's previous ranking.
+- The contract aggregates votes by item and tier for the global ranking display.
+- The owner can create or disable tier lists and add or remove their items.
+
+## Smart contract
+
+The application reads and writes the `TierList` Solidity contract. The main public operations are:
+
+- `getTierLists()`: Discover available tier lists.
+- `getTierList(tlId)`: Read a tier list's name, description, status, and active-item count.
+- `getTierListItems(tlId)`: Read the items available for ranking.
+- `getUserVotes(tlId, user)`: Read a wallet's ranking.
+- `getItemVoteCounts(tlId, itemId)`: Read aggregate votes for an item by tier.
+- `getLatestSubmissions(tlId, limit, offset)`: Read recent wallet submissions with pagination.
+- `submitRanking(tlId, rankedItemIdsByTier)`: Submit or replace the connected wallet's ranking.
+
+## Links
+
+- [Live app](https://tierchain.afcms.dev/)
+- [GitHub repository](https://github.com/AFCMS/tierchain)
+- [README and development guide](https://github.com/AFCMS/tierchain/blob/main/README.md)
+- [TierList contract source](https://github.com/AFCMS/tierchain/blob/main/contracts/TierList.sol)
+- [Sepolia block explorer](https://sepolia.etherscan.io)
