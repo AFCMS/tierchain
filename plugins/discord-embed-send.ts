@@ -5,9 +5,7 @@ import { getEmbed } from "./discord-embed-def.ts";
 const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
 if (!webhookUrl) {
-  throw new Error(
-    "DISCORD_WEBHOOK_URL is not defined in the environment variables.",
-  );
+  throw new Error("DISCORD_WEBHOOK_URL is not defined in the environment variables.");
 }
 
 async function sendEmbed() {
@@ -23,9 +21,7 @@ async function sendEmbed() {
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Failed to send embed: ${response.status} ${response.statusText}`,
-    );
+    throw new Error(`Failed to send embed: ${response.status} ${response.statusText}`);
   }
 }
 
