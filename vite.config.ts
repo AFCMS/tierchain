@@ -16,6 +16,7 @@ export default defineConfig({
     sri({
       algorithm: "sha512",
       crossorigin: "anonymous",
+      importMapIntegrity: false,
       fetchCache: true,
       fetchTimeoutMs: 5000,
       skipResources: [],
