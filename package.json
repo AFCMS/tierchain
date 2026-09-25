@@ -54,13 +54,13 @@
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "^11",
+      "version": "^12",
       "onFail": "ignore"
     },
     "runtime": {
       "name": "node",
       "version": "^24",
-      "onFail": "ignore"
+      "onFail": "error"
     }
   }
 }
