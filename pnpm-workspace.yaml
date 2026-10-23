@@ -15,3 +15,9 @@ packageExtensions:
 
 minimumReleaseAgeStrict: true
 minimumReleaseAge: 360
+
+pmOnFail: ignore
+
+permissions:
+  hardhat:
+    skills: true
