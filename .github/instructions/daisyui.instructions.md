@@ -256,7 +256,7 @@ Accordion is used for showing and hiding content but only one item can stay open
 #### Syntax
 
 ```html
-<div class="collapse {MODIFIER}">{CONTENT}</div>
+<div class="{MODIFIER} collapse">{CONTENT}</div>
 ```
 
 where content is:
@@ -569,7 +569,7 @@ Collapse is used for showing and hiding content
 #### Syntax
 
 ```html
-<div tabindex="0" class="collapse {MODIFIER}">
+<div tabindex="0" class="{MODIFIER} collapse">
   <div class="collapse-title">{title}</div>
   <div class="collapse-content">{CONTENT}</div>
 </div>
@@ -716,7 +716,7 @@ where {CONTENT} can be navbar, site content, footer, etc
 and {SIDEBAR} can be a menu like:
 
 ```html
-<ul class="menu p-4 w-80 min-h-full bg-base-100 text-base-content">
+<ul class="menu bg-base-100 text-base-content min-h-full w-80 p-4">
   <li><a>Item 1</a></li>
   <li><a>Item 2</a></li>
 </ul>
@@ -759,7 +759,7 @@ Example: This sidebar is always visible. When it's close we only see iocns, when
   <div class="drawer-side is-drawer-close:overflow-visible">
     <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
     <div
-      class="is-drawer-close:w-14 is-drawer-open:w-64 bg-base-200 flex flex-col items-start min-h-full"
+      class="is-drawer-close:w-14 is-drawer-open:w-64 bg-base-200 flex min-h-full flex-col items-start"
     >
       <!-- Sidebar content here -->
       <ul class="menu w-full grow">
@@ -779,7 +779,7 @@ Example: This sidebar is always visible. When it's close we only see iocns, when
         </li>
       </ul>
       <!-- button to open/close drawer -->
-      <div class="m-2 is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Open">
+      <div class="is-drawer-close:tooltip is-drawer-close:tooltip-right m-2" data-tip="Open">
         <label
           for="my-drawer-4"
           class="btn btn-ghost btn-circle drawer-button is-drawer-open:rotate-y-180"
@@ -1129,7 +1129,7 @@ Only use non-interactive content inside the `hover-3d` wrapper. If you want to m
 #### Syntax
 
 ```html
-<div class="hover-3d my-12 mx-2">
+<div class="hover-3d mx-2 my-12">
   <figure class="max-w-100 rounded-2xl">
     <img src="https://img.daisyui.com/images/stock/creditcard.webp" alt="Tailwind CSS 3D card" />
   </figure>
@@ -1994,7 +1994,7 @@ Table can be used to show a list of data in a table format
 
 ```html
 <div class="overflow-x-auto">
-  <table class="table {MODIFIER}">
+  <table class="{MODIFIER} table">
     <thead>
       <tr>
         <th></th>
@@ -2043,7 +2043,7 @@ Example:
 Big font size, horizontally centered
 
 ```html
-<span class="text-rotate max-md:text-3xl text-7xl font-title">
+<span class="text-rotate font-title text-7xl max-md:text-3xl">
   <span class="justify-items-center">
     <span>DESIGN</span>
     <span>DEVELOP</span>
@@ -2062,9 +2062,9 @@ Rotating words in a sentence, different colors for each word
   Providing AI Agents for
   <span class="text-rotate">
     <span>
-      <span class="bg-teal-400 text-teal-800 px-2">Designers</span>
-      <span class="bg-red-400 text-red-800 px-2">Developers</span>
-      <span class="bg-blue-400 text-blue-800 px-2">Managers</span>
+      <span class="bg-teal-400 px-2 text-teal-800">Designers</span>
+      <span class="bg-red-400 px-2 text-red-800">Developers</span>
+      <span class="bg-blue-400 px-2 text-blue-800">Managers</span>
     </span>
   </span>
 </span>
@@ -2073,7 +2073,7 @@ Rotating words in a sentence, different colors for each word
 Custom line height in case you have a tall font or need more vertical spacing between lines
 
 ```html
-<span class="text-rotate max-md:text-3xl text-7xl font-title leading-[2]">
+<span class="text-rotate font-title text-7xl leading-[2] max-md:text-3xl">
   <span class="justify-items-center">
     <span>📐 DESIGN</span>
     <span>⌨️ DEVELOP</span>
