@@ -10,5 +10,5 @@ export default defineConfig({
   sortImports: true,
   sortPackageJson: true,
   sortTailwindcss: true,
-  ignorePatterns: [],
+  ignorePatterns: [".agents", "dist", "artifacts", "coverage"],
 });
